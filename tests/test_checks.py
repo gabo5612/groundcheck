@@ -246,3 +246,53 @@ def test_no_citar_nada_falla_la_cita():
     r = evaluate(caso(), Response(answer="680 ± 30 N·m", citations=()))
     assert r["citation_hits_gold"].passed is False
     assert r["citation_hits_gold"].detail == "no cito nada"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Reglas 2 y 3 de `numbers.py` — los tres defectos encontrados al etiquetar M3
+# ─────────────────────────────────────────────────────────────────────────────
+@pytest.mark.parametrize(
+    "token",
+    ["9150-00-292-9689", "1.9.4", "14.2.29", "MIL-PRF-14107", "E-114", "M24", "QS-1", "12/07/2024"],
+)
+def test_identificadores_no_se_parten_en_numeros(token):
+    assert extract_numbers(token) == []
+    assert extract_codes(token) == [token.upper()]
+
+
+@pytest.mark.parametrize("token", ["720", "30", "8.8", "68,5", "1.200", "1.200,50", "1.200.000"])
+def test_los_numeros_siguen_siendo_numeros(token):
+    assert [t.raw for t in extract_numbers(token)] == [token]
+    assert extract_codes(token) == []
+
+
+def test_una_version_equivocada_no_pasa_groundedness():
+    """El falso positivo que la regla 2 evita — el peor de los tres defectos.
+
+    Sin ella, `1.9.4` se partia en "1.9" y "4". Un sistema que contestara "Leaflet 1.9.5"
+    pasaba `grounded` porque el chunk traia un 1.9 y algun 5 en otra parte: publicaba
+    como fundamentado algo que no lo estaba.
+    """
+    c = Case(id="ver", question="¿Qué versión de Leaflet?", category="alfanumerico_exacto",
+             gold_sources=(GoldSource(doc_id="TP", pages=(3,)),))
+    chunk = "| Mapas | Leaflet 1.9.4 |\n| UI | React 18 |\n| Pagos | 5 métodos |"
+
+    correcta = evaluate(c, respuesta("Usa Leaflet 1.9.4.", text=chunk, doc="TP", page=3, rev=None))
+    assert correcta["grounded"].passed is True
+
+    equivocada = evaluate(c, respuesta("Usa Leaflet 1.9.5.", text=chunk, doc="TP", page=3, rev=None))
+    assert equivocada["grounded"].passed is False
+    assert "1.9.5" in equivocada["grounded"].evidence["sin_respaldo"]
+
+
+def test_un_nsn_inventado_no_pasa_groundedness():
+    """Antes, un NSN no era ni número ni código: era invisible para `grounded`."""
+    c = Case(id="nsn", question="¿NSN del aceite LAW?", category="alfanumerico_exacto",
+             gold_sources=(GoldSource(doc_id="TM", pages=(126,)),))
+    chunk = "| 9 | C | 9150-00-292-9689 | LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW) |"
+
+    ok = evaluate(c, respuesta("El NSN es 9150-00-292-9689.", text=chunk, doc="TM", page=126, rev=None))
+    assert ok["grounded"].passed is True
+
+    mal = evaluate(c, respuesta("El NSN es 9150-00-292-9999.", text=chunk, doc="TM", page=126, rev=None))
+    assert mal["grounded"].passed is False

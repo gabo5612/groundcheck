@@ -1,19 +1,28 @@
-"""Extraccion de numeros y codigos del texto de una respuesta.
+"""Extraccion de numeros e identificadores del texto de una respuesta.
 
-Este modulo es el que decide si `grounded` da verdadero o falso, asi que sus dos reglas
-estan escritas explicitas:
+Este modulo decide si `grounded` da verdadero o falso, asi que sus reglas estan escritas
+explicitas. Las tres primeras salieron de **intentar etiquetar el golden set (M3) y ver
+que fallaba**, no de imaginar casos:
 
-**Regla 1 — un digito pegado a una letra no es un numero, es un codigo.**
-`E-114` no aporta el numero 114, y `M24` no aporta el 24. Extraerlos como numeros haria
-que la respuesta correcta *"La alarma E-114 indica sobretemperatura"* fallara groundedness
-porque "114" no aparece suelto en el chunk. Ese falso negativo es peor que no medir: te
-hace "arreglar" un sistema que estaba bien. Los codigos se extraen aparte y se comparan
-como codigos.
+**Regla 1 — un digito pegado a una letra no es un numero, es un identificador.**
+`E-114` no aporta el numero 114 ni `M24` el 24. Extraerlos como numeros haria que la
+respuesta *correcta* "la alarma E-114 indica sobretemperatura" diera `grounded: false`
+porque "114" no aparece suelto en el chunk. Ese falso negativo manda a arreglar un sistema
+sano.
 
-**Regla 2 — la ambiguedad de `1.200` se documenta, no se adivina en silencio.**
-En espanol es mil doscientos; en ingles, uno punto dos. La convencion elegida esta abajo,
-con test, y el resultado de cada check guarda **el token crudo junto al canonico** para
-que un humano pueda auditar cualquier desacuerdo sin leer el codigo.
+**Regla 2 — un token con tres o mas grupos separados es un identificador, no varios
+numeros.** `1.9.4` no son "1.9 y 4", y `9150-00-292-9689` (un NSN) no es nada partido en
+pedazos. Sin esta regla, un sistema que contestara "Leaflet 1.9.5" pasaria groundedness
+si el chunk trae un `1.9` y un `5` en cualquier parte — un **falso positivo**, que es peor
+que un falso negativo: publica como fundamentado algo que no lo esta.
+
+**Regla 3 — un identificador se compara entero.** `MIL-PRF-14107` se compara asi, no como
+`PRF-14107`.
+
+**Regla 4 — la ambiguedad de `1.200` se documenta, no se adivina en silencio.** En espanol
+es mil doscientos; en ingles, uno punto dos. La convencion esta en `canonicalize`, con
+test, y cada check guarda **el token crudo junto al canonico** para poder auditar
+cualquier desacuerdo sin leer el codigo.
 """
 
 from __future__ import annotations
@@ -21,23 +30,11 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-# Un numero: digitos con separadores opcionales de miles/decimales. El lookaround es lo
-# que implementa la regla 1 — nada de letras ni guiones-con-letra alrededor.
-_NUMBER = re.compile(
-    r"""
-    (?<![A-Za-z0-9])          # ni letra ni digito antes
-    (?<!-)                    # ni guion antes (E-114, ISO-9001)
-    (\d{1,3}(?:[.,\s]\d{3})+(?:[.,]\d+)?   # con separador de miles: 1,200 · 1.200,50
-     |\d+(?:[.,]\d+)?)                     # simple: 680 · 68,5 · 8.8
-    (?![A-Za-z0-9])           # ni letra ni digito despues
-    (?!-\d)                   # no es la primera mitad de un rango tipo 10-20
-    """,
-    re.VERBOSE,
-)
-
-# Un codigo: letras y digitos mezclados, con guiones opcionales. E-114 · M24 · WPS-014 ·
-# LAM-2-MAINT · 8.8 NO (eso es un numero).
-_CODE = re.compile(r"\b(?=[A-Za-z0-9-]*\d)(?=[A-Za-z0-9-]*[A-Za-z])[A-Za-z]+-?\d+[A-Za-z0-9-]*\b")
+# Un token es una corrida de alfanumericos unida por separadores internos. Se clasifica
+# despues; no se intenta distinguir numero de identificador con la regex, porque ahi es
+# donde se cuelan los casos raros.
+_TOKEN = re.compile(r"[A-Za-z0-9]+(?:[.,\-/][A-Za-z0-9]+)*")
+_SEPARATORS = ".,-/"
 
 
 @dataclass(frozen=True)
@@ -49,20 +46,55 @@ class NumberToken:
         return f"{self.raw}→{self.canonical}"
 
 
+def _split_groups(token: str) -> tuple[list[str], list[str]]:
+    """Separa un token en grupos y en los separadores que los unen."""
+    grupos, seps, actual = [], [], ""
+    for ch in token:
+        if ch in _SEPARATORS:
+            grupos.append(actual)
+            seps.append(ch)
+            actual = ""
+        else:
+            actual += ch
+    grupos.append(actual)
+    return grupos, seps
+
+
+def is_number(token: str) -> bool:
+    """El token es un numero, y no un identificador?
+
+    Implementa las reglas 1 y 2. Los casos limite estan cubiertos por tests con nombre.
+    """
+    grupos, seps = _split_groups(token)
+    if any(not g.isdigit() for g in grupos):
+        return False                      # tiene letras -> identificador (regla 1)
+    if len(seps) == 0:
+        return True                       # 720
+    if len(seps) == 1:
+        return True                       # 68,5 · 1.200 -> lo resuelve canonicalize
+    # Tres o mas grupos (regla 2): solo es numero si se ve como miles + decimal.
+    if set(seps) in ({".", ","}, {",", "."}):
+        return True                       # 1.200,50 · 1,200.50
+    if seps[0] in "-/":
+        return False                      # 9150-00-292-9689 · 12/07/2024
+    # Mismo separador repetido: numero solo si todos los grupos menos el primero son de
+    # 3 digitos (1.200.000). Si no, es una version: 1.9.4
+    return all(len(g) == 3 for g in grupos[1:])
+
+
 def canonicalize(raw: str) -> str:
     """Forma canonica de un numero escrito.
 
     Convencion, elegida y fijada con test:
     - Si aparecen `.` y `,` en el mismo token, **el ultimo es el decimal**
-      (`1.200,50` → `1200.50`, `1,200.50` → `1200.50`). Esto no tiene ambiguedad.
-    - Si aparece un solo separador **seguido por exactamente 3 digitos**, se lee como
-      separador de miles (`1.200` → `1200`, `1,200` → `1200`).
-      ⚠️ **Limitacion conocida y aceptada:** `68.500` se lee como `68500`, no como 68.5
-      con ceros de relleno. En documentacion tecnica industrial el separador de miles es
-      mucho mas frecuente que tres decimales, y la alternativa —adivinar por contexto—
-      seria menos predecible. El token crudo queda guardado para poder auditarlo.
+      (`1.200,50` → `1200.50`). No tiene ambiguedad.
+    - Un solo separador **seguido por exactamente 3 digitos** se lee como separador de
+      miles (`1.200` → `1200`).
+      ⚠️ **Limitacion conocida y aceptada:** `68.500` se lee `68500`, no 68.5 con ceros de
+      relleno. En documentacion tecnica el separador de miles es mucho mas frecuente que
+      tres decimales, y adivinar por contexto seria menos predecible. El token crudo
+      queda guardado para auditarlo.
     - Cualquier otro separador unico es decimal (`68,5` → `68.5`).
-    - Los espacios como separador de miles se eliminan (`1 200` → `1200`).
     - Los ceros de cola de un decimal se recortan (`680.0` → `680`) para que `680` y
       `680.0` no cuenten como numeros distintos.
     """
@@ -87,25 +119,31 @@ def canonicalize(raw: str) -> str:
     return token or "0"
 
 
-def extract_numbers(text: str | None) -> list[NumberToken]:
+def _tokens(text: str | None) -> list[str]:
     if not text:
         return []
-    return [NumberToken(raw=m.group(1), canonical=canonicalize(m.group(1))) for m in _NUMBER.finditer(text)]
+    # Un token sin ningun digito no interesa a este modulo: no es numero ni identificador
+    # tecnico, es una palabra.
+    return [m.group(0) for m in _TOKEN.finditer(text) if any(ch.isdigit() for ch in m.group(0))]
+
+
+def extract_numbers(text: str | None) -> list[NumberToken]:
+    return [
+        NumberToken(raw=t, canonical=canonicalize(t)) for t in _tokens(text) if is_number(t)
+    ]
 
 
 def extract_codes(text: str | None) -> list[str]:
-    """Codigos alfanumericos, normalizados a mayusculas."""
-    if not text:
-        return []
-    return [m.group(0).upper() for m in _CODE.finditer(text)]
+    """Identificadores tecnicos, enteros y en mayusculas: `E-114`, `M24`, `MIL-PRF-14107`,
+    `9150-00-292-9689`, `1.9.4`."""
+    return [t.upper() for t in _tokens(text) if not is_number(t)]
 
 
 def contains_number(haystack: str | None, needle: str) -> bool:
-    """El numero `needle` aparece en `haystack`, comparando en forma canonica.
+    """`needle` aparece en `haystack`, comparando en forma canonica.
 
-    Se compara canonico contra canonico y no substring crudo a proposito: buscar "30"
-    como substring lo encontraria dentro de "1300", y eso daria por fundamentado un
-    numero que nunca estuvo.
+    Canonico contra canonico y no substring crudo a proposito: buscar "30" como substring
+    lo encontraria dentro de "1300", dando por fundamentado un numero que nunca estuvo.
     """
     objetivo = canonicalize(needle)
     return any(tok.canonical == objetivo for tok in extract_numbers(haystack))

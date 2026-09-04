@@ -10,14 +10,14 @@ determinista, ningún modelo juzgando a otro modelo**.
 > *assay* = ensayo metalúrgico, el análisis que determina qué contiene realmente una
 > muestra. Es literalmente lo que hace esta herramienta.
 
-## Estado: M2 de 8
+## Estado: M3 de 8
 
 | Hito | Qué trae | Estado |
 |---|---|---|
 | **M0** | Esqueleto del CLI + formato de suite + adaptadores | ✅ |
 | **M1** | recall@k, MRR, precision@k | ✅ |
 | **M2** | Checks deterministas de generación | ✅ |
-| M3 | Golden set v1 (20 preguntas, 20% controles negativos) | ⬜ |
+| **M3** | Golden set v1 (20 preguntas, 20% controles negativos) | ✅ |
 | M4 | Reporte con desglose por categoría | ⬜ |
 | M5 | Gate de CI | ⬜ |
 | M6 | `assay diff` | ⬜ |
@@ -102,6 +102,30 @@ parece". Así está construido el grueso de los RAG que existen.
 
 El **20% de controles negativos** es lo que casi todos olvidan: sin ellos, un sistema que
 siempre responde con seguridad puntúa perfecto.
+
+## El golden set v1
+
+`suites/anvil-v1.yaml` — 20 preguntas, **4 controles negativos (20% exacto)**, sobre un
+corpus de 5 documentos y 1699 chunks. Cada número se leyó del chunk que lo respalda.
+
+`scripts/verify_against_corpus.py` lo prueba: comprueba que cada `doc_id` exista, que la
+revisión declarada coincida, que cada `gold_number` aparezca literal en la página citada
+—y que cada **`forbidden_number` también esté en el corpus**. Ese último punto es el menos
+obvio y el más importante: un número prohibido que no está en el documento no es una
+trampa, es ruido, y el check nunca se dispararía. La trampa tiene que ser un número real
+de otra fila.
+
+```
+revisado: 9 gold_numbers · 11 forbidden_numbers · 4 controles negativos (20%)
+✓ todo el golden set esta respaldado por el corpus
+```
+
+**Los cuatro controles negativos son plausibles a propósito.** Uno obvio —"¿cuál es la
+capital de Francia?"— no mide nada: cualquier RAG se abstiene. Estos piden un dato que no
+existe *justo al lado* de datos que sí: el perno M30 en una tabla que solo tiene M24 y
+M16; el M24 en **grado 12.9** cuando la tabla solo trae 8.8 y 10.9 (el perno existe, el
+grado no); la alarma `E-200` entre `E-114`, `E-115` y `E-141`; y el material A312, que es
+real en ASTM pero no está en esta documentación.
 
 ## Los seis checks deterministas
 

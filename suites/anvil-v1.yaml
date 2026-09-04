@@ -1,0 +1,273 @@
+# ════════════════════════════════════════════════════════════════════════════════
+# Golden set v1 (M3) — sistema bajo prueba: anvil
+#
+# 20 preguntas · 4 controles negativos (20% exacto)
+#
+# CORPUS: anvil/demo/corpus.json — 5 documentos, 1699 chunks. Cada número de este
+# archivo se leyó del chunk que lo respalda; ninguno se estimó. Los doc_id son los
+# reales del corpus, no alias.
+#
+# ⚠️ NOTA DE FIDELIDAD AL CORPUS: el spec de assay (§3) usa como ejemplo ilustrativo
+# "M24 grado 8.8 → 680 N·m". El corpus real dice 720 ± 30. Este set usa 720. Copiar el
+# 680 del spec habría medido a anvil contra un número que no está en la documentación:
+# habría "fallado" una pregunta cuya respuesta correcta nunca existió.
+#
+# CATEGORÍAS AUSENTES Y POR QUÉ (no es olvido):
+#   · multi_documento    — el corpus no tiene ninguna relación genuina entre dos
+#                          documentos. Pegar dos hechos sin relación real sería una
+#                          pregunta de oro falsa. Se construye en M8, con corpus propio.
+#   · revision_supersedida — los 5 documentos existen en UNA sola revisión cada uno. No
+#                          hay ningún dato cuya respuesta haya cambiado entre revisiones.
+#                          Requiere aportar dos revisiones del mismo documento (bloqueo
+#                          documentado en PLAN-EJECUCION.md, hito M8).
+# El 20% que ocupaban esas dos categorías se repartió en factual_lookup y
+# alfanumerico_exacto. El 20% de controles negativos NO se tocó: es la métrica que hace
+# que un sistema que siempre responde con seguridad no puntúe perfecto.
+# ════════════════════════════════════════════════════════════════════════════════
+name: anvil-v1
+cases:
+
+# ── factual_lookup (8) ──────────────────────────────────────────────────────
+# Prueban chunking estructural: si la Tabla 4-7 se partió mal, el sistema devuelve la
+# fila equivocada. `forbidden_numbers` son SIEMPRE las otras filas de la misma tabla,
+# porque ese es el error concreto que hay que atrapar — no "una respuesta algo distinta".
+
+  - id: torque-m24-grado-88
+    question: "¿Cuál es el par de apriete del perno M24 del cabezal en grado 8.8?"
+    category: factual_lookup
+    difficulty: easy
+    languages: [es]
+    gold_answer: "720 +/- 30 N.m, en secuencia cruzada, 3 pasadas"
+    gold_numbers: ["720", "30"]
+    forbidden_numbers: ["950", "190"]   # filas M24 10.9 y M16 tapa
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: torque-m24-grado-109
+    question: "¿Qué par de apriete corresponde al M24 del cabezal en grado 10.9?"
+    category: factual_lookup
+    difficulty: medium
+    languages: [es]
+    # Par discriminante con la anterior: MISMO perno, grado distinto. Un sistema que
+    # ignora el grado contesta 720 a las dos y acá se lo ve.
+    gold_answer: "950 +/- 40 N.m"
+    gold_numbers: ["950", "40"]
+    forbidden_numbers: ["720", "190"]
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: torque-m16-tapa
+    question: "¿Cuál es el torque del perno M16 de la tapa?"
+    category: factual_lookup
+    difficulty: easy
+    languages: [es]
+    gold_answer: "190 +/- 10 N.m, cruzada, 2 pasadas"
+    gold_numbers: ["190", "10"]
+    forbidden_numbers: ["720", "950"]
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: precalentamiento-a516-espeso
+    question: "¿Qué precalentamiento requiere el A516 Gr.70 en espesores mayores a 20 mm?"
+    category: factual_lookup
+    difficulty: medium
+    languages: [es]
+    gold_answer: "95 C"
+    gold_numbers: ["95"]
+    forbidden_numbers: ["80"]           # la fila del A106 Gr.B
+    # El 20 NO va en forbidden: aparece legítimamente en la respuesta al citar el espesor.
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: precalentamiento-a106
+    question: "¿Cuál es la temperatura de precalentamiento para el A106 Gr.B?"
+    category: factual_lookup
+    difficulty: easy
+    languages: [es]
+    gold_answer: "80 C, para cualquier espesor"
+    gold_numbers: ["80"]
+    forbidden_numbers: ["95"]
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: precalentamiento-a516-delgado
+    question: "¿Hay que precalentar el A516 Gr.70 de 15 mm de espesor?"
+    category: factual_lookup
+    difficulty: hard
+    languages: [es]
+    # La respuesta correcta NO tiene número: es "ninguno". Un sistema que se siente
+    # obligado a devolver una cifra va a inventar 95 u 80, y los dos están prohibidos.
+    # Es el caso más parecido a una alucinación sin ser control negativo.
+    gold_answer: "Ninguno. Hasta 20 mm el A516 Gr.70 no requiere precalentamiento."
+    gold_numbers: []
+    forbidden_numbers: ["95", "80"]
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: pasadas-cabezal
+    question: "¿En cuántas pasadas se aprietan los pernos del cabezal y con qué patrón?"
+    category: factual_lookup
+    difficulty: easy
+    languages: [es]
+    gold_answer: "3 pasadas, en patron cruzado"
+    gold_numbers: ["3"]
+    forbidden_numbers: ["2"]            # la tapa M16 usa 2 pasadas
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: version-leaflet-trailkit
+    question: "¿Qué versión de Leaflet usa el sitio de TrailKit?"
+    category: factual_lookup
+    difficulty: medium
+    languages: [es]
+    # Entra acá y no en alfanumerico_exacto porque lo que se busca es un dato de una
+    # tabla de stack. Sirve además para ejercitar la regla 2 de numbers.py: 1.9.4 es un
+    # identificador entero, no "1.9 y 4".
+    gold_answer: "Leaflet 1.9.4"
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [3]}
+
+# ── alfanumerico_exacto (4) ─────────────────────────────────────────────────
+# Prueban búsqueda híbrida: un código como E-114 se pierde en búsqueda puramente
+# densa, porque su vecindad semántica no dice nada. Es el Problema 2 de anvil.
+
+  - id: alarma-e114
+    question: "¿Qué significa la alarma E-114 del horno de induccion?"
+    category: alfanumerico_exacto
+    difficulty: easy
+    languages: [es]
+    gold_answer: "Sobretemperatura de bobina. Accion: parar y purgar refrigerante."
+    gold_numbers: []
+    forbidden_numbers: []
+    # ⚠️ El riesgo real acá es que conteste la descripción de E-115 o E-141. Eso NO lo
+    # atrapa `forbidden_numbers`, que solo compara números: "115" nunca se extrae porque
+    # vive dentro de un identificador. Falta un `forbidden_codes` — anotado como hueco
+    # conocido del formato en PLAN-EJECUCION.md.
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: alarma-e115-accion
+    question: "Ante la alarma E-115, ¿qué hay que verificar?"
+    category: alfanumerico_exacto
+    difficulty: medium
+    languages: [es]
+    gold_answer: "La bomba P-3 (perdida de caudal de refrigerante)."
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: nsn-aceite-law
+    question: "What is the National Stock Number for LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW)?"
+    category: alfanumerico_exacto
+    difficulty: hard
+    languages: [en]
+    # Único caso en inglés y en el documento largo (117 páginas): mide que el retrieval
+    # no se degrade con el tamaño del documento. El NSN es un identificador puramente
+    # numérico con guiones, invisible para el extractor antes del arreglo de M3.
+    gold_answer: "9150-00-292-9689"
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: 75b2742de4b3a05f, revision: A, pages: [126]}
+
+  - id: seccionador-loto
+    question: "¿Qué seccionador se abre en el bloqueo de la linea de colada?"
+    category: alfanumerico_exacto
+    difficulty: medium
+    languages: [es]
+    gold_answer: "El seccionador principal QS-1, verificando ausencia de tension."
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+# ── procedimental (4) ───────────────────────────────────────────────────────
+# Prueban que no se corten los pasos. El corpus tiene el LOTO como 5 chunks
+# `procedure` separados: si el chunker los aísla, el sistema devuelve un paso suelto y
+# eso, en un procedimiento de seguridad, es peor que no responder.
+
+  - id: loto-linea-colada-completo
+    question: "¿Cuál es el procedimiento de bloqueo y etiquetado (LOTO) de la linea de colada?"
+    category: procedimental
+    difficulty: hard
+    languages: [es]
+    gold_answer: >-
+      1) Notificar a produccion y detener la linea. 2) Abrir el seccionador principal
+      QS-1 y verificar ausencia de tension. 3) Colocar candado personal y tarjeta de
+      identificacion en QS-1. 4) Purgar la linea hidraulica y confirmar presion cero en
+      el manometro PI-7. 5) Verificar enclavamiento antes de iniciar la intervencion.
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: loto-presion-cero
+    question: "¿Dónde se confirma la presion cero durante el LOTO de la linea de colada?"
+    category: procedimental
+    difficulty: medium
+    languages: [es]
+    gold_answer: "En el manometro PI-7, despues de purgar la linea hidraulica."
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: loto-primer-paso
+    question: "¿Cuál es el primer paso del LOTO de la linea de colada?"
+    category: procedimental
+    difficulty: easy
+    languages: [es]
+    # Discrimina orden: un sistema que devuelve "el paso que mejor puntuó" en vez del
+    # primero contesta el del candado o el del seccionador.
+    gold_answer: "Notificar a produccion y detener la linea."
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: montaje-cabezal-superficies
+    question: "Antes de montar el cabezal, ¿qué hay que verificar en las superficies?"
+    category: procedimental
+    difficulty: medium
+    languages: [es]
+    gold_answer: "Que esten libres de cascarilla."
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+# ── negative_control (4 = 20%) ──────────────────────────────────────────────
+# La métrica más importante del set. Las cuatro están construidas para ser PLAUSIBLES:
+# usan el vocabulario, el formato y los vecinos exactos del corpus. Un control negativo
+# obvio ("¿cuál es la capital de Francia?") no mide nada — cualquier RAG se abstiene.
+# Estos piden un dato que no existe justo al lado de datos que sí existen.
+
+  - id: torque-m30-inexistente
+    question: "¿Cuál es el par de apriete del perno M30 del cabezal?"
+    category: negative_control
+    difficulty: easy
+    languages: [es]
+    # La Tabla 4-7 solo tiene M24 y M16. El M30 no figura. El fallo esperado es contestar
+    # 720 o 950 "por cercanía".
+    gold_answer: null
+    must_abstain: true
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: torque-m24-grado-129-inexistente
+    question: "¿Qué torque lleva el M24 del cabezal en grado 12.9?"
+    category: negative_control
+    difficulty: hard
+    languages: [es]
+    # El control negativo más sutil del set: el perno SÍ existe, el grado NO (solo 8.8 y
+    # 10.9). Exige leer la fila entera y no solo encontrar "M24 cabezal".
+    gold_answer: null
+    must_abstain: true
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: alarma-e200-inexistente
+    question: "¿Qué indica la alarma E-200 del horno de induccion?"
+    category: negative_control
+    difficulty: medium
+    languages: [es]
+    # La tabla tiene E-114, E-115 y E-141. E-200 respeta el formato del código y no existe.
+    gold_answer: null
+    must_abstain: true
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
+
+  - id: precalentamiento-a312-inexistente
+    question: "¿Qué precalentamiento requiere el A312 antes de soldar?"
+    category: negative_control
+    difficulty: medium
+    languages: [es]
+    # La tabla de 6.2 cubre A516 Gr.70 y A106 Gr.B. El A312 es un material real de norma
+    # ASTM, así que la pregunta es creíble, pero no está en esta documentación.
+    gold_answer: null
+    must_abstain: true
+    gold_source: {doc_id: c0d5f95f636967d1, revision: F, pages: [1]}
