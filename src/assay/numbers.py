@@ -19,7 +19,12 @@ que un falso negativo: publica como fundamentado algo que no lo esta.
 **Regla 3 — un identificador se compara entero.** `MIL-PRF-14107` se compara asi, no como
 `PRF-14107`.
 
-**Regla 4 — la ambiguedad de `1.200` se documenta, no se adivina en silencio.** En espanol
+**Regla 4 — un numero que enumera no es un numero que afirma.** En "1) Notificar. 2) Abrir
+QS-1." los `1` y `2` son marcadores de lista, no datos. Extraerlos hacia que un sistema que
+numera sus pasos fallara groundedness por numerar — otro falso negativo que manda a
+arreglar un sistema sano. (Encontrado al llenar el reporte de M4 con el caso del LOTO.)
+
+**Regla 5 — la ambiguedad de `1.200` se documenta, no se adivina en silencio.** En espanol
 es mil doscientos; en ingles, uno punto dos. La convencion esta en `canonicalize`, con
 test, y cada check guarda **el token crudo junto al canonico** para poder auditar
 cualquier desacuerdo sin leer el codigo.
@@ -35,6 +40,10 @@ from dataclasses import dataclass
 # donde se cuelan los casos raros.
 _TOKEN = re.compile(r"[A-Za-z0-9]+(?:[.,\-/][A-Za-z0-9]+)*")
 _SEPARATORS = ".,-/"
+
+# Marcador de lista: un numero suelto seguido de `)` o de `.` mas espacio, ya sea al
+# principio de una linea o detras de un parentesis/espacio. Implementa la regla 4.
+_ENUMERATOR = re.compile(r"(?:^|[\s(\[])\d{1,2}[.)](?=\s|$)", re.MULTILINE)
 
 
 @dataclass(frozen=True)
@@ -119,12 +128,23 @@ def canonicalize(raw: str) -> str:
     return token or "0"
 
 
+def _enumerator_spans(text: str) -> list[tuple[int, int]]:
+    return [m.span() for m in _ENUMERATOR.finditer(text)]
+
+
 def _tokens(text: str | None) -> list[str]:
     if not text:
         return []
-    # Un token sin ningun digito no interesa a este modulo: no es numero ni identificador
-    # tecnico, es una palabra.
-    return [m.group(0) for m in _TOKEN.finditer(text) if any(ch.isdigit() for ch in m.group(0))]
+    enumeradores = _enumerator_spans(text)
+    out = []
+    for m in _TOKEN.finditer(text):
+        if not any(ch.isdigit() for ch in m.group(0)):
+            # Un token sin digitos no interesa a este modulo: es una palabra.
+            continue
+        if any(ini <= m.start() and m.end() <= fin for ini, fin in enumeradores):
+            continue    # marcador de lista (regla 4)
+        out.append(m.group(0))
+    return out
 
 
 def extract_numbers(text: str | None) -> list[NumberToken]:

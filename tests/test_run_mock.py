@@ -62,7 +62,7 @@ def test_cli_run_escribe_json_valido(tmp_path, capsys):
     assert code == 0
 
     payload = json.loads(capsys.readouterr().out)
-    assert payload["stage"] == "M0"
+    assert payload["stage"] == "M4"     # el hito del harness, no del formato
     assert payload["suite"]["case_count"] == 3
     assert payload["suite"]["category_counts"]["negative_control"] == 1
     assert len(payload["observations"]) == 3
@@ -87,7 +87,8 @@ def test_suite_invalida_sale_con_codigo_2(tmp_path, capsys):
 
 
 def test_subcomandos_pendientes_no_fingen_existir(capsys):
-    for name in ("report", "gate", "diff"):
+    # `report` ya existe desde M4 y salio de esta lista.
+    for name in ("gate", "diff"):
         assert main([name]) == 2
         assert "todavia no existe" in capsys.readouterr().err
 

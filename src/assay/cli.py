@@ -8,13 +8,13 @@ import sys
 
 from . import __version__
 from .adapter import build_adapter
+from .report import ReportError, aggregate, load_run, render, resolve_suite
 from .run import run_suite, write_run
 from .suite import SuiteError, load_suite
 
 # Subcomandos especificados pero todavia no implementados. Se declaran con el hito que
 # los trae para que `assay --help` sea el estado real del proyecto y no una promesa.
 PENDING = {
-    "report": "M4 — reporte con desglose por categoria",
     "gate": "M5 — gate de CI que falla el build ante una regresion",
     "diff": "M6 — comparar dos corridas y nombrar la categoria que se movio",
 }
@@ -59,6 +59,63 @@ def _cmd_run(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_report(args: argparse.Namespace) -> int:
+    try:
+        run = load_run(args.run)
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"no se pudo leer la corrida: {exc}", file=sys.stderr)
+        return 2
+    try:
+        suite = resolve_suite(run, suite_path=args.suite)
+        filas = aggregate(run, suite, k=args.k)
+    except ReportError as exc:
+        print(f"no se puede reportar — {exc}", file=sys.stderr)
+        return 2
+    except SuiteError as exc:
+        print(f"suite invalida — {exc}", file=sys.stderr)
+        return 2
+
+    if args.json:
+        payload = {
+            "suite": run["suite"],
+            "system": run["system"],
+            "k": args.k,
+            "categories": {
+                cat: {
+                    "n": f.n,
+                    "errors": f.errores,
+                    f"recall_at_{args.k}": None if cat == "negative_control" else _mean(f.recall),
+                    "mrr": None if cat == "negative_control" else _mean(f.rr),
+                    f"precision_at_{args.k}": (
+                        None if cat == "negative_control" else _mean(f.precision)
+                    ),
+                    "checks": {
+                        n: {
+                            "passed": r.aciertos,
+                            "verifiable": r.n_verificable,
+                            "total": r.n_total,
+                            "rate": r.value,
+                        }
+                        for n, r in sorted(f.checks.items())
+                        if r.n_total
+                    },
+                }
+                for cat, f in filas.items()
+            },
+        }
+        json.dump(payload, sys.stdout, indent=2, ensure_ascii=False)
+        sys.stdout.write("\n")
+    else:
+        print(render(run, filas, k=args.k))
+    return 0
+
+
+def _mean(values):
+    from .metrics import mean
+
+    return mean(values)
+
+
 def _cmd_pending(name: str) -> int:
     print(f"`assay {name}` todavia no existe — llega en {PENDING[name]}", file=sys.stderr)
     return 2
@@ -84,6 +141,13 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--timeout", type=float, default=60.0, help="timeout por pregunta (s)")
     run.add_argument("--quiet", action="store_true", help="sin progreso en stderr")
     run.set_defaults(func=_cmd_run)
+
+    report = sub.add_parser("report", help="reporte con desglose por categoria")
+    report.add_argument("run", help="archivo JSON de una corrida")
+    report.add_argument("--suite", help="ruta a la suite si se movio desde la corrida")
+    report.add_argument("--k", type=int, default=5, help="k de recall@k y precision@k")
+    report.add_argument("--json", action="store_true", help="salida JSON en vez de tabla")
+    report.set_defaults(func=_cmd_report)
 
     for name, milestone in PENDING.items():
         p = sub.add_parser(name, help=f"[{milestone}]")

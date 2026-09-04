@@ -111,6 +111,16 @@ def check_grounded(case: Case, response: Response) -> CheckResult:
     Sin el texto de los chunks no se puede verificar, y en ese caso da `None`: decir
     "no fundamentado" porque el sistema no expone sus chunks seria culparlo de algo que
     no se midio.
+
+    **Los numeros y codigos que ya estaban en la pregunta estan exentos.** Groundedness
+    pregunta si el sistema *introdujo* un dato sin respaldo; un dato que escribio el
+    usuario no lo introdujo el sistema. Sin esta exencion, contestar "el A516 de 15 mm no
+    requiere precalentamiento" falla porque el "15" no esta en la tabla — y repetir el
+    enunciado no es alucinar. (Encontrado al llenar el reporte de M4.)
+
+    El control negativo no se escapa por esta puerta: si preguntan por el perno M30, el
+    `M30` queda exento pero cualquier torque que invente sigue teniendo que estar en el
+    chunk, y de la abstencion se ocupa `check_abstention`, que es su check.
     """
     if response.abstained:
         return CheckResult("grounded", None, "se abstuvo: no hay nada que fundamentar")
@@ -128,9 +138,17 @@ def check_grounded(case: Case, response: Response) -> CheckResult:
     numeros = extract_numbers(response.answer)
     codigos = extract_codes(response.answer)
 
-    num_huerfanos = [t.raw for t in numeros if not contains_number(corpus, t.raw)]
+    # Exencion por enunciado: lo que ya venia en la pregunta no lo introdujo el sistema.
+    num_pregunta = {t.canonical for t in extract_numbers(case.question)}
+    cod_pregunta = set(extract_codes(case.question))
+
+    num_huerfanos = [
+        t.raw
+        for t in numeros
+        if t.canonical not in num_pregunta and not contains_number(corpus, t.raw)
+    ]
     cod_corpus = set(extract_codes(corpus))
-    cod_huerfanos = [c for c in codigos if c not in cod_corpus]
+    cod_huerfanos = [c for c in codigos if c not in cod_pregunta and c not in cod_corpus]
 
     huerfanos = num_huerfanos + cod_huerfanos
     if not numeros and not codigos:
@@ -144,6 +162,7 @@ def check_grounded(case: Case, response: Response) -> CheckResult:
         {
             "numeros_en_respuesta": [t.raw for t in numeros],
             "codigos_en_respuesta": codigos,
+            "exentos_por_venir_en_la_pregunta": sorted(num_pregunta | cod_pregunta),
             "sin_respaldo": huerfanos,
         },
     )

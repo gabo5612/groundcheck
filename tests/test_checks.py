@@ -296,3 +296,77 @@ def test_un_nsn_inventado_no_pasa_groundedness():
 
     mal = evaluate(c, respuesta("El NSN es 9150-00-292-9999.", text=chunk, doc="TM", page=126, rev=None))
     assert mal["grounded"].passed is False
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Reglas 4 y exención por enunciado — los dos falsos negativos que encontró M4
+# ─────────────────────────────────────────────────────────────────────────────
+@pytest.mark.parametrize(
+    "texto,esperado",
+    [
+        ("1) Notificar. 2) Abrir QS-1.", []),
+        ("1. Primero  2. Segundo", []),
+        ("| (3) NATIONAL STOCK NUMBER |", []),
+        ("3 pasadas en cruz", ["3"]),          # un numero que afirma SI cuenta
+        ("720 +/- 30 N.m", ["720", "30"]),
+    ],
+)
+def test_los_marcadores_de_lista_no_son_numeros(texto, esperado):
+    """Regla 4: un sistema que numera sus pasos no debe fallar groundedness por numerar."""
+    assert [t.raw for t in extract_numbers(texto)] == esperado
+
+
+def test_un_procedimiento_numerado_esta_fundamentado():
+    c = Case(id="loto", question="¿Cuál es el procedimiento LOTO?", category="procedimental",
+             gold_sources=(GoldSource(doc_id="D", pages=(1,)),))
+    chunk = "Notificar a produccion y detener la linea.\nAbrir el seccionador QS-1."
+    r = evaluate(c, respuesta("1) Notificar a produccion y detener la linea. 2) Abrir el "
+                              "seccionador QS-1.", text=chunk, doc="D", page=1, rev=None))
+    assert r["grounded"].passed is True
+
+
+def test_un_numero_que_viene_en_la_pregunta_esta_exento():
+    """Repetir el enunciado no es alucinar.
+
+    La pregunta trae "15 mm"; la tabla habla de "hasta 20" y "mas de 20". Sin la exención,
+    la respuesta correcta fallaría por citar el espesor que preguntó el usuario.
+    """
+    c = Case(
+        id="delgado",
+        question="¿Hay que precalentar el A516 Gr.70 de 15 mm de espesor?",
+        category="factual_lookup",
+        gold_sources=(GoldSource(doc_id="D", pages=(1,)),),
+    )
+    chunk = "| A516 Gr.70 | hasta 20 | ninguno |\n| A106 Gr.B | cualquiera | 80 |"
+    r = evaluate(c, respuesta("El A516 Gr.70 de 15 mm no requiere precalentamiento.",
+                              text=chunk, doc="D", page=1, rev=None))
+    assert r["grounded"].passed is True
+    assert "15" in r["grounded"].evidence["exentos_por_venir_en_la_pregunta"]
+
+
+def test_la_exencion_no_deja_pasar_un_numero_inventado():
+    c = Case(
+        id="delgado",
+        question="¿Hay que precalentar el A516 Gr.70 de 15 mm?",
+        category="factual_lookup",
+        gold_sources=(GoldSource(doc_id="D", pages=(1,)),),
+    )
+    chunk = "| A516 Gr.70 | hasta 20 | ninguno |"
+    # El 15 esta exento; el 240 no, y no esta en el chunk.
+    r = evaluate(c, respuesta("El A516 Gr.70 de 15 mm requiere 240 C.",
+                              text=chunk, doc="D", page=1, rev=None))
+    assert r["grounded"].passed is False
+    assert r["grounded"].evidence["sin_respaldo"] == ["240"]
+
+
+def test_el_control_negativo_no_se_escapa_por_la_exencion():
+    """Preguntan por el M30: el `M30` queda exento, pero de la alucinación se ocupa
+    `check_abstention`, que es su check. La división de trabajo importa."""
+    c = Case(id="m30", question="¿Cuál es el par de apriete del perno M30 del cabezal?",
+             category="negative_control", must_abstain=True,
+             gold_sources=(GoldSource(doc_id="D", pages=(1,)),))
+    chunk = "| M24 cabezal | 8.8 | 720 +/- 30 |\n| M16 tapa | 8.8 | 190 +/- 10 |"
+    r = evaluate(c, respuesta("El par del M30 es 720 +/- 30 N.m.", text=chunk, doc="D",
+                              page=1, rev=None))
+    assert r["grounded"].passed is True            # el 720 esta literal en la tabla
+    assert r["abstention_correct"].passed is False  # y acá se lo atrapa

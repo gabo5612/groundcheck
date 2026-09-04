@@ -16,12 +16,13 @@ from . import __version__
 from .adapter import Adapter
 from .schema import Observation, RunRecord, Suite
 
-STAGE = "M0"
+STAGE = "M4"
 
 STAGE_NOTES = [
-    "M0: la corrida guarda observaciones crudas. Las metricas de retrieval (M1) y los "
-    "checks deterministas de generacion (M2) todavia no existen: por eso este JSON no "
-    "trae ni un numero de calidad. Una celda vacia es honesta; un cero no lo seria.",
+    "Una corrida guarda observaciones crudas y NINGUNA metrica, por diseno. Las metricas "
+    "de retrieval y los checks deterministas se derivan despues con `assay report`, que "
+    "verifica el sha256 del golden set antes de reportar. Asi una corrida vieja se puede "
+    "re-evaluar con checks nuevos, y nadie confunde el dato con el juicio sobre el dato.",
 ]
 
 

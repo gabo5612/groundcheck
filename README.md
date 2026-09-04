@@ -10,7 +10,7 @@ determinista, ningún modelo juzgando a otro modelo**.
 > *assay* = ensayo metalúrgico, el análisis que determina qué contiene realmente una
 > muestra. Es literalmente lo que hace esta herramienta.
 
-## Estado: M3 de 8
+## Estado: M4 de 8
 
 | Hito | Qué trae | Estado |
 |---|---|---|
@@ -18,7 +18,7 @@ determinista, ningún modelo juzgando a otro modelo**.
 | **M1** | recall@k, MRR, precision@k | ✅ |
 | **M2** | Checks deterministas de generación | ✅ |
 | **M3** | Golden set v1 (20 preguntas, 20% controles negativos) | ✅ |
-| M4 | Reporte con desglose por categoría | ⬜ |
+| **M4** | Reporte con desglose por categoría | ✅ |
 | M5 | Gate de CI | ⬜ |
 | M6 | `assay diff` | ⬜ |
 | M7 | LLM-judge opcional (reporta, no bloquea) | ⬜ |
@@ -43,8 +43,40 @@ python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 .venv/bin/assay run --suite suites/anvil.yaml --system http://localhost:8080/api/ask --out runs/
 ```
 
-`report`, `gate` y `diff` están declarados en `--help` con el hito que los trae, y salen
-con código 2 en vez de fingir que existen.
+```bash
+.venv/bin/assay report runs/2026-09-04T19-02-31Z.json --k 5     # tabla por categoría
+.venv/bin/assay report runs/….json --json                       # el mismo desglose en JSON
+```
+
+`gate` y `diff` están declarados en `--help` con el hito que los trae, y salen con código 2
+en vez de fingir que existen.
+
+## El reporte por categoría
+
+Un número global ("78% de exactitud") no sirve para decidir nada. El desglose nombra **qué
+arreglar**:
+
+```
+  categoria                  n      recall@5         MRR      prec@5      grounded    abstencion
+  ──────────────────────────────────────────────────────────────────────────────────────────────
+  factual_lookup             8      1.00 (8)    1.00 (8)    0.23 (8)    0.88 (7/8)    1.00 (8/8)
+  alfanumerico_exacto        4      1.00 (4)    1.00 (4)    0.20 (4)    1.00 (4/4)    1.00 (4/4)
+  procedimental              4      1.00 (4)    1.00 (4)    0.40 (4)    1.00 (3/3)    1.00 (4/4)
+  negative_control           4           n/a         n/a         n/a    1.00 (2/2)    0.50 (2/4)   ← el que importa
+```
+
+*(Corrida contra el sistema guionado de `tests/fixtures/`, no contra un RAG real — el
+reporte lo dice en su encabezado.)*
+
+Tres decisiones que sostienen la tabla:
+
+1. **El reporte re-carga el golden set y compara su sha256 contra el de la corrida. Si no
+   coincide, se niega a reportar.** Sin eso, el fracaso silencioso está a un paso: correr el
+   eval, ver que sale mal, ablandar el set, y reportar el mismo JSON como si nada.
+2. **Cada celda lleva su denominador.** `0.88 (7/8)` no es lo mismo que `1.00 (2/2)`, y un
+   promedio sin `n` es una opinión con decimales.
+3. **El encabezado dice qué sistema se midió.** Una tabla linda de una corrida contra un
+   mock, sin esa línea, termina capturada en un portfolio como si fuera una medición real.
 
 ## El contrato del adaptador
 
