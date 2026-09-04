@@ -9,6 +9,13 @@ responses:
       - doc_id: LAM-2-MAINT
         revision: D
         page: 147
+    # `retrieved` en orden de ranking. El chunk de oro (p147) llega tercero: recall@3
+    # lo encuentra, recall@1 no, y precision@3 = 1/3. Guionado así a propósito para que
+    # el reporte de M4 no salga con todo en 1.0, que no probaría nada.
+    retrieved:
+      - {doc_id: LAM-2-MAINT, page: 12, chunk_id: "maint-012-a"}
+      - {doc_id: LAM-2-MAINT, page: 150, chunk_id: "maint-150-a"}
+      - {doc_id: LAM-2-MAINT, page: 147, chunk_id: "maint-147-b", revision: D}
     abstained: false
 
   # FALLA A PROPÓSITO: contesta con 950, que es otra fila de la tabla. Es exactamente el
@@ -19,10 +26,19 @@ responses:
       - doc_id: LAM-2-ALARMS
         revision: B
         page: 12
+    # Recuperó el chunk correcto en el rank 1 y AUN ASI contestó mal. Esa combinación es
+    # la que separa un problema de retrieval de uno de generación: sin `retrieved` en el
+    # contrato, este caso se diagnosticaría como "falló la búsqueda", que es falso.
+    retrieved:
+      - {doc_id: LAM-2-ALARMS, page: 12, chunk_id: "alarms-012-a", revision: B}
     abstained: false
 
   # Control negativo respondido bien: se abstiene.
   "¿Cuál es el torque del perno M30 del cabezal del laminador 2?":
     answer: null
     citations: []
+    # Recuperó chunks parecidos (el M24 de al lado) y aun así se abstuvo. Eso es lo
+    # correcto: recuperar algo no obliga a responder.
+    retrieved:
+      - {doc_id: LAM-2-MAINT, page: 147, chunk_id: "maint-147-b", revision: D}
     abstained: true

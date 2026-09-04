@@ -58,11 +58,22 @@ def _as_str_tuple(where: str, key: str, value: Any) -> tuple[str, ...]:
     return tuple(out)
 
 
-def _parse_source(where: str, raw: Any) -> GoldSource | None:
+def _parse_sources(where: str, raw: Any) -> tuple[GoldSource, ...]:
+    """Acepta un mapa o una lista de mapas (necesario para `multi_documento`)."""
     if raw is None:
-        return None
+        return ()
+    if isinstance(raw, dict):
+        return (_parse_one_source(where, raw),)
+    if isinstance(raw, list):
+        if not raw:
+            _fail(where, "`gold_source` es una lista vacia — quitala o completala")
+        return tuple(_parse_one_source(where, item) for item in raw)
+    _fail(where, "`gold_source` tiene que ser un mapa o una lista de mapas")
+
+
+def _parse_one_source(where: str, raw: Any) -> GoldSource:
     if not isinstance(raw, dict):
-        _fail(where, "`gold_source` tiene que ser un mapa")
+        _fail(where, "cada `gold_source` tiene que ser un mapa")
     unknown = set(raw) - SOURCE_KEYS
     if unknown:
         _fail(where, f"claves desconocidas en `gold_source`: {sorted(unknown)}")
@@ -128,6 +139,14 @@ def _parse_case(index: int, raw: Any) -> Case:
     gold_numbers = _as_str_tuple(where, "gold_numbers", raw.get("gold_numbers"))
     forbidden = _as_str_tuple(where, "forbidden_numbers", raw.get("forbidden_numbers"))
 
+    sources = _parse_sources(where, raw.get("gold_source"))
+    if category == "multi_documento" and len({s.doc_id for s in sources}) < 2:
+        _fail(
+            where,
+            "`multi_documento` con menos de dos `doc_id` distintos no prueba sintesis "
+            "entre fuentes — o agrega la otra fuente, o cambia la categoria",
+        )
+
     overlap = set(gold_numbers) & set(forbidden)
     if overlap:
         _fail(where, f"{sorted(overlap)} esta en `gold_numbers` y en `forbidden_numbers` a la vez")
@@ -142,7 +161,7 @@ def _parse_case(index: int, raw: Any) -> Case:
         gold_answer=gold_answer,
         gold_numbers=gold_numbers,
         forbidden_numbers=forbidden,
-        gold_source=_parse_source(where, raw.get("gold_source")),
+        gold_sources=_parse_sources(where, raw.get("gold_source")),
     )
 
 

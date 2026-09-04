@@ -25,8 +25,9 @@ def test_carga_la_suite_de_humo():
     caso = next(c for c in suite.cases if c.id == "torque-m24-88")
     assert caso.gold_numbers == ("680", "30")
     assert caso.forbidden_numbers == ("950", "190")
-    assert caso.gold_source.revision == "D"
-    assert caso.gold_source.pages == (147,)
+    assert caso.gold_sources[0].revision == "D"
+    assert caso.gold_sources[0].pages == (147,)
+    assert caso.targets() == (("LAM-2-MAINT", (147,)),)
 
 
 def test_el_sha_cambia_si_cambia_un_byte(tmp_path):
@@ -111,4 +112,38 @@ def test_id_duplicado_es_error(tmp_path):
         "  - id: x\n    question: q2\n    category: factual_lookup\n"
     )
     with pytest.raises(SuiteError, match="id duplicado"):
+        load_suite(write(tmp_path, body))
+
+
+def test_gold_source_acepta_una_lista_para_multi_documento(tmp_path):
+    body = (
+        "cases:\n  - id: x\n    question: q\n    category: multi_documento\n"
+        "    gold_source:\n"
+        "      - {doc_id: WPS-014, pages: [2]}\n"
+        "      - {doc_id: ITP-CLIENTE, pages: [9, 10]}\n"
+    )
+    suite = load_suite(write(tmp_path, body))
+    assert suite.cases[0].targets() == (
+        ("WPS-014", (2,)),
+        ("ITP-CLIENTE", (9, 10)),
+    )
+
+
+def test_multi_documento_con_una_sola_fuente_es_error(tmp_path):
+    # Con un solo doc_id no mide sintesis entre fuentes, que es lo unico que esa
+    # categoria existe para medir.
+    body = (
+        "cases:\n  - id: x\n    question: q\n    category: multi_documento\n"
+        "    gold_source: {doc_id: WPS-014, pages: [2]}\n"
+    )
+    with pytest.raises(SuiteError, match="sintesis entre fuentes"):
+        load_suite(write(tmp_path, body))
+
+
+def test_lista_de_gold_source_vacia_es_error(tmp_path):
+    body = (
+        "cases:\n  - id: x\n    question: q\n    category: factual_lookup\n"
+        "    gold_source: []\n"
+    )
+    with pytest.raises(SuiteError, match="lista vacia"):
         load_suite(write(tmp_path, body))

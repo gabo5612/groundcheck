@@ -55,6 +55,7 @@ class MockAdapter:
         return Response(
             answer=raw.get("answer"),
             citations=tuple(raw.get("citations") or ()),
+            retrieved=tuple(raw.get("retrieved") or ()),
             abstained=bool(raw.get("abstained", raw.get("answer") is None)),
             latency_ms=0,
         )
@@ -77,6 +78,7 @@ class HttpAdapter:
         question_field: str = "question",
         answer_field: str = "answer",
         citations_field: str = "citations",
+        retrieved_field: str = "retrieved",
         abstained_field: str = "abstained",
     ):
         self.target = url
@@ -84,6 +86,7 @@ class HttpAdapter:
         self._qf = question_field
         self._af = answer_field
         self._cf = citations_field
+        self._rf = retrieved_field
         self._absf = abstained_field
 
     def ask(self, question: str) -> Response:
@@ -109,6 +112,10 @@ class HttpAdapter:
         # Si el sistema no reporta abstencion explicita, se infiere de la ausencia de
         # respuesta. Se deja anotado porque la tasa de abstencion es la metrica mas
         # importante del set y conviene saber si vino declarada o inferida.
+        retrieved = body.get(self._rf) or []
+        if not isinstance(retrieved, list):
+            raise ValueError(f"`{self._rf}` deberia ser una lista, vino {type(retrieved).__name__}")
+
         abstained = body.get(self._absf)
         if abstained is None:
             abstained = answer is None or (isinstance(answer, str) and not answer.strip())
@@ -116,6 +123,7 @@ class HttpAdapter:
         return Response(
             answer=answer,
             citations=tuple(c if isinstance(c, dict) else {"raw": c} for c in citations),
+            retrieved=tuple(r if isinstance(r, dict) else {"raw": r} for r in retrieved),
             abstained=bool(abstained),
             latency_ms=latency_ms,
         )

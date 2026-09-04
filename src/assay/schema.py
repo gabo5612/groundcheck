@@ -45,7 +45,14 @@ class Case:
     gold_answer: str | None = None
     gold_numbers: tuple[str, ...] = ()
     forbidden_numbers: tuple[str, ...] = ()
-    gold_source: GoldSource | None = None
+    # Plural: un caso `multi_documento` tiene la respuesta repartida entre varias
+    # fuentes, y con un solo `gold_source` esa categoria — 10% del set segun §3 del
+    # contexto — no se puede medir. El YAML acepta un mapa o una lista de mapas.
+    gold_sources: tuple[GoldSource, ...] = ()
+
+    def targets(self) -> tuple[tuple[str, tuple[int, ...]], ...]:
+        """Objetivos de oro como `(doc_id, paginas)`, el formato que consume `metrics`."""
+        return tuple((src.doc_id, src.pages) for src in self.gold_sources)
 
 
 @dataclass(frozen=True)
@@ -72,6 +79,14 @@ class Response:
 
     answer: str | None
     citations: tuple[dict[str, Any], ...] = ()
+    # `retrieved` != `citations`. Lo recuperado es lo que entro al contexto; lo citado es
+    # lo que el sistema eligio mostrar. Las metricas de retrieval (recall@k, MRR,
+    # precision@k) se calculan sobre lo PRIMERO; la exactitud de cita, sobre lo segundo.
+    # Confundirlos mide otra cosa y da un numero mas alto: un sistema puede citar bien
+    # el unico chunk bueno de veinte y aparentar precision perfecta.
+    # Vacio significa "el sistema no lo expone" -> las metricas de retrieval quedan en
+    # `None`, no en cero.
+    retrieved: tuple[dict[str, Any], ...] = ()
     abstained: bool = False
     latency_ms: int | None = None
 

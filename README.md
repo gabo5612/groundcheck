@@ -10,12 +10,12 @@ determinista, ningún modelo juzgando a otro modelo**.
 > *assay* = ensayo metalúrgico, el análisis que determina qué contiene realmente una
 > muestra. Es literalmente lo que hace esta herramienta.
 
-## Estado: M0 de 8
+## Estado: M1 de 8
 
 | Hito | Qué trae | Estado |
 |---|---|---|
 | **M0** | Esqueleto del CLI + formato de suite + adaptadores | ✅ |
-| M1 | recall@k, MRR, precision@k | ⬜ |
+| **M1** | recall@k, MRR, precision@k | ✅ |
 | M2 | Checks deterministas de generación | ⬜ |
 | M3 | Golden set v1 (20 preguntas, 20% controles negativos) | ⬜ |
 | M4 | Reporte con desglose por categoría | ⬜ |
@@ -24,7 +24,7 @@ determinista, ningún modelo juzgando a otro modelo**.
 | M7 | LLM-judge opcional (reporta, no bloquea) | ⬜ |
 | M8 | Golden set v2 (50 preguntas, es/en) | ⬜ |
 
-**M0 no emite ni una métrica, a propósito.** Una corrida guarda sólo lo observado: qué se
+**Una corrida no emite ni una métrica, a propósito.** Una corrida guarda sólo lo observado: qué se
 preguntó y qué contestó el sistema. Hay un test (`test_M0_no_emite_ni_una_metrica`) que
 falla si alguien agrega un promedio "provisional" a la salida — un cero de relleno en un
 JSON de evals se copia a un README y deja de ser provisional.
@@ -48,8 +48,17 @@ con código 2 en vez de fingir que existen.
 
 ## El contrato del adaptador
 
-`assay` habla con cualquier sistema que exponga `pregunta → {answer, citations[], abstained}`.
-No sabe nada de ningún RAG por dentro, y por eso sirve para medir cualquiera.
+`assay` habla con cualquier sistema que exponga
+`pregunta → {answer, citations[], retrieved[], abstained}`. No sabe nada de ningún RAG por
+dentro, y por eso sirve para medir cualquiera.
+
+**`retrieved` no es lo mismo que `citations`, y la diferencia es el diagnóstico entero.**
+Lo recuperado es lo que entró al contexto; lo citado es lo que el sistema eligió mostrar.
+recall@k, MRR y precision@k se calculan sobre lo primero. En la suite de humo hay un caso
+que recupera el chunk correcto en el rank 1 y **aun así contesta mal**: sin `retrieved` en
+el contrato, ese caso se diagnosticaría como fallo de búsqueda cuando es fallo de
+generación. Si un sistema no expone lo recuperado, las métricas de retrieval quedan en
+`n/a` — no en cero.
 
 - `mock:archivo.yaml` — sistema guionado a mano. **No responde bien solo:** el guion
   incluye un fallo deliberado (contesta con un número de otra fila de la tabla), porque
@@ -70,6 +79,10 @@ No sabe nada de ningún RAG por dentro, y por eso sirve para medir cualquiera.
   must_abstain: false
 ```
 
+`gold_source` acepta también una **lista** de fuentes, porque un caso `multi_documento`
+tiene la respuesta repartida y con una sola fuente esa categoría —10% del set— no se puede
+medir. Un `multi_documento` con menos de dos `doc_id` distintos falla la carga.
+
 **El validador es severo a propósito.** En un harness de evals un typo no da error: apaga
 un check en silencio. Si alguien escribe `forbiden_numbers`, se pierde justo la
 comprobación que atrapa el bug de la tabla partida, el reporte sigue verde, y la métrica
@@ -89,3 +102,18 @@ parece". Así está construido el grueso de los RAG que existen.
 
 El **20% de controles negativos** es lo que casi todos olvidan: sin ellos, un sistema que
 siempre responde con seguridad puntúa perfecto.
+
+## Tres convenciones de las métricas, escritas para que nadie las cambie sin darse cuenta
+
+Son las decisiones que, tomadas en silencio, hacen que dos corridas dejen de ser
+comparables. Cada una tiene un test que se rompe si alguien la cambia.
+
+1. **`precision@k` divide por `k`**, no por la cantidad recuperada — la definición estándar
+   de IR. Un sistema que devuelve 3 chunks con k=5 se lleva el castigo, y es correcto:
+   pidió menos contexto del disponible. La cantidad recuperada queda registrada para que
+   cualquiera recalcule con la otra convención.
+2. **`recall@k` cuenta objetivos cubiertos, no items relevantes.** Dos copias del mismo
+   chunk cubren un objetivo, no dos. Contar items daría 1.0 donde corresponde 0.5, y ese
+   es el bug clásico que infla el número.
+3. **Los controles negativos devuelven `None`, no cero**, y el promedio ignora los `None`.
+   Un cero se promedia y arrastra la media con un dato que no existe.

@@ -37,12 +37,17 @@ def test_el_guion_del_mock_llega_tal_cual():
     assert por_id["torque-m30-ausente"].response.answer is None
 
 
-def test_M0_no_emite_ni_una_metrica():
-    """La regla de §8 del contexto maestro, como test.
+def test_la_corrida_no_emite_ni_una_metrica():
+    """La regla de §8 del contexto maestro, como test — invariante, no solo de M0.
 
-    Si alguien agrega un promedio "provisional" a la salida de M0, esto se cae. Un cero
+    Una corrida guarda observaciones; las metricas se derivan en el reporte (M4). Si
+    alguien agrega un promedio "provisional" a la salida de `run`, esto se cae. Un cero
     o un 0.5 de relleno en un JSON de evals es peor que una celda vacia: se copia a un
     README y deja de ser provisional.
+
+    Nota: `metrics` como palabra tambien esta prohibida acá, y el modulo `assay.metrics`
+    existe desde M1 — la prohibicion es sobre la SALIDA de una corrida, no sobre el
+    codigo que calcula despues.
     """
     suite = load_suite(SUITE)
     record = run_suite(suite, build_adapter(f"mock:{MOCK}"))
@@ -85,3 +90,43 @@ def test_subcomandos_pendientes_no_fingen_existir(capsys):
     for name in ("report", "gate", "diff"):
         assert main([name]) == 2
         assert "todavia no existe" in capsys.readouterr().err
+
+
+def test_lo_recuperado_llega_a_la_observacion():
+    """`retrieved` es lo que hace medibles recall@k, MRR y precision@k (M1).
+
+    El caso `alarma-e114` es el que importa: recuperó el chunk correcto en el rank 1 y
+    aun así contestó mal. Sin `retrieved` en el contrato ese caso se diagnosticaría como
+    fallo de búsqueda, cuando es fallo de generación.
+    """
+    suite = load_suite(SUITE)
+    record = run_suite(suite, build_adapter(f"mock:{MOCK}"))
+    por_id = {o.case_id: o for o in record.observations}
+
+    assert len(por_id["torque-m24-88"].response.retrieved) == 3
+    assert por_id["torque-m24-88"].response.retrieved[2]["page"] == 147
+
+    recuperado = por_id["alarma-e114"].response.retrieved
+    assert len(recuperado) == 1 and recuperado[0]["doc_id"] == "LAM-2-ALARMS"
+
+
+def test_metricas_calculadas_desde_una_corrida_real():
+    """Puente M0 -> M1: las métricas se derivan de una corrida, no se guardan en ella."""
+    from assay.metrics import RetrievedItem, precision_at_k, recall_at_k, reciprocal_rank
+
+    suite = load_suite(SUITE)
+    record = run_suite(suite, build_adapter(f"mock:{MOCK}"))
+    por_id = {o.case_id: o for o in record.observations}
+    caso = next(c for c in suite.cases if c.id == "torque-m24-88")
+
+    items = [
+        RetrievedItem.from_raw(r, i)
+        for i, r in enumerate(por_id["torque-m24-88"].response.retrieved, start=1)
+    ]
+    objetivos = caso.targets()
+
+    # El chunk de oro está en el rank 3, calculado a mano sobre el guion del mock.
+    assert recall_at_k(items, objetivos, 1) == 0.0
+    assert recall_at_k(items, objetivos, 3) == 1.0
+    assert precision_at_k(items, objetivos, 3) == 1 / 3
+    assert reciprocal_rank(items, objetivos) == 1 / 3
