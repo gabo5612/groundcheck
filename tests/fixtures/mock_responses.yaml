@@ -1,0 +1,28 @@
+# Sistema guionado. Cada respuesta está escrita a mano para producir un caso concreto,
+# incluida una que FALLA a propósito: sin un fallo real en el guion, los checks de M2 se
+# escribirían contra datos que siempre pasan, que es la forma más fácil de escribir un
+# eval que no mide nada.
+responses:
+  "¿Cuál es el torque de apriete del perno M24 grado 8.8 del cabezal del laminador 2?":
+    answer: "El torque de apriete es 680 ± 30 N·m."
+    citations:
+      - doc_id: LAM-2-MAINT
+        revision: D
+        page: 147
+    abstained: false
+
+  # FALLA A PROPÓSITO: contesta con 950, que es otra fila de la tabla. Es exactamente el
+  # bug de la tabla partida, y `forbidden_numbers` tiene que atraparlo en M2.
+  "¿Qué es la alarma E-114?":
+    answer: "La alarma E-114 corresponde a un torque de 950 N·m en el cojinete."
+    citations:
+      - doc_id: LAM-2-ALARMS
+        revision: B
+        page: 12
+    abstained: false
+
+  # Control negativo respondido bien: se abstiene.
+  "¿Cuál es el torque del perno M30 del cabezal del laminador 2?":
+    answer: null
+    citations: []
+    abstained: true

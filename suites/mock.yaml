@@ -1,0 +1,38 @@
+# Suite de humo del propio harness — NO es el golden set (ese es M3).
+# Existe para ejercitar el formato completo y el camino mock, y para que los tests del
+# harness no dependan de que haya un RAG levantado.
+name: mock-humo
+cases:
+  - id: torque-m24-88
+    question: "¿Cuál es el torque de apriete del perno M24 grado 8.8 del cabezal del laminador 2?"
+    category: factual_lookup
+    difficulty: easy
+    languages: [es]
+    gold_answer: "680 ± 30 N·m"
+    gold_numbers: ["680", "30"]
+    # Las otras filas de la misma tabla: si aparecen, el sistema cruzó filas.
+    forbidden_numbers: ["950", "190"]
+    gold_source:
+      doc_id: LAM-2-MAINT
+      revision: D
+      pages: [147]
+    must_abstain: false
+
+  - id: alarma-e114
+    question: "¿Qué es la alarma E-114?"
+    category: alfanumerico_exacto
+    difficulty: medium
+    languages: [es]
+    gold_answer: "Sobretemperatura del cojinete de salida"
+    gold_source:
+      doc_id: LAM-2-ALARMS
+      revision: B
+      pages: [12]
+
+  - id: torque-m30-ausente
+    question: "¿Cuál es el torque del perno M30 del cabezal del laminador 2?"
+    category: negative_control
+    difficulty: easy
+    languages: [es]
+    gold_answer: null
+    must_abstain: true

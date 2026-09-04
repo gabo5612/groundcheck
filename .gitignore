@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+# Las corridas ad-hoc no se versionan. Lo que si se versiona son los baselines
+# (baselines/), porque el gate de CI compara contra ellos.
+runs/
