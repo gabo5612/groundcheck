@@ -9,6 +9,13 @@ responses:
       - doc_id: LAM-2-MAINT
         revision: D
         page: 147
+        # El texto del chunk citado es lo que hace verificable `grounded`. Sin esto el
+        # check no puede correr y devuelve n/a — no "no fundamentado".
+        text: |
+          Tabla 7.3 — Pares de apriete del cabezal.
+          M20 grado 8.8: 400 ± 20 N·m
+          M24 grado 8.8: 680 ± 30 N·m
+          M27 grado 10.9: 950 ± 40 N·m
     # `retrieved` en orden de ranking. El chunk de oro (p147) llega tercero: recall@3
     # lo encuentra, recall@1 no, y precision@3 = 1/3. Guionado así a propósito para que
     # el reporte de M4 no salga con todo en 1.0, que no probaría nada.
@@ -26,6 +33,11 @@ responses:
       - doc_id: LAM-2-ALARMS
         revision: B
         page: 12
+        # El chunk NO menciona ningún 950: el número de la respuesta es inventado, y
+        # `grounded` tiene que dar falso sobre este caso.
+        text: |
+          E-114 — Sobretemperatura del cojinete de salida.
+          Umbral de disparo 95 °C. Rearme manual desde el pupitre.
     # Recuperó el chunk correcto en el rank 1 y AUN ASI contestó mal. Esa combinación es
     # la que separa un problema de retrieval de uno de generación: sin `retrieved` en el
     # contrato, este caso se diagnosticaría como "falló la búsqueda", que es falso.

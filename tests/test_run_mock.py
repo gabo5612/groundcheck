@@ -130,3 +130,32 @@ def test_metricas_calculadas_desde_una_corrida_real():
     assert recall_at_k(items, objetivos, 3) == 1.0
     assert precision_at_k(items, objetivos, 3) == 1 / 3
     assert reciprocal_rank(items, objetivos) == 1 / 3
+
+
+def test_checks_sobre_una_corrida_real_del_mock():
+    """M2 end to end: el guion del mock produce un `grounded: false` verdadero.
+
+    `alarma-e114` contesta "un torque de 950 N·m" citando un chunk que habla de
+    temperatura y no menciona ningún 950. Es un número inventado, y sale de una corrida
+    real del CLI, no de un objeto armado en el test.
+    """
+    from assay.checks import evaluate
+
+    suite = load_suite(SUITE)
+    record = run_suite(suite, build_adapter(f"mock:{MOCK}"))
+    casos = {c.id: c for c in suite.cases}
+    por_id = {o.case_id: o for o in record.observations}
+
+    bien = evaluate(casos["torque-m24-88"], por_id["torque-m24-88"].response)
+    assert bien["grounded"].passed is True
+    assert bien["gold_numbers_present"].passed is True
+    assert bien["forbidden_numbers_absent"].passed is True
+    assert bien["citation_hits_gold"].passed is True
+
+    mal = evaluate(casos["alarma-e114"], por_id["alarma-e114"].response)
+    assert mal["grounded"].passed is False
+    assert "950" in mal["grounded"].evidence["sin_respaldo"]
+
+    negativo = evaluate(casos["torque-m30-ausente"], por_id["torque-m30-ausente"].response)
+    assert negativo["abstention_correct"].passed is True
+    assert negativo["grounded"].passed is None      # se abstuvo: nada que fundamentar

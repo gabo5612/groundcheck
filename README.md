@@ -10,13 +10,13 @@ determinista, ningún modelo juzgando a otro modelo**.
 > *assay* = ensayo metalúrgico, el análisis que determina qué contiene realmente una
 > muestra. Es literalmente lo que hace esta herramienta.
 
-## Estado: M1 de 8
+## Estado: M2 de 8
 
 | Hito | Qué trae | Estado |
 |---|---|---|
 | **M0** | Esqueleto del CLI + formato de suite + adaptadores | ✅ |
 | **M1** | recall@k, MRR, precision@k | ✅ |
-| M2 | Checks deterministas de generación | ⬜ |
+| **M2** | Checks deterministas de generación | ✅ |
 | M3 | Golden set v1 (20 preguntas, 20% controles negativos) | ⬜ |
 | M4 | Reporte con desglose por categoría | ⬜ |
 | M5 | Gate de CI | ⬜ |
@@ -102,6 +102,53 @@ parece". Así está construido el grueso de los RAG que existen.
 
 El **20% de controles negativos** es lo que casi todos olvidan: sin ellos, un sistema que
 siempre responde con seguridad puntúa perfecto.
+
+## Los seis checks deterministas
+
+Ningún modelo participa: son operaciones de conjuntos y comparaciones de strings
+normalizados.
+
+| Check | Qué verifica |
+|---|---|
+| `gold_numbers_present` | Cada número de oro aparece literal en la respuesta |
+| `forbidden_numbers_absent` | Ningún número de otra fila de la tabla se colό |
+| `grounded` | Cada número **y código** de la respuesta está en un chunk citado |
+| `citation_hits_gold` | Alguna cita apunta al documento/página de oro |
+| `abstention_correct` | En los controles negativos, se abstuvo |
+| `revision_current` | Citó la revisión vigente, no una supersedida |
+
+### Tres estados, y la diferencia entre los dos últimos es el punto
+
+`True` se verificó y pasa · `False` se verificó y **falla** · `None` **no se pudo
+verificar** — falta el insumo (el sistema no expuso el texto del chunk, o el caso no
+define números de oro).
+
+`None` no cuenta ni como fallo ni como éxito. Un harness que convierte "no pude verificar"
+en "falló" te manda a arreglar cosas que no estaban rotas; uno que lo convierte en "pasa"
+publica un número que no midió nada.
+
+### Por qué `forbidden_numbers` no es redundante con `grounded`
+
+Si la respuesta trae `950` cuando debía traer `680`, y la tabla completa está en el chunk
+citado, **`grounded` pasa** — el 950 está literal ahí. Es `forbidden_numbers` el que
+nombra la falla: cruzó filas. Ese es el bug de la tabla partida, y un solo check no lo ve.
+
+### La trampa de los códigos alfanuméricos
+
+`E-114` **no aporta el número 114**, y `M24` no aporta el 24. Si se extrajeran como
+números, la respuesta *correcta* "la alarma E-114 indica sobretemperatura" daría
+`grounded: false` porque "114" no aparece suelto en el chunk. Ese falso negativo es peor
+que no medir: te hace "arreglar" un sistema que estaba bien. Los códigos se extraen y se
+comparan como códigos.
+
+La comparación es canónica, no por substring: buscar `30` como substring lo encontraría
+dentro de `1300` y daría por fundamentado un número que nunca estuvo.
+
+### El detector de abstención es una lista de frases, no un modelo
+
+Es deliberado (§8 del spec): lista visible y auditable, más revisión manual de los
+desacuerdos. Un clasificador sería una caja negra dentro del propio verificador, y la
+regla de la casa es que ningún modelo juzga a otro modelo.
 
 ## Tres convenciones de las métricas, escritas para que nadie las cambie sin darse cuenta
 
