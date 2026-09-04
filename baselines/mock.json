@@ -1,0 +1,203 @@
+{
+  "suite": {
+    "name": "anvil-v1",
+    "path": "suites/anvil-v1.yaml",
+    "sha256": "7ab5bff813a5f34123ced00f8045486313c6a0143ff109cc68a0a160a5f3d1f3",
+    "case_count": 20,
+    "category_counts": {
+      "factual_lookup": 8,
+      "alfanumerico_exacto": 4,
+      "procedimental": 4,
+      "multi_documento": 0,
+      "negative_control": 4,
+      "revision_supersedida": 0
+    }
+  },
+  "system": {
+    "kind": "mock",
+    "target": "tests/fixtures/mock_anvil.yaml"
+  },
+  "k": 5,
+  "categories": {
+    "factual_lookup": {
+      "n": 8,
+      "errors": 0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "precision_at_5": 0.225,
+      "checks": {
+        "abstention_correct": {
+          "passed": 8,
+          "verifiable": 8,
+          "total": 8,
+          "rate": 1.0
+        },
+        "citation_hits_gold": {
+          "passed": 8,
+          "verifiable": 8,
+          "total": 8,
+          "rate": 1.0
+        },
+        "forbidden_numbers_absent": {
+          "passed": 5,
+          "verifiable": 7,
+          "total": 8,
+          "rate": 0.7142857142857143
+        },
+        "gold_numbers_present": {
+          "passed": 5,
+          "verifiable": 6,
+          "total": 8,
+          "rate": 0.8333333333333334
+        },
+        "grounded": {
+          "passed": 7,
+          "verifiable": 8,
+          "total": 8,
+          "rate": 0.875
+        },
+        "revision_current": {
+          "passed": 6,
+          "verifiable": 7,
+          "total": 8,
+          "rate": 0.8571428571428571
+        }
+      }
+    },
+    "alfanumerico_exacto": {
+      "n": 4,
+      "errors": 0,
+      "recall_at_5": 1.0,
+      "mrr": 0.8125,
+      "precision_at_5": 0.2,
+      "checks": {
+        "abstention_correct": {
+          "passed": 4,
+          "verifiable": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "citation_hits_gold": {
+          "passed": 4,
+          "verifiable": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "forbidden_numbers_absent": {
+          "passed": 0,
+          "verifiable": 0,
+          "total": 4,
+          "rate": null
+        },
+        "gold_numbers_present": {
+          "passed": 0,
+          "verifiable": 0,
+          "total": 4,
+          "rate": null
+        },
+        "grounded": {
+          "passed": 4,
+          "verifiable": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "revision_current": {
+          "passed": 4,
+          "verifiable": 4,
+          "total": 4,
+          "rate": 1.0
+        }
+      }
+    },
+    "procedimental": {
+      "n": 4,
+      "errors": 0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "precision_at_5": 0.4,
+      "checks": {
+        "abstention_correct": {
+          "passed": 4,
+          "verifiable": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "citation_hits_gold": {
+          "passed": 4,
+          "verifiable": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "forbidden_numbers_absent": {
+          "passed": 0,
+          "verifiable": 0,
+          "total": 4,
+          "rate": null
+        },
+        "gold_numbers_present": {
+          "passed": 0,
+          "verifiable": 0,
+          "total": 4,
+          "rate": null
+        },
+        "grounded": {
+          "passed": 3,
+          "verifiable": 3,
+          "total": 4,
+          "rate": 1.0
+        },
+        "revision_current": {
+          "passed": 4,
+          "verifiable": 4,
+          "total": 4,
+          "rate": 1.0
+        }
+      }
+    },
+    "negative_control": {
+      "n": 4,
+      "errors": 0,
+      "recall_at_5": null,
+      "mrr": null,
+      "precision_at_5": null,
+      "checks": {
+        "abstention_correct": {
+          "passed": 2,
+          "verifiable": 4,
+          "total": 4,
+          "rate": 0.5
+        },
+        "citation_hits_gold": {
+          "passed": 4,
+          "verifiable": 4,
+          "total": 4,
+          "rate": 1.0
+        },
+        "forbidden_numbers_absent": {
+          "passed": 0,
+          "verifiable": 0,
+          "total": 4,
+          "rate": null
+        },
+        "gold_numbers_present": {
+          "passed": 0,
+          "verifiable": 0,
+          "total": 4,
+          "rate": null
+        },
+        "grounded": {
+          "passed": 2,
+          "verifiable": 2,
+          "total": 4,
+          "rate": 1.0
+        },
+        "revision_current": {
+          "passed": 4,
+          "verifiable": 4,
+          "total": 4,
+          "rate": 1.0
+        }
+      }
+    }
+  }
+}

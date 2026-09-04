@@ -1,0 +1,480 @@
+# GENERADO por tests/fixtures/degrade_topk.py — no editar a mano.
+# El mismo sistema guionado que mock_anvil.yaml, con top-k = 1.
+# Unica diferencia: `retrieved` truncado. Respuestas y citas identicas, para que
+# la caida que detecte el gate sea atribuible a una sola causa.
+responses:
+  ¿Cuál es el par de apriete del perno M24 del cabezal en grado 8.8?:
+    answer: El par de apriete del perno M24 del cabezal en grado 8.8 es 720 +/- 30
+      N.m, en secuencia cruzada, 3 pasadas.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1902'
+      text: 'Tabla 4-7. Pares de apriete del cabezal
+
+
+        | Perno       |   Grado | Torque (N.m)   | Secuencia          |
+
+        |-------------|---------|----------------|--------------------|
+
+        | M24 cabezal |     8.8 | 720 +/- 30     | cruzada, 3 pasadas |
+
+        | M24 cabezal |    10.9 | 950 +/- 40     | cruzada, 3 pasadas |
+
+        | M16 tapa    |     8.8 | 190 +/- 10     | cruzada, 2 pasadas |'
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1902'
+  ¿Qué par de apriete corresponde al M24 del cabezal en grado 10.9?:
+    answer: El par de apriete del M24 del cabezal es 720 +/- 30 N.m.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1902'
+      text: 'Tabla 4-7. Pares de apriete del cabezal
+
+
+        | Perno       |   Grado | Torque (N.m)   | Secuencia          |
+
+        |-------------|---------|----------------|--------------------|
+
+        | M24 cabezal |     8.8 | 720 +/- 30     | cruzada, 3 pasadas |
+
+        | M24 cabezal |    10.9 | 950 +/- 40     | cruzada, 3 pasadas |
+
+        | M16 tapa    |     8.8 | 190 +/- 10     | cruzada, 2 pasadas |'
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1902'
+  ¿Cuál es el torque del perno M16 de la tapa?:
+    answer: El perno M16 de la tapa lleva 190 +/- 10 N.m, cruzada, 2 pasadas.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: B
+      chunk_id: '1902'
+      text: 'Tabla 4-7. Pares de apriete del cabezal
+
+
+        | Perno       |   Grado | Torque (N.m)   | Secuencia          |
+
+        |-------------|---------|----------------|--------------------|
+
+        | M24 cabezal |     8.8 | 720 +/- 30     | cruzada, 3 pasadas |
+
+        | M24 cabezal |    10.9 | 950 +/- 40     | cruzada, 3 pasadas |
+
+        | M16 tapa    |     8.8 | 190 +/- 10     | cruzada, 2 pasadas |'
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1902'
+  ¿Qué precalentamiento requiere el A516 Gr.70 en espesores mayores a 20 mm?:
+    answer: Para el A516 Gr.70 en espesores mayores a 20 mm se requiere precalentamiento
+      a 95 C.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1907'
+      text: '| Material   | Espesor (mm)   | Precalentamiento (C)   |
+
+        |------------|----------------|------------------------|
+
+        | A516 Gr.70 | hasta 20       | ninguno                |
+
+        | A516 Gr.70 | mas de 20      | 95                     |
+
+        | A106 Gr.B  | cualquiera     | 80                     |'
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1907'
+  ¿Cuál es la temperatura de precalentamiento para el A106 Gr.B?:
+    answer: El A106 Gr.B requiere precalentamiento a 80 C para cualquier espesor.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1907'
+      text: '| Material   | Espesor (mm)   | Precalentamiento (C)   |
+
+        |------------|----------------|------------------------|
+
+        | A516 Gr.70 | hasta 20       | ninguno                |
+
+        | A516 Gr.70 | mas de 20      | 95                     |
+
+        | A106 Gr.B  | cualquiera     | 80                     |'
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1907'
+  ¿Hay que precalentar el A516 Gr.70 de 15 mm de espesor?:
+    answer: El A516 Gr.70 de 15 mm requiere precalentamiento a 80 C.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1907'
+      text: '| Material   | Espesor (mm)   | Precalentamiento (C)   |
+
+        |------------|----------------|------------------------|
+
+        | A516 Gr.70 | hasta 20       | ninguno                |
+
+        | A516 Gr.70 | mas de 20      | 95                     |
+
+        | A106 Gr.B  | cualquiera     | 80                     |'
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1907'
+  ¿En cuántas pasadas se aprietan los pernos del cabezal y con qué patrón?:
+    answer: Los pernos del cabezal se aprietan en patron cruzado, en 3 pasadas.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1902'
+      text: 'Tabla 4-7. Pares de apriete del cabezal
+
+
+        | Perno       |   Grado | Torque (N.m)   | Secuencia          |
+
+        |-------------|---------|----------------|--------------------|
+
+        | M24 cabezal |     8.8 | 720 +/- 30     | cruzada, 3 pasadas |
+
+        | M24 cabezal |    10.9 | 950 +/- 40     | cruzada, 3 pasadas |
+
+        | M16 tapa    |     8.8 | 190 +/- 10     | cruzada, 2 pasadas |'
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1901'
+      text: Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que
+        las superficies esten libres de cascarilla.
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1902'
+  ¿Qué versión de Leaflet usa el sitio de TrailKit?:
+    answer: El sitio de TrailKit usa Leaflet 1.9.5.
+    abstained: false
+    citations:
+    - doc_id: 3f328ec9cc2bb39f
+      page: 3
+      chunk_id: '1804'
+      text: '| Capa | Tecnología |
+
+        |---|---|
+
+        | Framework | Next.js 14.2.29 (App Router) |
+
+        | Lenguaje | TypeScript |
+
+        | UI | React 18 |
+
+        | Base de datos | Supabase (PostgreSQL) |
+
+        | Autenticación | NextAuth 4.24 |
+
+        | Mapas | Leaflet 1.9.4 |
+
+        | Emails | Resend |
+
+        | Pagos | PayPal + NowPayments (cripto) |
+
+        | Hosting | Vercel |
+
+        | Analítica | Vercel Analytics, Speed Insights, GTM, GA4 |
+
+        | Hash de contraseñas | bcryptjs |'
+    retrieved:
+    - doc_id: 3f328ec9cc2bb39f
+      page: 3
+      chunk_id: '1804'
+  ¿Qué significa la alarma E-114 del horno de induccion?:
+    answer: 'La alarma E-114 indica sobretemperatura de bobina. Accion: parar y purgar
+      refrigerante.'
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1905'
+      text: '| Codigo   | Descripcion                       | Accion                                  |
+
+        |----------|-----------------------------------|-----------------------------------------|
+
+        | E-114    | Sobretemperatura de bobina        | Parar y purgar refrigerante             |
+
+        | E-115    | Perdida de caudal de refrigerante | Verificar bomba P-3                     |
+
+        | E-141    | Fallo de aislamiento              | Bloquear equipo, avisar a
+        mantenimiento |'
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1905'
+  Ante la alarma E-115, ¿qué hay que verificar?:
+    answer: Ante la alarma E-115 hay que verificar la bomba P-3, por perdida de caudal
+      de refrigerante.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1905'
+      text: '| Codigo   | Descripcion                       | Accion                                  |
+
+        |----------|-----------------------------------|-----------------------------------------|
+
+        | E-114    | Sobretemperatura de bobina        | Parar y purgar refrigerante             |
+
+        | E-115    | Perdida de caudal de refrigerante | Verificar bomba P-3                     |
+
+        | E-141    | Fallo de aislamiento              | Bloquear equipo, avisar a
+        mantenimiento |'
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1905'
+  What is the National Stock Number for LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW)?:
+    answer: The National Stock Number is 9150-00-292-9689.
+    abstained: false
+    citations:
+    - doc_id: 75b2742de4b3a05f
+      page: 126
+      revision: A
+      chunk_id: '1155'
+      text: 'Table 1.  Expendable and Durable Items List.
+
+
+        |              9 | C           | 9150-00-292-9689                  | LUBRICATING
+        OIL, WEAPONS LOW TEMPERATURE (LAW) MIL-PRF-14107 (81349)                   |
+        QT        |
+
+        |             10 | C           | 9150-00-935-6597                  | LUBRICATING
+        OIL, SEMIFLUID (LSA) 2 oz (59.15 ml) bottle QPL-46000 (81349)              |
+        BT        |
+
+        |             11 | C           | 9150-00-889-3522                  | LUBRICATING
+        OIL, SEMIFLUID (LSA) 4 oz (118.30 ml) bottle 8436793 (19204)               |
+        BT        |
+
+        |             12 | F           | 9150-00-687-4241                  | LUBRICATING
+        OIL, SEMIFLUID (LSA) 1 qt (0.95 ml) QPL-46000 (81349)                      |
+        QT        |
+
+        |             13 | F           | 9150-00-753-4686                  | LUBRICATING
+        OIL, SEMIFLUID (LSA) 1 gal (3.79 l) QPL-46000 (81349)                      |
+        GL        |
+
+        |             14 | F           | 3990-00-795-3595                  | BOX,
+        TOTE 1211 (94453)                                                                 |
+        EA        |
+
+        |             15 | C           | 7920-00-205-1711                  | RAG,
+        WIPING cotton 50 lb (22.68 kg) bale 7920-00-205-1711 (64067)                      |
+        BE        |'
+    retrieved:
+    - doc_id: 75b2742de4b3a05f
+      page: 1
+      chunk_id: '1'
+  ¿Qué seccionador se abre en el bloqueo de la linea de colada?:
+    answer: Se abre el seccionador principal QS-1, verificando ausencia de tension.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1910'
+      text: Abrir el seccionador principal QS-1 y verificar ausencia de tension.
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1910'
+  ¿Cuál es el procedimiento de bloqueo y etiquetado (LOTO) de la linea de colada?:
+    answer: 1) Notificar a produccion y detener la linea. 2) Abrir el seccionador
+      principal QS-1 y verificar ausencia de tension. 3) Colocar candado personal
+      y tarjeta de identificacion en QS-1. 4) Purgar la linea hidraulica y confirmar
+      presion cero en el manometro PI-7. 5) Verificar enclavamiento antes de iniciar
+      la intervencion.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1909'
+      text: Notificar a produccion y detener la linea.
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1910'
+      text: Abrir el seccionador principal QS-1 y verificar ausencia de tension.
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1911'
+      text: Colocar candado personal y tarjeta de identificacion en QS-1.
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1912'
+      text: Purgar la linea hidraulica y confirmar presion cero en el manometro PI-7.
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1913'
+      text: Verificar enclavamiento antes de iniciar la intervencion.
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1909'
+  ¿Dónde se confirma la presion cero durante el LOTO de la linea de colada?:
+    answer: La presion cero se confirma en el manometro PI-7, despues de purgar la
+      linea hidraulica.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1912'
+      text: Purgar la linea hidraulica y confirmar presion cero en el manometro PI-7.
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1912'
+  ¿Cuál es el primer paso del LOTO de la linea de colada?:
+    answer: El primer paso es abrir el seccionador principal QS-1 y verificar ausencia
+      de tension.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1910'
+      text: Abrir el seccionador principal QS-1 y verificar ausencia de tension.
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1910'
+  Antes de montar el cabezal, ¿qué hay que verificar en las superficies?:
+    answer: Hay que verificar que las superficies esten libres de cascarilla.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1901'
+      text: Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que
+        las superficies esten libres de cascarilla.
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1901'
+  ¿Cuál es el par de apriete del perno M30 del cabezal?:
+    answer: El par de apriete del perno M30 del cabezal es 720 +/- 30 N.m.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1902'
+      text: 'Tabla 4-7. Pares de apriete del cabezal
+
+
+        | Perno       |   Grado | Torque (N.m)   | Secuencia          |
+
+        |-------------|---------|----------------|--------------------|
+
+        | M24 cabezal |     8.8 | 720 +/- 30     | cruzada, 3 pasadas |
+
+        | M24 cabezal |    10.9 | 950 +/- 40     | cruzada, 3 pasadas |
+
+        | M16 tapa    |     8.8 | 190 +/- 10     | cruzada, 2 pasadas |'
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1902'
+  ¿Qué torque lleva el M24 del cabezal en grado 12.9?:
+    answer: No encontre el par de apriete para el M24 en grado 12.9 en la documentacion.
+      La Tabla 4-7 solo especifica los grados 8.8 y 10.9.
+    abstained: true
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1902'
+      text: 'Tabla 4-7. Pares de apriete del cabezal
+
+
+        | Perno       |   Grado | Torque (N.m)   | Secuencia          |
+
+        |-------------|---------|----------------|--------------------|
+
+        | M24 cabezal |     8.8 | 720 +/- 30     | cruzada, 3 pasadas |
+
+        | M24 cabezal |    10.9 | 950 +/- 40     | cruzada, 3 pasadas |
+
+        | M16 tapa    |     8.8 | 190 +/- 10     | cruzada, 2 pasadas |'
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1902'
+  ¿Qué indica la alarma E-200 del horno de induccion?:
+    answer: No figura ninguna alarma E-200 en la documentacion del horno de induccion.
+    abstained: true
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1905'
+      text: '| Codigo   | Descripcion                       | Accion                                  |
+
+        |----------|-----------------------------------|-----------------------------------------|
+
+        | E-114    | Sobretemperatura de bobina        | Parar y purgar refrigerante             |
+
+        | E-115    | Perdida de caudal de refrigerante | Verificar bomba P-3                     |
+
+        | E-141    | Fallo de aislamiento              | Bloquear equipo, avisar a
+        mantenimiento |'
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1905'
+  ¿Qué precalentamiento requiere el A312 antes de soldar?:
+    answer: El A312 requiere precalentamiento a 80 C antes de soldar.
+    abstained: false
+    citations:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      revision: F
+      chunk_id: '1907'
+      text: '| Material   | Espesor (mm)   | Precalentamiento (C)   |
+
+        |------------|----------------|------------------------|
+
+        | A516 Gr.70 | hasta 20       | ninguno                |
+
+        | A516 Gr.70 | mas de 20      | 95                     |
+
+        | A106 Gr.B  | cualquiera     | 80                     |'
+    retrieved:
+    - doc_id: c0d5f95f636967d1
+      page: 1
+      chunk_id: '1907'

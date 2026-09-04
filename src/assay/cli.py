@@ -5,9 +5,12 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 
 from . import __version__
 from .adapter import build_adapter
+from .gate import DEFAULT_MAX_REGRESSION, GateError, compare
+from .gate import render as render_gate
 from .report import ReportError, aggregate, load_run, render, resolve_suite
 from .run import run_suite, write_run
 from .suite import SuiteError, load_suite
@@ -15,7 +18,6 @@ from .suite import SuiteError, load_suite
 # Subcomandos especificados pero todavia no implementados. Se declaran con el hito que
 # los trae para que `assay --help` sea el estado real del proyecto y no una promesa.
 PENDING = {
-    "gate": "M5 — gate de CI que falla el build ante una regresion",
     "diff": "M6 — comparar dos corridas y nombrar la categoria que se movio",
 }
 
@@ -75,34 +77,8 @@ def _cmd_report(args: argparse.Namespace) -> int:
         print(f"suite invalida — {exc}", file=sys.stderr)
         return 2
 
+    payload = _report_payload(filas, run, args.k)
     if args.json:
-        payload = {
-            "suite": run["suite"],
-            "system": run["system"],
-            "k": args.k,
-            "categories": {
-                cat: {
-                    "n": f.n,
-                    "errors": f.errores,
-                    f"recall_at_{args.k}": None if cat == "negative_control" else _mean(f.recall),
-                    "mrr": None if cat == "negative_control" else _mean(f.rr),
-                    f"precision_at_{args.k}": (
-                        None if cat == "negative_control" else _mean(f.precision)
-                    ),
-                    "checks": {
-                        n: {
-                            "passed": r.aciertos,
-                            "verifiable": r.n_verificable,
-                            "total": r.n_total,
-                            "rate": r.value,
-                        }
-                        for n, r in sorted(f.checks.items())
-                        if r.n_total
-                    },
-                }
-                for cat, f in filas.items()
-            },
-        }
         json.dump(payload, sys.stdout, indent=2, ensure_ascii=False)
         sys.stdout.write("\n")
     else:
@@ -110,10 +86,79 @@ def _cmd_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def _report_payload(filas, run, k):
+    return {
+        "suite": run["suite"],
+        "system": run["system"],
+        "k": k,
+        "categories": {
+            cat: {
+                "n": f.n,
+                "errors": f.errores,
+                f"recall_at_{k}": None if cat == "negative_control" else _mean(f.recall),
+                "mrr": None if cat == "negative_control" else _mean(f.rr),
+                f"precision_at_{k}": None if cat == "negative_control" else _mean(f.precision),
+                "checks": {
+                    n: {
+                        "passed": r.aciertos,
+                        "verifiable": r.n_verificable,
+                        "total": r.n_total,
+                        "rate": r.value,
+                    }
+                    for n, r in sorted(f.checks.items())
+                    if r.n_total
+                },
+            }
+            for cat, f in filas.items()
+        },
+    }
+
+
 def _mean(values):
     from .metrics import mean
 
     return mean(values)
+
+
+def _cmd_gate(args: argparse.Namespace) -> int:
+    """Devuelve 0 si pasa, 1 si hay regresion (falla el build), 2 si no se pudo comparar."""
+    try:
+        baseline = json.loads(Path(args.against).read_text("utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"no se pudo leer el baseline: {exc}", file=sys.stderr)
+        return 2
+
+    actual = _payload_de(args.run, args.suite, args.k)
+    if isinstance(actual, int):
+        return actual
+
+    try:
+        hallazgos = compare(baseline, actual, max_regression=args.max_regression)
+    except GateError as exc:
+        print(f"no se puede comparar — {exc}", file=sys.stderr)
+        return 2
+
+    print(render_gate(hallazgos, max_regression=args.max_regression))
+    return 1 if any(f.blocks for f in hallazgos) else 0
+
+
+def _payload_de(run_path: str, suite_path: str | None, k: int):
+    """Carga una corrida y devuelve su reporte JSON, o un codigo de salida si falla."""
+    try:
+        run = load_run(run_path)
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"no se pudo leer la corrida: {exc}", file=sys.stderr)
+        return 2
+    try:
+        suite = resolve_suite(run, suite_path=suite_path)
+        filas = aggregate(run, suite, k=k)
+    except ReportError as exc:
+        print(f"no se puede reportar — {exc}", file=sys.stderr)
+        return 2
+    except SuiteError as exc:
+        print(f"suite invalida — {exc}", file=sys.stderr)
+        return 2
+    return _report_payload(filas, run, k)
 
 
 def _cmd_pending(name: str) -> int:
@@ -148,6 +193,15 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument("--k", type=int, default=5, help="k de recall@k y precision@k")
     report.add_argument("--json", action="store_true", help="salida JSON en vez de tabla")
     report.set_defaults(func=_cmd_report)
+
+    gate = sub.add_parser("gate", help="falla el build si una metrica se degrado")
+    gate.add_argument("run", help="corrida a evaluar")
+    gate.add_argument("--against", required=True, help="baseline (salida de `report --json`)")
+    gate.add_argument("--max-regression", type=float, default=DEFAULT_MAX_REGRESSION,
+                      help=f"caida tolerada por metrica (default {DEFAULT_MAX_REGRESSION})")
+    gate.add_argument("--suite", help="ruta a la suite si se movio desde la corrida")
+    gate.add_argument("--k", type=int, default=5, help="tiene que coincidir con el baseline")
+    gate.set_defaults(func=_cmd_gate)
 
     for name, milestone in PENDING.items():
         p = sub.add_parser(name, help=f"[{milestone}]")

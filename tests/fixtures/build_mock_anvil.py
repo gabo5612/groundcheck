@@ -130,6 +130,24 @@ DOC_POR_CASO = {
     "version-leaflet-trailkit": TP,
 }
 
+# Ruido de retrieval: cuantos chunks NO relevantes se ponen ANTES del chunk de oro.
+#
+# Sin esto el mock traia el chunk correcto en el rank 1 en las 20 preguntas, o sea
+# retrieval perfecto: recall@5 = 1.00 en todas las categorias. Un fixture asi no puede
+# detectar NINGUNA regresion de retrieval, que es justo lo que el gate de M5 tiene que
+# demostrar. Los valores de abajo estan elegidos para que el chunk de oro caiga en rank 2
+# o 3 en algunos casos — como se comporta un RAG real — y para que bajar top-k a 1 destruya
+# el recall de esos casos.
+RUIDO = {
+    "torque-m24-grado-88": 2,        # oro en rank 3
+    "torque-m24-grado-109": 1,       # oro en rank 2
+    "precalentamiento-a516-espeso": 2,
+    "alarma-e114": 1,
+    "nsn-aceite-law": 3,             # documento de 117 paginas: mas ruido, realista
+    "loto-presion-cero": 1,
+    "seccionador-loto": 2,
+}
+
 
 def main(corpus_path: str) -> int:
     corpus = json.loads(Path(corpus_path).read_text("utf-8"))
@@ -179,8 +197,17 @@ def main(corpus_path: str) -> int:
                 lineas.append(f"        revision: {revision}")
             lineas.append(f"        chunk_id: \"{c['id']}\"")
             lineas.append(f"        text: {json.dumps(c['text'], ensure_ascii=False)}")
+        # Ruido antes del oro: chunks del mismo documento que no cubren el objetivo.
+        ids_citados = {c["id"] for c in citados}
+        paginas_oro = {p for src in caso.gold_sources for p in src.pages}
+        ruido = [
+            c for c in chunks
+            if c["doc"] == doc_id and c["id"] not in ids_citados
+            and not any(c["p0"] <= p <= c["p1"] for p in paginas_oro)
+        ][: RUIDO.get(case_id, 0)]
+
         lineas.append("    retrieved:")
-        for c in citados:
+        for c in ruido + citados:
             lineas.append(
                 f"      - {{doc_id: {doc_id}, page: {c['p0']}, chunk_id: \"{c['id']}\"}}"
             )

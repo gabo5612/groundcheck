@@ -10,7 +10,7 @@ determinista, ningún modelo juzgando a otro modelo**.
 > *assay* = ensayo metalúrgico, el análisis que determina qué contiene realmente una
 > muestra. Es literalmente lo que hace esta herramienta.
 
-## Estado: M4 de 8
+## Estado: M5 de 8
 
 | Hito | Qué trae | Estado |
 |---|---|---|
@@ -19,7 +19,7 @@ determinista, ningún modelo juzgando a otro modelo**.
 | **M2** | Checks deterministas de generación | ✅ |
 | **M3** | Golden set v1 (20 preguntas, 20% controles negativos) | ✅ |
 | **M4** | Reporte con desglose por categoría | ✅ |
-| M5 | Gate de CI | ⬜ |
+| **M5** | Gate de CI | ✅ |
 | M6 | `assay diff` | ⬜ |
 | M7 | LLM-judge opcional (reporta, no bloquea) | ⬜ |
 | M8 | Golden set v2 (50 preguntas, es/en) | ⬜ |
@@ -48,8 +48,44 @@ python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 .venv/bin/assay report runs/….json --json                       # el mismo desglose en JSON
 ```
 
-`gate` y `diff` están declarados en `--help` con el hito que los trae, y salen con código 2
-en vez de fingir que existen.
+```bash
+.venv/bin/assay report runs/….json --json > baselines/mock.json    # fijar un baseline
+.venv/bin/assay gate runs/nueva.json --against baselines/mock.json --max-regression 0.02
+```
+
+`diff` está declarado en `--help` con el hito que lo trae, y sale con código 2 en vez de
+fingir que existe.
+
+## El gate de CI
+
+Códigos de salida, que son el contrato con el CI: **0** pasa · **1** hay regresión (falla
+el build) · **2** no se pudo comparar.
+
+Inyectando la regresión más banal y más común de un RAG —bajar top-k a 1, "trae menos
+chunks, va más rápido"— el gate la nombra:
+
+```
+  REGRESIONES — bloquean el build
+    alfanumerico_exacto/recall_at_5: 1.000 → 0.750  · cayo 0.250, mas que el maximo tolerado 0.020
+    alfanumerico_exacto/mrr: 0.812 → 0.750          · cayo 0.062, …
+    procedimental/precision_at_5: 0.400 → 0.200     · cayo 0.200, …
+
+  ✗ el gate FALLA: 5 hallazgo(s) bloqueante(s)
+```
+
+Cuatro decisiones, cada una con test:
+
+1. **Se niega a comparar si el golden set cambió** (sha256) o si el `k` no coincide.
+   recall@1 contra recall@5 daría una "regresión" inventada por el parámetro.
+2. **Perder la capacidad de verificar es una regresión.** Si el baseline decía
+   `grounded 0.88 (7/8)` y ahora dice `n/a` porque el sistema dejó de exponer el texto de
+   sus chunks, el número no se mantuvo: desapareció. Es la degradación más silenciosa que
+   existe, y bloquea.
+3. **Una mejora nunca bloquea, pero se imprime** — un salto grande hacia arriba suele ser
+   un bug en el eval, no un milagro del sistema.
+4. **El CI prueba que el gate sirve.** Un gate que nunca falla es un adorno: el workflow le
+   pasa a propósito el sistema degradado y **exige** que salga con código 1. Si ese paso
+   algún día pasa, el gate se rompió.
 
 ## El reporte por categoría
 

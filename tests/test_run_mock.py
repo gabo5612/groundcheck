@@ -87,8 +87,8 @@ def test_suite_invalida_sale_con_codigo_2(tmp_path, capsys):
 
 
 def test_subcomandos_pendientes_no_fingen_existir(capsys):
-    # `report` ya existe desde M4 y salio de esta lista.
-    for name in ("gate", "diff"):
+    # `report` (M4) y `gate` (M5) ya existen y salieron de esta lista.
+    for name in ("diff",):
         assert main([name]) == 2
         assert "todavia no existe" in capsys.readouterr().err
 

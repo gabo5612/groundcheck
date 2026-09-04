@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: python -m pytest -q
+
+  # El gate corriendo de verdad. Si una metrica se degrada respecto de
+  # baselines/mock.json, este job sale con codigo 1 y el build falla.
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+
+      - name: correr la suite contra el sistema de referencia
+        run: |
+          assay run --suite suites/anvil-v1.yaml \
+                    --system mock:tests/fixtures/mock_anvil.yaml \
+                    --out runs/ --quiet
+
+      - name: gate contra el baseline
+        run: assay gate "$(ls -t runs/*.json | head -1)" --against baselines/mock.json
+
+      # Prueba que el gate SIRVE. Un gate que nunca falla es un adorno: aca se le pasa a
+      # proposito el sistema con top-k=1 y se exige que salga con codigo 1. Si algun dia
+      # este paso "pasa", el gate se rompio y hay que arreglarlo antes que nada.
+      - name: el gate tiene que detectar la regresion inyectada
+        run: |
+          assay run --suite suites/anvil-v1.yaml \
+                    --system mock:tests/fixtures/mock_anvil_topk1.yaml \
+                    --out runs-degradado/ --quiet
+          if assay gate "$(ls -t runs-degradado/*.json | head -1)" \
+                        --against baselines/mock.json; then
+            echo "::error::el gate NO detecto la regresion de top-k. El gate esta roto."
+            exit 1
+          fi
+          echo "ok: el gate detecto la regresion y habria fallado el build"

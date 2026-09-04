@@ -156,6 +156,9 @@ responses:
         chunk_id: "1155"
         text: "Table 1.  Expendable and Durable Items List.\n\n|              9 | C           | 9150-00-292-9689                  | LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW) MIL-PRF-14107 (81349)                   | QT        |\n|             10 | C           | 9150-00-935-6597                  | LUBRICATING OIL, SEMIFLUID (LSA) 2 oz (59.15 ml) bottle QPL-46000 (81349)              | BT        |\n|             11 | C           | 9150-00-889-3522                  | LUBRICATING OIL, SEMIFLUID (LSA) 4 oz (118.30 ml) bottle 8436793 (19204)               | BT        |\n|             12 | F           | 9150-00-687-4241                  | LUBRICATING OIL, SEMIFLUID (LSA) 1 qt (0.95 ml) QPL-46000 (81349)                      | QT        |\n|             13 | F           | 9150-00-753-4686                  | LUBRICATING OIL, SEMIFLUID (LSA) 1 gal (3.79 l) QPL-46000 (81349)                      | GL        |\n|             14 | F           | 3990-00-795-3595                  | BOX, TOTE 1211 (94453)                                                                 | EA        |\n|             15 | C           | 7920-00-205-1711                  | RAG, WIPING cotton 50 lb (22.68 kg) bale 7920-00-205-1711 (64067)                      | BE        |"
     retrieved:
+      - {doc_id: 75b2742de4b3a05f, page: 1, chunk_id: "1"}
+      - {doc_id: 75b2742de4b3a05f, page: 1, chunk_id: "2"}
+      - {doc_id: 75b2742de4b3a05f, page: 1, chunk_id: "3"}
       - {doc_id: 75b2742de4b3a05f, page: 126, chunk_id: "1155"}
 
   # seccionador-loto — correcta
