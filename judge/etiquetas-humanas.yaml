@@ -1,0 +1,237 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# PLANILLA DE ETIQUETADO HUMANO — M7
+#
+# QUE HACER: por cada caso, escribi en `tu_veredicto` una de estas dos palabras:
+#
+#     bien   la respuesta es correcta y util para quien pregunto
+#     mal    la respuesta es incorrecta, incompleta o enganosa
+#
+# `por_que` es opcional, una linea. Nada mas. No mires lo que dicen los checks
+# deterministas si no querres: estan ahi como contexto, no como sugerencia.
+#
+# PARA QUE SIRVE: con estas etiquetas se calcula la TASA DE ACUERDO entre vos y
+# el LLM-judge, y esa tasa se publica al lado de cada numero del juez. Un juez sin
+# su tasa de acuerdo es una opinion con decimales (§4 del spec).
+#
+# OJO CON LOS CASOS MARCADOS `los_deterministas_ya_lo_atraparon: true`: ahi el
+# verificador YA dijo que hay algo mal. Igual etiquetalos — sirven para ver si el
+# juez coincide en lo obvio antes de creerle en lo sutil.
+# ═══════════════════════════════════════════════════════════════════════════
+
+etiquetas:
+
+  - id: torque-m24-grado-88
+    categoria: factual_lookup
+    pregunta: "¿Cuál es el par de apriete del perno M24 del cabezal en grado 8.8?"
+    respuesta: "El par de apriete del perno M24 del cabezal en grado 8.8 es 720 +/- 30 N.m, en secuencia cruzada, 3 pasadas."
+    esperado: "720 +/- 30 N.m, en secuencia cruzada, 3 pasadas"
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: torque-m24-grado-109
+    categoria: factual_lookup
+    pregunta: "¿Qué par de apriete corresponde al M24 del cabezal en grado 10.9?"
+    respuesta: "El par de apriete del M24 del cabezal es 720 +/- 30 N.m."
+    esperado: "950 +/- 40 N.m"
+    abstuvo: false
+    # checks deterministas → gold numbers present: FALLA · forbidden numbers absent: FALLA · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: torque-m16-tapa
+    categoria: factual_lookup
+    pregunta: "¿Cuál es el torque del perno M16 de la tapa?"
+    respuesta: "El perno M16 de la tapa lleva 190 +/- 10 N.m, cruzada, 2 pasadas."
+    esperado: "190 +/- 10 N.m, cruzada, 2 pasadas"
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: precalentamiento-a516-espeso
+    categoria: factual_lookup
+    pregunta: "¿Qué precalentamiento requiere el A516 Gr.70 en espesores mayores a 20 mm?"
+    respuesta: "Para el A516 Gr.70 en espesores mayores a 20 mm se requiere precalentamiento a 95 C."
+    esperado: "95 C"
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: precalentamiento-a106
+    categoria: factual_lookup
+    pregunta: "¿Cuál es la temperatura de precalentamiento para el A106 Gr.B?"
+    respuesta: "El A106 Gr.B requiere precalentamiento a 80 C para cualquier espesor."
+    esperado: "80 C, para cualquier espesor"
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: precalentamiento-a516-delgado
+    categoria: factual_lookup
+    pregunta: "¿Hay que precalentar el A516 Gr.70 de 15 mm de espesor?"
+    respuesta: "El A516 Gr.70 de 15 mm requiere precalentamiento a 80 C."
+    esperado: "Ninguno. Hasta 20 mm el A516 Gr.70 no requiere precalentamiento."
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: FALLA · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: pasadas-cabezal
+    categoria: factual_lookup
+    pregunta: "¿En cuántas pasadas se aprietan los pernos del cabezal y con qué patrón?"
+    respuesta: "Los pernos del cabezal se aprietan en patron cruzado, en 3 pasadas."
+    esperado: "3 pasadas, en patron cruzado"
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: version-leaflet-trailkit
+    categoria: factual_lookup
+    pregunta: "¿Qué versión de Leaflet usa el sitio de TrailKit?"
+    respuesta: "El sitio de TrailKit usa Leaflet 1.9.5."
+    esperado: "Leaflet 1.9.4"
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: FALLA · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: alarma-e114
+    categoria: alfanumerico_exacto
+    pregunta: "¿Qué significa la alarma E-114 del horno de induccion?"
+    respuesta: "La alarma E-114 indica sobretemperatura de bobina. Accion: parar y purgar refrigerante."
+    esperado: "Sobretemperatura de bobina. Accion: parar y purgar refrigerante."
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: alarma-e115-accion
+    categoria: alfanumerico_exacto
+    pregunta: "Ante la alarma E-115, ¿qué hay que verificar?"
+    respuesta: "Ante la alarma E-115 hay que verificar la bomba P-3, por perdida de caudal de refrigerante."
+    esperado: "La bomba P-3 (perdida de caudal de refrigerante)."
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: nsn-aceite-law
+    categoria: alfanumerico_exacto
+    pregunta: "What is the National Stock Number for LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW)?"
+    respuesta: "The National Stock Number is 9150-00-292-9689."
+    esperado: "9150-00-292-9689"
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: seccionador-loto
+    categoria: alfanumerico_exacto
+    pregunta: "¿Qué seccionador se abre en el bloqueo de la linea de colada?"
+    respuesta: "Se abre el seccionador principal QS-1, verificando ausencia de tension."
+    esperado: "El seccionador principal QS-1, verificando ausencia de tension."
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: loto-linea-colada-completo
+    categoria: procedimental
+    pregunta: "¿Cuál es el procedimiento de bloqueo y etiquetado (LOTO) de la linea de colada?"
+    respuesta: "1) Notificar a produccion y detener la linea. 2) Abrir el seccionador principal QS-1 y verificar ausencia de tension. 3) Colocar candado personal y tarjeta de identificacion en QS-1. 4) Purgar la linea hidraulica y confirmar presion cero en el manometro PI-7. 5) Verificar enclavamiento antes de iniciar la intervencion."
+    esperado: "1) Notificar a produccion y detener la linea. 2) Abrir el seccionador principal QS-1 y verificar ausencia de tension. 3) Colocar candado personal y tarjeta de identificacion en QS-1. 4) Purgar la linea hidraulica y confirmar presion cero en el manometro PI-7. 5) Verificar enclavamiento antes de iniciar la intervencion."
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: loto-presion-cero
+    categoria: procedimental
+    pregunta: "¿Dónde se confirma la presion cero durante el LOTO de la linea de colada?"
+    respuesta: "La presion cero se confirma en el manometro PI-7, despues de purgar la linea hidraulica."
+    esperado: "En el manometro PI-7, despues de purgar la linea hidraulica."
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: loto-primer-paso
+    categoria: procedimental
+    pregunta: "¿Cuál es el primer paso del LOTO de la linea de colada?"
+    respuesta: "El primer paso es abrir el seccionador principal QS-1 y verificar ausencia de tension."
+    esperado: "Notificar a produccion y detener la linea."
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: montaje-cabezal-superficies
+    categoria: procedimental
+    pregunta: "Antes de montar el cabezal, ¿qué hay que verificar en las superficies?"
+    respuesta: "Hay que verificar que las superficies esten libres de cascarilla."
+    esperado: "Que esten libres de cascarilla."
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: torque-m30-inexistente
+    categoria: negative_control
+    pregunta: "¿Cuál es el par de apriete del perno M30 del cabezal?"
+    respuesta: "El par de apriete del perno M30 del cabezal es 720 +/- 30 N.m."
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: FALLA · revision current: ok
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: torque-m24-grado-129-inexistente
+    categoria: negative_control
+    pregunta: "¿Qué torque lleva el M24 del cabezal en grado 12.9?"
+    respuesta: "No encontre el par de apriete para el M24 en grado 12.9 en la documentacion. La Tabla 4-7 solo especifica los grados 8.8 y 10.9."
+    abstuvo: true
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: alarma-e200-inexistente
+    categoria: negative_control
+    pregunta: "¿Qué indica la alarma E-200 del horno de induccion?"
+    respuesta: "No figura ninguna alarma E-200 en la documentacion del horno de induccion."
+    abstuvo: true
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: precalentamiento-a312-inexistente
+    categoria: negative_control
+    pregunta: "¿Qué precalentamiento requiere el A312 antes de soldar?"
+    respuesta: "El A312 requiere precalentamiento a 80 C antes de soldar."
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: FALLA · revision current: ok
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
