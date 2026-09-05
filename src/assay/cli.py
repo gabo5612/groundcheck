@@ -9,6 +9,8 @@ from pathlib import Path
 
 from . import __version__
 from .adapter import build_adapter
+from .diff import DiffError, diff_runs
+from .diff import render as render_diff
 from .gate import DEFAULT_MAX_REGRESSION, GateError, compare
 from .gate import render as render_gate
 from .report import ReportError, aggregate, load_run, render, resolve_suite
@@ -17,9 +19,7 @@ from .suite import SuiteError, load_suite
 
 # Subcomandos especificados pero todavia no implementados. Se declaran con el hito que
 # los trae para que `assay --help` sea el estado real del proyecto y no una promesa.
-PENDING = {
-    "diff": "M6 — comparar dos corridas y nombrar la categoria que se movio",
-}
+PENDING: dict[str, str] = {}
 
 
 def _cmd_run(args: argparse.Namespace) -> int:
@@ -142,6 +142,27 @@ def _cmd_gate(args: argparse.Namespace) -> int:
     return 1 if any(f.blocks for f in hallazgos) else 0
 
 
+def _cmd_diff(args: argparse.Namespace) -> int:
+    try:
+        antes = load_run(args.antes)
+        despues = load_run(args.despues)
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"no se pudo leer una de las corridas: {exc}", file=sys.stderr)
+        return 2
+    try:
+        suite = resolve_suite(despues, suite_path=args.suite)
+        flips, movimiento = diff_runs(antes, despues, suite, k=args.k)
+    except (DiffError, ReportError) as exc:
+        print(f"no se puede comparar — {exc}", file=sys.stderr)
+        return 2
+    except SuiteError as exc:
+        print(f"suite invalida — {exc}", file=sys.stderr)
+        return 2
+
+    print(render_diff(antes, despues, flips, movimiento, suite, k=args.k))
+    return 0
+
+
 def _payload_de(run_path: str, suite_path: str | None, k: int):
     """Carga una corrida y devuelve su reporte JSON, o un codigo de salida si falla."""
     try:
@@ -202,6 +223,13 @@ def build_parser() -> argparse.ArgumentParser:
     gate.add_argument("--suite", help="ruta a la suite si se movio desde la corrida")
     gate.add_argument("--k", type=int, default=5, help="tiene que coincidir con el baseline")
     gate.set_defaults(func=_cmd_gate)
+
+    diff = sub.add_parser("diff", help="compara dos corridas y nombra que se movio")
+    diff.add_argument("antes", help="corrida de referencia")
+    diff.add_argument("despues", help="corrida nueva")
+    diff.add_argument("--suite", help="ruta a la suite si se movio desde las corridas")
+    diff.add_argument("--k", type=int, default=5)
+    diff.set_defaults(func=_cmd_diff)
 
     for name, milestone in PENDING.items():
         p = sub.add_parser(name, help=f"[{milestone}]")

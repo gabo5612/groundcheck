@@ -10,7 +10,7 @@ determinista, ningún modelo juzgando a otro modelo**.
 > *assay* = ensayo metalúrgico, el análisis que determina qué contiene realmente una
 > muestra. Es literalmente lo que hace esta herramienta.
 
-## Estado: M5 de 8
+## Estado: M6 de 8
 
 | Hito | Qué trae | Estado |
 |---|---|---|
@@ -20,7 +20,7 @@ determinista, ningún modelo juzgando a otro modelo**.
 | **M3** | Golden set v1 (20 preguntas, 20% controles negativos) | ✅ |
 | **M4** | Reporte con desglose por categoría | ✅ |
 | **M5** | Gate de CI | ✅ |
-| M6 | `assay diff` | ⬜ |
+| **M6** | `assay diff` | ✅ |
 | M7 | LLM-judge opcional (reporta, no bloquea) | ⬜ |
 | M8 | Golden set v2 (50 preguntas, es/en) | ⬜ |
 
@@ -53,8 +53,9 @@ python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 .venv/bin/assay gate runs/nueva.json --against baselines/mock.json --max-regression 0.02
 ```
 
-`diff` está declarado en `--help` con el hito que lo trae, y sale con código 2 en vez de
-fingir que existe.
+```bash
+.venv/bin/assay diff runs/antes.json runs/despues.json    # qué cambió y por qué
+```
 
 ## El gate de CI
 
@@ -194,6 +195,29 @@ existe *justo al lado* de datos que sí: el perno M30 en una tabla que solo tien
 M16; el M24 en **grado 12.9** cuando la tabla solo trae 8.8 y 10.9 (el perno existe, el
 grado no); la alarma `E-200` entre `E-114`, `E-115` y `E-141`; y el material A312, que es
 real en ASTM pero no está en esta documentación.
+
+## `gate` y `diff` — división de trabajo
+
+| | pregunta que responde | responde con |
+|---|---|---|
+| `gate` | ¿esto bloquea el build? | un código de salida |
+| `diff` | ¿qué cambió y **por qué**? | casos concretos |
+
+Un gate que dice *"recall@5 cayó 0.25"* no alcanza para arreglar nada. Lo accionable es
+**qué casos se dieron vuelta**:
+
+```
+  Retrieval que se movio, por categoria
+    ↓ alfanumerico_exacto/recall@5: 1.000 → 0.750
+
+  alfanumerico_exacto  (1 rompio)
+    · alarma-e114/grounded: ok → FALLA   [rompio]
+```
+
+`diff` distingue seis transiciones, y dos de ellas son las que un promedio no ve:
+`se_apago` (el check dejó de ser verificable — el número no bajó, **desapareció**) y
+`se_prendio`. Un caso que aparece o desaparece del set es **un** hallazgo, no seis: si no,
+agregar una pregunta inunda el diff y esconde las regresiones reales.
 
 ## Los seis checks deterministas
 

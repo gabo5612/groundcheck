@@ -87,8 +87,14 @@ def test_suite_invalida_sale_con_codigo_2(tmp_path, capsys):
 
 
 def test_subcomandos_pendientes_no_fingen_existir(capsys):
-    # `report` (M4) y `gate` (M5) ya existen y salieron de esta lista.
-    for name in ("diff",):
+    """Ya no queda ninguno: `run`, `report`, `gate` y `diff` existen desde M6.
+
+    El test se queda igual — si algun dia se declara un subcomando futuro en `--help`,
+    tiene que salir con codigo 2 en vez de fingir que funciona.
+    """
+    from assay.cli import PENDING
+
+    for name in PENDING:
         assert main([name]) == 2
         assert "todavia no existe" in capsys.readouterr().err
 

@@ -73,5 +73,13 @@ def write_run(record: RunRecord, out_dir: str | Path) -> Path:
     out.mkdir(parents=True, exist_ok=True)
     stamp = record.started_at.replace(":", "-").replace("+00:00", "Z")
     path = out / f"{stamp}.json"
+    # Dos corridas en el mismo segundo NO se pisan. El nombre tiene resolucion de
+    # segundos, y perder una corrida en silencio es peor que un nombre feo: se corre el
+    # baseline y la version nueva seguidas, y el diff compara una corrida contra si misma
+    # informando "sin cambios" — que es la mentira mas cara que puede decir este harness.
+    sufijo = 2
+    while path.exists():
+        path = out / f"{stamp}-{sufijo}.json"
+        sufijo += 1
     path.write_text(json.dumps(record.to_json_dict(), indent=2, ensure_ascii=False) + "\n", "utf-8")
     return path

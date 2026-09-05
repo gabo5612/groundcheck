@@ -1,0 +1,26 @@
+{
+  "id": "m6-flips",
+  "kind": "single-file-feature",
+  "contract": "Implementa el modulo completo src/assay/flips.py en Python 3.12.\n\nDEBE contener exactamente dos cosas publicas: la dataclass `Flip` y la funcion `classify_flips`.\n\n1. `Flip` es un dataclass CONGELADO (frozen=True) con estos cinco campos, EN ESTE ORDEN, todos posicionales: case_id (str), check (str), antes (bool|None), despues (bool|None), kind (str). Tiene que poder construirse posicionalmente, Flip('c1', 'grounded', True, False, 'rompio'), y compararse por igualdad.\n\n2. `classify_flips(antes, despues)` recibe dos diccionarios con la MISMA forma: {case_id: {check_name: True|False|None}}. Devuelve una LISTA de Flip. No modifica ninguna de las dos entradas.\n\nComportamiento exacto, caso por caso:\n\n1. Si un case_id esta en `despues` pero NO en `antes`: se emite UN SOLO Flip con check='(caso)', antes=None, despues=None, kind='nuevo'. NO se emite un Flip por cada check de ese caso.\n2. Si un case_id esta en `antes` pero NO en `despues`: UN SOLO Flip con check='(caso)', antes=None, despues=None, kind='desaparecido'. Tampoco se desglosa por check.\n3. Para los case_id que estan en LAS DOS entradas, se comparan sus checks. Un check que aparece en un lado y no en el otro se trata como si valiera None en el lado donde falta.\n4. Si el valor del check es IGUAL en antes y en despues, NO se emite nada. Esto incluye None == None.\n5. Si el valor cambio, se emite un Flip(case_id, nombre_del_check, valor_antes, valor_despues, kind) donde kind se decide asi: True->False es 'rompio'; False->True es 'arreglo'; cualquier bool -> None es 'se_apago'; None -> cualquier bool es 'se_prendio'.\n\nORDEN DEL RESULTADO. La lista se ordena por dos claves, en este orden de prioridad:\n  a) primero por kind, con esta prioridad exacta: 'rompio' (0), 'se_apago' (1), 'desaparecido' (2), 'se_prendio' (3), 'arreglo' (4), 'nuevo' (5).\n  b) dentro del mismo kind, por case_id alfabetico, y dentro del mismo case_id por el orden en que los checks aparecen en el diccionario de `despues` (o de `antes` si el check ya no esta en `despues`).\nEl orden tiene que ser estable y determinista: dos llamadas con las mismas entradas devuelven exactamente la misma lista.\n\nEl modulo lleva `from __future__ import annotations` arriba. No importes nada fuera de la biblioteca estandar (dataclasses y typing alcanzan). No agregues ninguna otra funcion, constante ni clase publica. No escribas prints. Docstrings breves en espanol sin acentos.",
+  "files": [],
+  "creates": [
+    "src/assay/flips.py"
+  ],
+  "mustNotTouch": [
+    "tests/test_flips.py",
+    "src/assay/gate.py",
+    "src/assay/report.py",
+    "src/assay/checks.py",
+    "src/assay/cli.py",
+    "pyproject.toml"
+  ],
+  "acceptance": [
+    "los 16 tests de tests/test_flips.py pasan",
+    "no se modifico ningun archivo fuera de src/assay/flips.py"
+  ],
+  "verify": [
+    ".venv/bin/python -m pytest tests/test_flips.py -q"
+  ],
+  "maxAttempts": 3,
+  "parallelSafe": true
+}
