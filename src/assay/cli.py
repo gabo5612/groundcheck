@@ -33,7 +33,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
         return 2
 
     try:
-        adapter = build_adapter(args.system, timeout=args.timeout)
+        adapter = build_adapter(args.system, timeout=args.timeout, mapping=args.mapping)
     except (ValueError, OSError) as exc:
         print(f"sistema invalido — {exc}", file=sys.stderr)
         return 2
@@ -205,6 +205,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     run.add_argument("--out", help="directorio donde escribir la corrida; sin esto, JSON a stdout")
     run.add_argument("--timeout", type=float, default=60.0, help="timeout por pregunta (s)")
+    run.add_argument("--mapping", help="YAML que traduce la respuesta del sistema al contrato")
     run.add_argument("--quiet", action="store_true", help="sin progreso en stderr")
     run.set_defaults(func=_cmd_run)
 

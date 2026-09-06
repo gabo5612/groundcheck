@@ -127,7 +127,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    tu_veredicto: mal      # bien | mal
     por_que:           # opcional, una linea
 
   - id: nsn-aceite-law

@@ -1,0 +1,42 @@
+# Mapeo de la respuesta de anvil al contrato de assay.
+#
+# assay no sabe nada de anvil por dentro: todo lo especifico vive en este archivo, que es
+# lo que hace que el harness sirva para medir cualquier RAG y no solo este.
+#
+# ⚠️ HALLAZGO AL ESCRIBIR ESTE MAPEO — leer antes de interpretar cualquier número:
+#
+# El campo `citations` de anvil se construye desde TODOS los hits del retrieval
+# (`src/anvil/api/main.py`: `cites = [... for h in hits]`), no desde los pasajes que el
+# generador realmente citó. En anvil, entonces, **citations == retrieved**.
+#
+# Consecuencias, que quedan escritas para que nadie lea de más en el reporte:
+#   · recall@k, MRR y precision@k son VÁLIDOS: se calculan sobre el conjunto recuperado,
+#     que es exactamente lo que este campo contiene.
+#   · `citation_hits_gold` NO mide "citó bien": mide "el retrieval trajo la página de oro".
+#     Es la misma pregunta que recall@k con otro nombre. Se reporta igual, pero no se
+#     puede presentar como exactitud de cita.
+#   · `grounded` mide "fundamentado en el contexto recuperado", no "en lo citado". Es más
+#     débil que la definición estricta, y es lo máximo que el sistema permite verificar.
+#
+# Para medir exactitud de cita de verdad, anvil tendría que exponer qué pasajes usó el
+# generador, separado de lo que trajo el retrieval. Es un cambio en anvil, no en assay.
+
+request:
+  question_field: question
+  extra:
+    lang: es
+
+response:
+  answer_field: answer
+  abstained_field: abstained
+  # El mismo array alimenta los dos campos del contrato, por lo dicho arriba.
+  citations_field: citations
+  retrieved_field: citations
+
+  # anvil da un rango de páginas (page_from/page_to). assay compara contra una página
+  # concreta, así que se toma la inicial: es la que un humano citaría.
+  item_map:
+    page: page_from
+    text: snippet
+    revision: revision
+    doc_id: doc_id

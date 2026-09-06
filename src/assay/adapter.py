@@ -61,6 +61,17 @@ class MockAdapter:
         )
 
 
+def _remap(raw: Any, item_map: dict[str, str]) -> dict[str, Any]:
+    """Renombra las claves de un item segun el mapeo. Lo no mapeado se conserva."""
+    if not isinstance(raw, dict):
+        return {"raw": raw}
+    out = dict(raw)
+    for destino, origen in item_map.items():
+        if origen in raw:
+            out[destino] = raw[origen]
+    return out
+
+
 class HttpAdapter:
     """Cualquier endpoint que acepte JSON `{"question": ...}` y devuelva el contrato.
 
@@ -80,6 +91,8 @@ class HttpAdapter:
         citations_field: str = "citations",
         retrieved_field: str = "retrieved",
         abstained_field: str = "abstained",
+        item_map: dict[str, str] | None = None,
+        extra_request: dict[str, Any] | None = None,
     ):
         self.target = url
         self._timeout = timeout
@@ -88,9 +101,11 @@ class HttpAdapter:
         self._cf = citations_field
         self._rf = retrieved_field
         self._absf = abstained_field
+        self._item_map = item_map or {}
+        self._extra = extra_request or {}
 
     def ask(self, question: str) -> Response:
-        payload = json.dumps({self._qf: question}).encode("utf-8")
+        payload = json.dumps({self._qf: question, **self._extra}).encode("utf-8")
         req = urllib.request.Request(
             self.target,
             data=payload,
@@ -122,17 +137,38 @@ class HttpAdapter:
 
         return Response(
             answer=answer,
-            citations=tuple(c if isinstance(c, dict) else {"raw": c} for c in citations),
-            retrieved=tuple(r if isinstance(r, dict) else {"raw": r} for r in retrieved),
+            citations=tuple(_remap(c, self._item_map) for c in citations),
+            retrieved=tuple(_remap(r, self._item_map) for r in retrieved),
             abstained=bool(abstained),
             latency_ms=latency_ms,
         )
 
 
-def build_adapter(spec: str, *, timeout: float = 60.0) -> Adapter:
-    """`mock:ruta.yaml` -> MockAdapter · `http(s)://...` -> HttpAdapter."""
+def build_adapter(
+    spec: str, *, timeout: float = 60.0, mapping: str | Path | None = None
+) -> Adapter:
+    """`mock:ruta.yaml` -> MockAdapter · `http(s)://...` -> HttpAdapter.
+
+    `mapping` es un YAML que describe como traducir la respuesta del sistema al contrato.
+    Todo lo especifico de un sistema vive ahi y no en el codigo del harness.
+    """
     if spec.startswith("mock:"):
         return MockAdapter(spec[len("mock:") :])
-    if spec.startswith(("http://", "https://")):
-        return HttpAdapter(spec, timeout=timeout)
-    raise ValueError(f"--system no reconocido: {spec!r} (usa `mock:archivo.yaml` o una URL http)")
+    if not spec.startswith(("http://", "https://")):
+        raise ValueError(f"--system no reconocido: {spec!r} (usa `mock:archivo.yaml` o una URL http)")
+
+    kw: dict[str, Any] = {}
+    if mapping is not None:
+        doc = yaml.safe_load(Path(mapping).read_text("utf-8")) or {}
+        req = doc.get("request") or {}
+        resp = doc.get("response") or {}
+        kw = {
+            "question_field": req.get("question_field", "question"),
+            "extra_request": req.get("extra") or {},
+            "answer_field": resp.get("answer_field", "answer"),
+            "citations_field": resp.get("citations_field", "citations"),
+            "retrieved_field": resp.get("retrieved_field", "retrieved"),
+            "abstained_field": resp.get("abstained_field", "abstained"),
+            "item_map": resp.get("item_map") or {},
+        }
+    return HttpAdapter(spec, timeout=timeout, **kw)

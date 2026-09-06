@@ -443,3 +443,36 @@ def test_un_codigo_prohibido_que_esta_en_la_respuesta_de_oro_es_error(tmp_path):
     p.write_text(body, "utf-8")
     with pytest.raises(SuiteError, match="a la vez"):
         load_suite(p)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Regla 4b — marcadores de cita (el falso negativo que encontró la corrida real)
+# ─────────────────────────────────────────────────────────────────────────────
+@pytest.mark.parametrize(
+    "texto,esperado",
+    [
+        ("720 +/- 30 N.m [1]", ["720", "30"]),
+        ("Leaflet 1.9.4 [5]", []),
+        ("Ver [1,2] y [3-4]", []),
+        ("El valor es 80 [3]", ["80"]),
+        ("La tabla 1 dice 720", ["1", "720"]),   # un 1 suelto SÍ es un dato
+    ],
+)
+def test_los_marcadores_de_cita_no_son_datos(texto, esperado):
+    assert [t.raw for t in extract_numbers(texto)] == esperado
+
+
+def test_citar_bien_no_puede_hacer_fallar_groundedness():
+    """El falso negativo que la regla 4b evita, medido contra anvil real.
+
+    anvil cita con `[n]`. Sin esta regla su groundedness daba 0.18 con las respuestas
+    CORRECTAS: el harness castigaba al sistema por citar, que es justo el comportamiento
+    que premia en todos los demás checks.
+    """
+    c = Case(id="t", question="¿Torque del M24 grado 8.8?", category="factual_lookup",
+             gold_numbers=("720", "30"),
+             gold_sources=(GoldSource(doc_id="LAM", revision="F", pages=(1,)),))
+    chunk = "| M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas |"
+    r = evaluate(c, respuesta("720 +/- 30 N.m [1]", text=chunk, doc="LAM", page=1, rev="F"))
+    assert r["grounded"].passed is True
+    assert r["gold_numbers_present"].passed is True

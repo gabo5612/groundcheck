@@ -24,6 +24,13 @@ QS-1." los `1` y `2` son marcadores de lista, no datos. Extraerlos hacia que un 
 numera sus pasos fallara groundedness por numerar — otro falso negativo que manda a
 arreglar un sistema sano. (Encontrado al llenar el reporte de M4 con el caso del LOTO.)
 
+**Regla 4b — un marcador de cita no es un dato.** En "720 +/- 30 N.m [1]" el `[1]` es una
+referencia al pasaje, no una magnitud. Exigirle respaldo en el chunk hace fallar
+groundedness a un sistema **por citar bien**, que es el comportamiento que el harness
+premia en todos los demas checks. (Encontrado en la primera corrida contra anvil real, que
+cita con `[n]`: sin esta regla su groundedness medida daba 0.18 cuando las respuestas eran
+correctas.)
+
 **Regla 5 — la ambiguedad de `1.200` se documenta, no se adivina en silencio.** En espanol
 es mil doscientos; en ingles, uno punto dos. La convencion esta en `canonicalize`, con
 test, y cada check guarda **el token crudo junto al canonico** para poder auditar
@@ -44,6 +51,9 @@ _SEPARATORS = ".,-/"
 # Marcador de lista: un numero suelto seguido de `)` o de `.` mas espacio, ya sea al
 # principio de una linea o detras de un parentesis/espacio. Implementa la regla 4.
 _ENUMERATOR = re.compile(r"(?:^|[\s(\[])\d{1,2}[.)](?=\s|$)", re.MULTILINE)
+
+# Marcador de cita: [1] · [12] · [1,2] · [1-3]. Implementa la regla 4b.
+_CITATION_MARK = re.compile(r"\[\s*\d{1,3}(?:\s*[,;-]\s*\d{1,3})*\s*\]")
 
 
 @dataclass(frozen=True)
@@ -129,7 +139,10 @@ def canonicalize(raw: str) -> str:
 
 
 def _enumerator_spans(text: str) -> list[tuple[int, int]]:
-    return [m.span() for m in _ENUMERATOR.finditer(text)]
+    """Tramos del texto que no aportan datos: marcadores de lista y de cita."""
+    return [m.span() for m in _ENUMERATOR.finditer(text)] + [
+        m.span() for m in _CITATION_MARK.finditer(text)
+    ]
 
 
 def _tokens(text: str | None) -> list[str]:
