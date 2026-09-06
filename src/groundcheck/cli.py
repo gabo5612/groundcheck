@@ -1,4 +1,4 @@
-"""assay CLI. The interface is the one from §5 of the spec."""
+"""groundcheck CLI. The interface is the one from §5 of the spec."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from .run import run_suite, write_run
 from .suite import SuiteError, load_suite
 
 # Subcommands specified but not implemented yet. They are declared with the milestone
-# that brings them so `assay --help` reflects the real state of the project, not a promise.
+# that brings them so `groundcheck --help` reflects the real state of the project, not a promise.
 PENDING: dict[str, str] = {}
 
 
@@ -183,17 +183,17 @@ def _payload_from(run_path: str, suite_path: str | None, k: int):
 
 
 def _cmd_pending(name: str) -> int:
-    print(f"`assay {name}` does not exist yet — arrives in {PENDING[name]}", file=sys.stderr)
+    print(f"`groundcheck {name}` does not exist yet — arrives in {PENDING[name]}", file=sys.stderr)
     return 2
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="assay",
+        prog="groundcheck",
         description="Evaluation harness for RAG systems. Measures retrieval, grounding, "
         "citations and abstention reproducibly.",
     )
-    parser.add_argument("--version", action="version", version=f"assay {__version__}")
+    parser.add_argument("--version", action="version", version=f"groundcheck {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
     run = sub.add_parser("run", help="run a suite against a system")

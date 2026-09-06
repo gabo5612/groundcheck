@@ -1,6 +1,6 @@
 """Adapters to the system under test.
 
-The contract is one thing only: `question -> {answer, citations[], abstained}`. `assay`
+The contract is one thing only: `question -> {answer, citations[], abstained}`. `groundcheck`
 knows nothing about any RAG's internals, and that is what makes it usable against all of
 them — publishable rather than an internal utility.
 """

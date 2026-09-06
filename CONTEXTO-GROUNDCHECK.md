@@ -1,14 +1,15 @@
-# assay — harness de evals para sistemas RAG
+# groundcheck — harness de evals para sistemas RAG
 
 **Fecha:** 2026-09-02
 **Relación:** cierra el hueco marcado con ❌ explícito en §4 de
 `~/Desktop/Gabo/CONTEXTO-AI-PORTFOLIO-CV.md` — *"Evals de RAG (precisión de retrieval,
 tasa de alucinación): **falta**"*.
-**Sistema bajo prueba:** `~/Desktop/Gabo/anvil/CONTEXTO-ANVIL.md`
+**Sistema bajo prueba:** `~/Desktop/Gabo/shopfloor/CONTEXTO-SHOPFLOOR.md`
 **Hermano conceptual:** `crew` — misma tesis: **verificación determinista, ningún modelo
 juzgando a otro modelo.**
-**Nombre:** *assay* = ensayo metalúrgico, el análisis que determina qué contiene realmente
-una muestra. Es literalmente lo que hace esta herramienta.
+**Nombre:** *groundcheck* = el chequeo de fundamento (*groundedness*): que cada número y cada
+cita de una respuesta esté literal en un chunk recuperado. Es la métrica central de la
+herramienta, convertida en nombre. Renombrado desde `assay` el 2026-09-06.
 
 ---
 
@@ -79,7 +80,7 @@ soldadura mal citado o un torque inventado.
 
 | Categoría | % | Ejemplo | Qué prueba |
 |---|---|---|---|
-| Lookup factual (número/tabla) | 30% | *"Torque del M24 grado 8.8 del cabezal"* | Chunking estructural (Problema 1 de anvil) |
+| Lookup factual (número/tabla) | 30% | *"Torque del M24 grado 8.8 del cabezal"* | Chunking estructural (Problema 1 de shopfloor) |
 | **Código alfanumérico exacto** | 15% | *"¿Qué es la alarma E-114?"* | Búsqueda híbrida (Problema 2) |
 | Procedimental multi-paso | 15% | *"Procedimiento LOTO de la línea de colada"* | Que no se corten los pasos |
 | Multi-documento | 10% | *"¿El WPS-014 cumple lo que exige el ITP del cliente?"* | Síntesis entre fuentes |
@@ -120,7 +121,7 @@ Control negativo:
 
 > **`forbidden_numbers` es el detalle que atrapa el bug de la tabla partida.** Si la
 > respuesta trae `950` cuando debía traer `680`, no es "una respuesta algo distinta": es
-> exactamente la falla del Problema 1 de `anvil`, y la métrica la nombra.
+> exactamente la falla del Problema 1 de `shopfloor`, y la métrica la nombra.
 
 ---
 
@@ -152,24 +153,24 @@ de la gente que dice "hago evals".
 
 ```bash
 # correr una suite contra un sistema
-assay run --suite suites/anvil.yaml \
+groundcheck run --suite suites/shopfloor.yaml \
           --system http://localhost:8000/ask \
           --out runs/
 
 # reporte legible con desglose POR CATEGORÍA
-assay report runs/2026-09-05T10-00.json
+groundcheck report runs/2026-09-05T10-00.json
 
 # gate de CI: falla si hay regresión contra el baseline
-assay gate runs/latest.json \
+groundcheck gate runs/latest.json \
            --against baselines/main.json \
            --max-regression 0.02
 
 # comparar dos configuraciones (chunk 512 vs 1024, Q4 vs Q8, …)
-assay diff runs/chunk512.json runs/chunk1024.json
+groundcheck diff runs/chunk512.json runs/chunk1024.json
 ```
 
-**Contrato del adaptador:** `assay` habla con cualquier sistema que exponga
-`pregunta → {respuesta, citas[], abstuvo}`. No conoce nada de `anvil` por dentro. Eso lo
+**Contrato del adaptador:** `groundcheck` habla con cualquier sistema que exponga
+`pregunta → {respuesta, citas[], abstuvo}`. No conoce nada de `shopfloor` por dentro. Eso lo
 hace publicable y reusable, no una utilidad interna.
 
 ### El desglose por categoría es el producto
@@ -223,13 +224,13 @@ seis meses después, cuando alguien siga un procedimiento obsoleto.
 
 | # | Hito | Se acepta cuando |
 |---|---|---|
-| **M0** | Esqueleto del CLI + formato de suite | `assay run` corre contra un sistema mock y emite JSON |
+| **M0** | Esqueleto del CLI + formato de suite | `groundcheck run` corre contra un sistema mock y emite JSON |
 | **M1** | Métricas de retrieval | recall@k, MRR, precision@k sobre un caso construido a mano cuyo resultado se conoce de antemano |
 | **M2** | Checks deterministas de generación | Con una respuesta que trae un número inventado, `grounded` da falso. Con una que trae un `forbidden_number`, también |
 | **M3** | Golden set v1 | 20 preguntas, **con el 20% de controles negativos desde el principio** |
 | **M4** | Reporte con desglose por categoría | La tabla de §5 se imprime llena, con datos reales de una corrida |
 | **M5** | **Gate de CI** | Inyectando a propósito una regresión (p.ej. bajar top-k), el gate **falla el build** |
-| **M6** | `assay diff` | Compara dos corridas y nombra qué categoría se movió |
+| **M6** | `groundcheck diff` | Compara dos corridas y nombra qué categoría se movió |
 | **M7** | LLM-judge opcional | Se reporta **junto a su tasa de acuerdo** con etiquetas humanas sobre una muestra. Nunca bloquea |
 | **M8** | Golden set v2 | 50 preguntas, las 6 categorías cubiertas, multilingüe es/en |
 
@@ -249,9 +250,9 @@ seis meses después, cuando alguien siga un procedimiento obsoleto.
 ## 9. Por qué los dos juntos
 
 ```
-assay sin anvil  →  un harness sin nada que medir
-anvil sin assay  →  otro RAG más que "parece que anda"
-anvil + assay    →  un sistema on-prem CON el número que prueba que funciona
+groundcheck sin shopfloor  →  un harness sin nada que medir
+shopfloor sin groundcheck  →  otro RAG más que "parece que anda"
+shopfloor + groundcheck    →  un sistema on-prem CON el número que prueba que funciona
 ```
 
 Y la diferencia se oye en la entrevista:
@@ -266,8 +267,8 @@ La primera la dice cualquiera. La segunda no se puede improvisar.
 
 ## 10. Orden de construcción
 
-**`assay` primero, con corpus chico.** 20 preguntas y unos pocos PDFs, antes de construir
-`anvil` en serio. Después `anvil` se construye contra esas métricas **desde el día uno**.
+**`groundcheck` primero, con corpus chico.** 20 preguntas y unos pocos PDFs, antes de construir
+`shopfloor` en serio. Después `shopfloor` se construye contra esas métricas **desde el día uno**.
 
 Al revés se termina retro-ajustando el eval para que el sistema apruebe — el fracaso
 clásico y silencioso de este tipo de proyecto, y el que hace que todas las métricas

@@ -97,7 +97,7 @@ class Response:
     abstained: bool = False
     latency_ms: int | None = None
     # Fields the system returns that the contract does not model, kept verbatim.
-    # The case that motivated this: anvil explains WHY it abstained in a `reason` field,
+    # The case that motivated this: shopfloor explains WHY it abstained in a `reason` field,
     # and the mapping was dropping it. The labelling sheet then showed an empty answer, and
     # a human judging that marks it "wrong" — reasonably, without knowing the system had in
     # fact explained itself. Discarding the explanation turns a correct abstention into
@@ -121,7 +121,7 @@ class Observation:
 
 @dataclass
 class RunRecord:
-    assay_version: str
+    groundcheck_version: str
     stage: str
     suite: dict[str, Any]
     system: dict[str, Any]

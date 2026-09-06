@@ -1,10 +1,10 @@
 {
-  "assay_version": "0.1.0",
+  "groundcheck_version": "0.1.0",
   "stage": "M4",
   "suite": {
     "name": "trailkit",
     "path": "suites/trailkit.yaml",
-    "sha256": "b8cfaf1a56e3610ca4c3e23396e0521fd57ee5fd0bcfd22b49aba7050aa82841",
+    "sha256": "ca120679b9cab6c594dcb2ac7155286d312881576e48e0866b7753a7d711928b",
     "case_count": 16,
     "category_counts": {
       "factual_lookup": 7,
@@ -19,8 +19,8 @@
     "kind": "http",
     "target": "http://127.0.0.1:8080/api/ask"
   },
-  "started_at": "2026-09-06T17:52:52+00:00",
-  "finished_at": "2026-09-06T17:52:59+00:00",
+  "started_at": "2026-09-06T22:16:58+00:00",
+  "finished_at": "2026-09-06T22:17:04+00:00",
   "observations": [
     {
       "case_id": "tk-precio-single",
@@ -178,7 +178,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 1472,
+        "latency_ms": 186,
         "extra": [
           [
             "reason",
@@ -352,7 +352,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 134,
+        "latency_ms": 143,
         "extra": [
           [
             "reason",
@@ -526,7 +526,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 139,
+        "latency_ms": 134,
         "extra": [
           [
             "reason",
@@ -700,7 +700,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 124,
+        "latency_ms": 140,
         "extra": [
           [
             "reason",
@@ -874,7 +874,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 133,
+        "latency_ms": 163,
         "extra": [
           [
             "reason",
@@ -1048,7 +1048,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 157,
+        "latency_ms": 152,
         "extra": [
           [
             "reason",
@@ -1222,7 +1222,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 158,
+        "latency_ms": 134,
         "extra": [
           [
             "reason",
@@ -1396,7 +1396,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 136,
+        "latency_ms": 147,
         "extra": [
           [
             "reason",
@@ -1570,7 +1570,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 133,
+        "latency_ms": 141,
         "extra": [
           [
             "reason",
@@ -1744,7 +1744,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 139,
+        "latency_ms": 169,
         "extra": [
           [
             "reason",
@@ -1918,7 +1918,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 134,
+        "latency_ms": 133,
         "extra": [
           [
             "reason",
@@ -2092,7 +2092,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 133,
+        "latency_ms": 134,
         "extra": [
           [
             "reason",
@@ -2266,7 +2266,7 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 128,
+        "latency_ms": 138,
         "extra": [
           [
             "reason",
@@ -2440,7 +2440,7 @@
           }
         ],
         "abstained": true,
-        "latency_ms": 665,
+        "latency_ms": 1780,
         "extra": [
           [
             "reason",
@@ -2614,7 +2614,7 @@
           }
         ],
         "abstained": true,
-        "latency_ms": 1217,
+        "latency_ms": 1295,
         "extra": [
           [
             "reason",
@@ -2788,7 +2788,7 @@
           }
         ],
         "abstained": true,
-        "latency_ms": 1567,
+        "latency_ms": 1529,
         "extra": [
           [
             "reason",
@@ -2808,6 +2808,6 @@
     }
   ],
   "notes": [
-    "Una corrida guarda observaciones crudas y NINGUNA metrica, por diseno. Las metricas de retrieval y los checks deterministas se derivan despues con `assay report`, que verifica el sha256 del golden set antes de reportar. Asi una corrida vieja se puede re-evaluar con checks nuevos, y nadie confunde el dato con el juicio sobre el dato."
+    "A run stores raw observations and NO metrics, by design. Retrieval metrics and the deterministic checks are derived afterwards by `groundcheck report`, which verifies the golden set's sha256 before reporting. That way an old run can be re-evaluated with new checks, and nobody confuses the data with the judgement about the data."
   ]
 }

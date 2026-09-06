@@ -6,7 +6,7 @@ the worker's output is accepted. No model judges them.
 
 import pytest
 
-from assay.flips import Flip, classify_flips
+from groundcheck.flips import Flip, classify_flips
 
 
 def test_a_check_that_breaks():

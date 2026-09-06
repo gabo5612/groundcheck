@@ -8,7 +8,7 @@ returned — which is the most common way to write a metrics test that proves no
 
 import pytest
 
-from assay.metrics import (
+from groundcheck.metrics import (
     RetrievedItem,
     matches,
     mean,

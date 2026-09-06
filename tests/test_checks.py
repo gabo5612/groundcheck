@@ -4,9 +4,9 @@
 
 import pytest
 
-from assay.checks import evaluate, looks_like_abstention
-from assay.numbers import canonicalize, contains_number, extract_codes, extract_numbers
-from assay.schema import Case, GoldSource, Response
+from groundcheck.checks import evaluate, looks_like_abstention
+from groundcheck.numbers import canonicalize, contains_number, extract_codes, extract_numbers
+from groundcheck.schema import Case, GoldSource, Response
 
 CHUNK = (
     "Tabla 7.3 — Pares de apriete del cabezal.\n"
@@ -434,7 +434,7 @@ def test_forbidden_codes_compare_case_insensitively():
 
 def test_a_forbidden_code_present_in_the_gold_answer_is_an_error(tmp_path):
     """It would be a trap against the correct answer: the case would always fail."""
-    from assay.suite import SuiteError, load_suite
+    from groundcheck.suite import SuiteError, load_suite
 
     body = (
         "cases:\n  - id: x\n    question: q\n    category: alfanumerico_exacto\n"
@@ -464,9 +464,9 @@ def test_citation_markers_are_not_data(texto, esperado):
 
 
 def test_citing_properly_cannot_fail_groundedness():
-    """The false negative rule 4b prevents, measured against the real anvil.
+    """The false negative rule 4b prevents, measured against the real shopfloor.
 
-    anvil cites with `[n]`. Without this rule its groundedness read 0.18 with CORRECT
+    shopfloor cites with `[n]`. Without this rule its groundedness read 0.18 with CORRECT
     answers: the harness was punishing the system for citing, which is exactly the
     behaviour it rewards in every other check.
     """

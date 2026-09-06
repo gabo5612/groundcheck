@@ -6,7 +6,7 @@ something other than what it claims to, and that is not visible by reading the f
 
 import pytest
 
-from assay.composition import CompositionIssue, composition_report
+from groundcheck.composition import CompositionIssue, composition_report
 
 TARGET = {
     "factual_lookup": 0.30,

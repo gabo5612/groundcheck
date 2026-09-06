@@ -27,7 +27,7 @@ fix a healthy system. (Found while filling in the M4 report with the LOTO case.)
 **Rule 4b — a citation marker is not data.** In "720 +/- 30 N.m [1]" the `[1]` is a
 reference to the passage, not a magnitude. Demanding it be grounded in the chunk fails a
 system **for citing properly**, which is the behaviour the harness rewards in every other
-check. (Found on the first run against the real anvil, which cites with `[n]`: without this
+check. (Found on the first run against the real shopfloor, which cites with `[n]`: without this
 rule its measured groundedness was 0.18 while the answers were correct.)
 
 **Rule 5 — the ambiguity of `1.200` is documented, not silently guessed.** In Spanish it is

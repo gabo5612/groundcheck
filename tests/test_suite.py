@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from assay.suite import SuiteError, load_suite
+from groundcheck.suite import SuiteError, load_suite
 
 ROOT = Path(__file__).resolve().parents[1]
 

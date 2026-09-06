@@ -1,4 +1,4 @@
-"""`assay diff` — compares two runs and names what moved.
+"""`groundcheck diff` — compares two runs and names what moved.
 
 Division of labour with `gate`, on purpose:
 
@@ -160,6 +160,6 @@ def render(
     worse = sum(1 for f in flips if f.kind in ("broke", "went_dark"))
     better = sum(1 for f in flips if f.kind in ("fixed", "lit_up"))
     out.append(f"  {len(flips)} change(s): {worse} for the worse · {better} for the better")
-    out.append("  `diff` blocks nothing: that is what `assay gate` is for.")
+    out.append("  `diff` blocks nothing: that is what `groundcheck gate` is for.")
     out.append("")
     return "\n".join(out)

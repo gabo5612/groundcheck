@@ -1,12 +1,12 @@
 # ═══════════════════════════════════════════════════════════════════════════
-# GENERADO por tests/fixtures/build_mock_anvil.py — no editar a mano.
+# GENERADO por tests/fixtures/build_mock_shopfloor.py — no editar a mano.
 #
-# Sistema GUIONADO que responde las 20 preguntas de suites/anvil-v1.yaml.
+# Sistema GUIONADO que responde las 20 preguntas de suites/shopfloor-v1.yaml.
 #
-# ⚠️  ESTO NO ES UNA MEDICION DE anvil. Es una ficcion deliberada: los textos de
+# ⚠️  ESTO NO ES UNA MEDICION DE shopfloor. Es una ficcion deliberada: los textos de
 #     los chunks salen del corpus real, pero las respuestas y sus fallos estan
 #     inventados caso por caso para que cada check se dispare al menos una vez.
-#     Cualquier numero que salga de correr esto mide al mock, no a anvil.
+#     Cualquier numero que salga de correr esto mide al mock, no a shopfloor.
 # ═══════════════════════════════════════════════════════════════════════════
 responses:
 

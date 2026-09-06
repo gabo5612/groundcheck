@@ -16,7 +16,7 @@ the document is not a trap, it is noise. The trap has to be a REAL number from a
 row — otherwise the check never fires and gives a false sense of rigour.
 
 Usage:
-    python3 scripts/verify_against_corpus.py ../anvil/demo/corpus.json suites/anvil-v2.yaml
+    python3 scripts/verify_against_corpus.py ../shopfloor/demo/corpus.json suites/shopfloor-v2.yaml
 """
 
 from __future__ import annotations
@@ -27,8 +27,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from assay.numbers import contains_number, extract_codes  # noqa: E402
-from assay.suite import load_suite  # noqa: E402
+from groundcheck.numbers import contains_number, extract_codes  # noqa: E402
+from groundcheck.suite import load_suite  # noqa: E402
 
 
 def main(corpus_path: str, suite_path: str) -> int:

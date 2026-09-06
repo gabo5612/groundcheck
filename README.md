@@ -1,4 +1,4 @@
-# assay
+# groundcheck
 
 **An evaluation harness for RAG systems.** It measures, reproducibly, whether a system
 **retrieves the right thing, answers with grounding, cites correctly, and stays quiet when
@@ -7,7 +7,7 @@ it doesn't know** — and it fails CI when a change degrades any of that.
 Sibling to [`crew`](https://github.com/gabo5612/crew): same thesis, **deterministic
 verification, no model ever judging another model**.
 
-> *assay* = the metallurgical test that determines what a sample actually contains. That is
+> *groundcheck* = the metallurgical test that determines what a sample actually contains. That is
 > literally what this tool does.
 
 ## Status: M7–M8 in progress
@@ -20,7 +20,7 @@ verification, no model ever judging another model**.
 | **M3** | Golden set v1 (20 questions, 20% negative controls) | ✅ |
 | **M4** | Per-category report | ✅ |
 | **M5** | CI gate | ✅ |
-| **M6** | `assay diff` | ✅ |
+| **M6** | `groundcheck diff` | ✅ |
 | M7 | Optional LLM judge (reports, never blocks) | 🟡 sheet ready, human labels pending |
 | M8 | Golden set v2 | 🟡 **39/50** — two categories lack corpus, see below |
 
@@ -36,27 +36,27 @@ python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 .venv/bin/python -m pytest
 
 # against a scripted system (no RAG needs to be running)
-.venv/bin/assay run --suite suites/mock.yaml \
+.venv/bin/groundcheck run --suite suites/mock.yaml \
                     --system mock:tests/fixtures/mock_responses.yaml --out runs/
 
 # against a real system
-.venv/bin/assay run --suite suites/anvil-v2.yaml \
+.venv/bin/groundcheck run --suite suites/shopfloor-v2.yaml \
                     --system http://localhost:8080/api/ask \
-                    --mapping adapters/anvil.yaml --out runs/
+                    --mapping adapters/shopfloor.yaml --out runs/
 ```
 
 ```bash
-.venv/bin/assay report runs/2026-09-04T19-02-31Z.json --k 5   # per-category table
-.venv/bin/assay report runs/….json --json                     # same breakdown as JSON
+.venv/bin/groundcheck report runs/2026-09-04T19-02-31Z.json --k 5   # per-category table
+.venv/bin/groundcheck report runs/….json --json                     # same breakdown as JSON
 ```
 
 ```bash
-.venv/bin/assay report runs/….json --json > baselines/mock.json    # freeze a baseline
-.venv/bin/assay gate runs/new.json --against baselines/mock.json --max-regression 0.02
+.venv/bin/groundcheck report runs/….json --json > baselines/mock.json    # freeze a baseline
+.venv/bin/groundcheck gate runs/new.json --against baselines/mock.json --max-regression 0.02
 ```
 
 ```bash
-.venv/bin/assay diff runs/before.json runs/after.json    # what changed and why
+.venv/bin/groundcheck diff runs/before.json runs/after.json    # what changed and why
 ```
 
 ## The CI gate
@@ -119,7 +119,7 @@ Three decisions hold this table up:
 
 ## The adapter contract
 
-`assay` talks to any system exposing
+`groundcheck` talks to any system exposing
 `question → {answer, citations[], retrieved[], abstained}`. It knows nothing about any RAG's
 internals, which is exactly what makes it usable against any of them.
 

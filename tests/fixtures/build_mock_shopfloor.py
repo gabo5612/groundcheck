@@ -1,14 +1,14 @@
-"""Generates `mock_anvil.yaml`: a scripted system that answers the 20 questions in
-`suites/anvil-v1.yaml`.
+"""Generates `mock_shopfloor.yaml`: a scripted system that answers the 20 questions in
+`suites/shopfloor-v1.yaml`.
 
-**This is NOT a measurement of anvil.** It is a deliberate fiction, written so every check
+**This is NOT a measurement of shopfloor.** It is a deliberate fiction, written so every check
 in the harness fires at least once and so the M4 report can be seen fully populated before
 a real run exists. The chunk texts come from the real corpus (to avoid introducing
 transcription errors); the answers and the failures are invented on purpose, case by case,
 with the intent of each written alongside it.
 
 Usage:
-    python3 tests/fixtures/build_mock_anvil.py ../anvil/demo/corpus.json
+    python3 tests/fixtures/build_mock_shopfloor.py ../shopfloor/demo/corpus.json
 """
 
 from __future__ import annotations
@@ -150,9 +150,9 @@ RUIDO = {
 
 def main(corpus_path: str) -> int:
     corpus = json.loads(Path(corpus_path).read_text("utf-8"))
-    suite_path = Path(__file__).resolve().parents[2] / "suites" / "anvil-v1.yaml"
+    suite_path = Path(__file__).resolve().parents[2] / "suites" / "shopfloor-v1.yaml"
     sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
-    from assay.suite import load_suite
+    from groundcheck.suite import load_suite
 
     suite = load_suite(suite_path)
     casos = {c.id: c for c in suite.cases}
@@ -166,14 +166,14 @@ def main(corpus_path: str) -> int:
 
     lineas = [
         "# ═══════════════════════════════════════════════════════════════════════════",
-        "# GENERADO por tests/fixtures/build_mock_anvil.py — no editar a mano.",
+        "# GENERADO por tests/fixtures/build_mock_shopfloor.py — no editar a mano.",
         "#",
-        "# Sistema GUIONADO que responde las 20 preguntas de suites/anvil-v1.yaml.",
+        "# Sistema GUIONADO que responde las 20 preguntas de suites/shopfloor-v1.yaml.",
         "#",
-        "# ⚠️  ESTO NO ES UNA MEDICION DE anvil. Es una ficcion deliberada: los textos de",
+        "# ⚠️  ESTO NO ES UNA MEDICION DE shopfloor. Es una ficcion deliberada: los textos de",
         "#     los chunks salen del corpus real, pero las respuestas y sus fallos estan",
         "#     inventados caso por caso para que cada check se dispare al menos una vez.",
-        "#     Cualquier numero que salga de correr esto mide al mock, no a anvil.",
+        "#     Cualquier numero que salga de correr esto mide al mock, no a shopfloor.",
         "# ═══════════════════════════════════════════════════════════════════════════",
         "responses:",
     ]
@@ -211,11 +211,11 @@ def main(corpus_path: str) -> int:
                 f"      - {{doc_id: {doc_id}, page: {c['p0']}, chunk_id: \"{c['id']}\"}}"
             )
 
-    out = Path(__file__).with_name("mock_anvil.yaml")
+    out = Path(__file__).with_name("mock_shopfloor.yaml")
     out.write_text("\n".join(lineas) + "\n", "utf-8")
     print(f"escrito {out} · {len(INTENTS)} respuestas guionadas")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(sys.argv[1] if len(sys.argv) > 1 else "../anvil/demo/corpus.json"))
+    raise SystemExit(main(sys.argv[1] if len(sys.argv) > 1 else "../shopfloor/demo/corpus.json"))

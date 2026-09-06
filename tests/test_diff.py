@@ -6,17 +6,17 @@ from pathlib import Path
 
 import pytest
 
-from assay.adapter import build_adapter
-from assay.cli import main
-from assay.diff import DiffError, diff_runs
-from assay.diff import render as render_diff
-from assay.run import run_suite, write_run
-from assay.suite import load_suite
+from groundcheck.adapter import build_adapter
+from groundcheck.cli import main
+from groundcheck.diff import DiffError, diff_runs
+from groundcheck.diff import render as render_diff
+from groundcheck.run import run_suite, write_run
+from groundcheck.suite import load_suite
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "suites" / "anvil-v1.yaml"
-MOCK = ROOT / "tests" / "fixtures" / "mock_anvil.yaml"
-MOCK_TOPK1 = ROOT / "tests" / "fixtures" / "mock_anvil_topk1.yaml"
+SUITE = ROOT / "suites" / "shopfloor-v1.yaml"
+MOCK = ROOT / "tests" / "fixtures" / "mock_shopfloor.yaml"
+MOCK_TOPK1 = ROOT / "tests" / "fixtures" / "mock_shopfloor_topk1.yaml"
 
 
 def run_of(fixture: Path) -> dict:
@@ -159,6 +159,6 @@ def test_cli_diff_with_an_unreadable_file_exits_2(tmp_path, capsys):
 
 def test_no_pending_subcommands_remain(capsys):
     """M6 was the last one. `--help` no longer promises anything that does not exist."""
-    from assay.cli import PENDING
+    from groundcheck.cli import PENDING
 
     assert PENDING == {}

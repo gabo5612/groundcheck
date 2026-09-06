@@ -20,9 +20,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from assay.checks import evaluate  # noqa: E402
-from assay.report import _response_from_json  # noqa: E402
-from assay.suite import load_suite  # noqa: E402
+from groundcheck.checks import evaluate  # noqa: E402
+from groundcheck.report import _response_from_json  # noqa: E402
+from groundcheck.suite import load_suite  # noqa: E402
 
 RAIZ = Path(__file__).resolve().parents[1]
 
@@ -52,7 +52,7 @@ def _pasajes_de_oro(corpus_path: str, caso) -> list[str]:
 def main(run_path: str, out_path: str | None = None, corpus_path: str = "") -> int:
     run = json.loads(Path(run_path).read_text("utf-8"))
     suite = load_suite(run["suite"]["path"] if Path(run["suite"]["path"]).exists()
-                       else RAIZ / "suites" / "anvil-v1.yaml")
+                       else RAIZ / "suites" / "shopfloor-v1.yaml")
     casos = {c.id: c for c in suite.cases}
 
     filas = []
@@ -146,7 +146,7 @@ def main(run_path: str, out_path: str | None = None, corpus_path: str = "") -> i
     # being read — which is worse than having fewer labels. Priority goes to cases where the
     # deterministic checks caught NOTHING: there the judge is the only net, and its agreement
     # with a human is what is informative. A few already-caught ones are kept as a control.
-    limite = int(os.environ.get("ASSAY_MUESTRA", "12"))
+    limite = int(os.environ.get("GROUNDCHECK_MUESTRA", "12"))
     solo_juez = [f for f in filas if not f["los_deterministas_ya_lo_atraparon"]]
     ya_obvios = [f for f in filas if f["los_deterministas_ya_lo_atraparon"]]
     filas = (solo_juez + ya_obvios)[:limite]
@@ -157,7 +157,7 @@ def main(run_path: str, out_path: str | None = None, corpus_path: str = "") -> i
 
     obvios = sum(1 for f in filas if f["los_deterministas_ya_lo_atraparon"])
     print(f"escrito {salida}")
-    print(f"  {len(filas)} cases to label (a sample; set ASSAY_MUESTRA to change)")
+    print(f"  {len(filas)} cases to label (a sample; set GROUNDCHECK_MUESTRA to change)")
     print(f"  {len(filas) - obvios} where the judge is the only net · {obvios} as control")
     return 0
 

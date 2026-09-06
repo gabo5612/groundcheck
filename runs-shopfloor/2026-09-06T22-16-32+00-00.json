@@ -1,10 +1,10 @@
 {
-  "assay_version": "0.1.0",
+  "groundcheck_version": "0.1.0",
   "stage": "M4",
   "suite": {
-    "name": "anvil-v2",
-    "path": "suites/anvil-v2.yaml",
-    "sha256": "1bb1580af359f7f2dc7cdd63a2323d46df98fc48fc2b12467f0e33f89546bbd9",
+    "name": "shopfloor-v2",
+    "path": "suites/shopfloor-v2.yaml",
+    "sha256": "d2368396ea6d6304b488e873c0d01aa36957c3b83d1d70795f63edd3e0820a3b",
     "case_count": 39,
     "category_counts": {
       "factual_lookup": 15,
@@ -19,8 +19,8 @@
     "kind": "http",
     "target": "http://127.0.0.1:8080/api/ask"
   },
-  "started_at": "2026-09-06T17:34:47+00:00",
-  "finished_at": "2026-09-06T17:35:52+00:00",
+  "started_at": "2026-09-06T22:16:32+00:00",
+  "finished_at": "2026-09-06T22:16:53+00:00",
   "observations": [
     {
       "case_id": "torque-m24-grado-88",
@@ -178,7 +178,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 145
+        "latency_ms": 1519,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (83% de coincidencia con: “cuál es el torque del perno M24 grado 8.8 del cabezal”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -338,7 +352,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 6805
+        "latency_ms": 148,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Qué par de apriete corresponde al M24 del cabezal en grado 10.9?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -498,7 +526,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 129
+        "latency_ms": 137,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (98% de coincidencia con: “cuál es el torque del perno M16 de la tapa”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -658,7 +700,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 284
+        "latency_ms": 320,
+        "extra": [
+          [
+            "reason",
+            "La documentacion da mas de una respuesta segun un dato que falta."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            false
+          ]
+        ]
       },
       "error": null
     },
@@ -818,7 +874,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 1873
+        "latency_ms": 141,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Cuál es la temperatura de precalentamiento para el A106 Gr.B?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -978,7 +1048,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 264
+        "latency_ms": 283,
+        "extra": [
+          [
+            "reason",
+            "La documentacion da mas de una respuesta segun un dato que falta."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            false
+          ]
+        ]
       },
       "error": null
     },
@@ -1138,7 +1222,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 2240
+        "latency_ms": 134,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿En cuántas pasadas se aprietan los pernos del cabezal y con qué patrón?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -1298,7 +1396,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 2059
+        "latency_ms": 132,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Qué versión de Leaflet usa el sitio de TrailKit?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -1458,7 +1570,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 2102
+        "latency_ms": 145,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Qué significa la alarma E-114 del horno de induccion?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -1618,7 +1744,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 130
+        "latency_ms": 143,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (90% de coincidencia con: “qué acción tomar ante la alarma E-115”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -1778,7 +1918,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 5079
+        "latency_ms": 131,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “What is the National Stock Number for LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW)?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -1938,7 +2092,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 1447
+        "latency_ms": 125,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Qué seccionador se abre en el bloqueo de la linea de colada?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -2098,7 +2266,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 162
+        "latency_ms": 143,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (87% de coincidencia con: “cuál es el procedimiento LOTO de la línea de colada”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -2258,7 +2440,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 1515
+        "latency_ms": 144,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Dónde se confirma la presion cero durante el LOTO de la linea de colada?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -2418,7 +2614,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 127
+        "latency_ms": 130,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (86% de coincidencia con: “cuál es el procedimiento LOTO de la línea de colada”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -2578,7 +2788,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 2737
+        "latency_ms": 139,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “Antes de montar el cabezal, ¿qué hay que verificar en las superficies?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -2738,7 +2962,21 @@
           }
         ],
         "abstained": true,
-        "latency_ms": 1757
+        "latency_ms": 4795,
+        "extra": [
+          [
+            "reason",
+            "La respuesta no esta en la documentacion indexada."
+          ],
+          [
+            "verifier_passed",
+            null
+          ],
+          [
+            "cached",
+            false
+          ]
+        ]
       },
       "error": null
     },
@@ -2898,7 +3136,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 286
+        "latency_ms": 1648,
+        "extra": [
+          [
+            "reason",
+            "La documentacion da mas de una respuesta segun un dato que falta."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            false
+          ]
+        ]
       },
       "error": null
     },
@@ -3058,7 +3310,21 @@
           }
         ],
         "abstained": true,
-        "latency_ms": 1548
+        "latency_ms": 1821,
+        "extra": [
+          [
+            "reason",
+            "La respuesta no esta en la documentacion indexada."
+          ],
+          [
+            "verifier_passed",
+            null
+          ],
+          [
+            "cached",
+            false
+          ]
+        ]
       },
       "error": null
     },
@@ -3218,7 +3484,21 @@
           }
         ],
         "abstained": true,
-        "latency_ms": 1467
+        "latency_ms": 1646,
+        "extra": [
+          [
+            "reason",
+            "La respuesta no esta en la documentacion indexada."
+          ],
+          [
+            "verifier_passed",
+            null
+          ],
+          [
+            "cached",
+            false
+          ]
+        ]
       },
       "error": null
     },
@@ -3378,7 +3658,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 3561
+        "latency_ms": 161,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “How long is the OKC-3S bayonet blade?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -3538,7 +3832,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 136
+        "latency_ms": 129,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (97% de coincidencia con: “How long is the OKC-3S bayonet blade?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -3698,7 +4006,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 288
+        "latency_ms": 254,
+        "extra": [
+          [
+            "reason",
+            "La documentacion da mas de una respuesta segun un dato que falta."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            false
+          ]
+        ]
       },
       "error": null
     },
@@ -3858,7 +4180,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 3921
+        "latency_ms": 137,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “How many days without use make a bayonet 'inactive' for PMCS purposes?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -4018,7 +4354,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 278
+        "latency_ms": 243,
+        "extra": [
+          [
+            "reason",
+            "La documentacion da mas de una respuesta segun un dato que falta."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            false
+          ]
+        ]
       },
       "error": null
     },
@@ -4178,7 +4528,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 2434
+        "latency_ms": 131,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Qué versión de Next.js usa el sitio de TrailKit?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -4338,7 +4702,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 132
+        "latency_ms": 142,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (86% de coincidencia con: “¿Qué versión de Next.js usa el sitio de TrailKit?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -4498,7 +4876,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 3881
+        "latency_ms": 155,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “What is the NSN for LUBRICATING OIL, SEMIFLUID (LSA) in the 2 oz bottle?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -4658,7 +5050,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 2675
+        "latency_ms": 136,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “Which military specification covers LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW)?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -4818,7 +5224,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 2042
+        "latency_ms": 141,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Qué acción corresponde a la alarma E-141?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -4978,7 +5398,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 2229
+        "latency_ms": 138,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Qué bomba hay que verificar ante una pérdida de caudal de refrigerante?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -5138,7 +5572,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 4202
+        "latency_ms": 128,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “On which weapons is the OKC-3S Multipurpose Bayonet System used?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -5298,7 +5746,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 177
+        "latency_ms": 128,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (84% de coincidencia con: “How many days without use make a bayonet 'inactive' for PMCS purposes?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -5458,7 +5920,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 1765
+        "latency_ms": 119,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Qué ruta del sitio de TrailKit tiene el planificador de rutas con mapa?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -5618,7 +6094,21 @@
           }
         ],
         "abstained": true,
-        "latency_ms": 1811
+        "latency_ms": 1781,
+        "extra": [
+          [
+            "reason",
+            "La respuesta no esta en la documentacion indexada."
+          ],
+          [
+            "verifier_passed",
+            null
+          ],
+          [
+            "cached",
+            false
+          ]
+        ]
       },
       "error": null
     },
@@ -5778,7 +6268,21 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 156
+        "latency_ms": 173,
+        "extra": [
+          [
+            "reason",
+            "Respuesta ya verificada, reutilizada (86% de coincidencia con: “How long is the OKC-3S bayonet blade?”)."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            true
+          ]
+        ]
       },
       "error": null
     },
@@ -5938,7 +6442,21 @@
           }
         ],
         "abstained": true,
-        "latency_ms": 1273
+        "latency_ms": 1344,
+        "extra": [
+          [
+            "reason",
+            "La respuesta no esta en la documentacion indexada."
+          ],
+          [
+            "verifier_passed",
+            null
+          ],
+          [
+            "cached",
+            false
+          ]
+        ]
       },
       "error": null
     },
@@ -6098,7 +6616,21 @@
           }
         ],
         "abstained": true,
-        "latency_ms": 1603
+        "latency_ms": 1560,
+        "extra": [
+          [
+            "reason",
+            "La respuesta no esta en la documentacion indexada."
+          ],
+          [
+            "verifier_passed",
+            null
+          ],
+          [
+            "cached",
+            false
+          ]
+        ]
       },
       "error": null
     },
@@ -6258,12 +6790,26 @@
           }
         ],
         "abstained": false,
-        "latency_ms": 321
+        "latency_ms": 277,
+        "extra": [
+          [
+            "reason",
+            "La documentacion da mas de una respuesta segun un dato que falta."
+          ],
+          [
+            "verifier_passed",
+            true
+          ],
+          [
+            "cached",
+            false
+          ]
+        ]
       },
       "error": null
     }
   ],
   "notes": [
-    "Una corrida guarda observaciones crudas y NINGUNA metrica, por diseno. Las metricas de retrieval y los checks deterministas se derivan despues con `assay report`, que verifica el sha256 del golden set antes de reportar. Asi una corrida vieja se puede re-evaluar con checks nuevos, y nadie confunde el dato con el juicio sobre el dato."
+    "A run stores raw observations and NO metrics, by design. Retrieval metrics and the deterministic checks are derived afterwards by `groundcheck report`, which verifies the golden set's sha256 before reporting. That way an old run can be re-evaluated with new checks, and nobody confuses the data with the judgement about the data."
   ]
 }

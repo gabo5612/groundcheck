@@ -1,4 +1,4 @@
-"""Generates `mock_anvil_topk1.yaml`: the same scripted system, with top-k dropped to 1.
+"""Generates `mock_shopfloor_topk1.yaml`: the same scripted system, with top-k dropped to 1.
 
 This is the regression the M5 acceptance criterion asks for. It simulates the most banal and
 most common RAG config change — "fetch fewer chunks, it's faster" — and leaves everything
@@ -20,7 +20,7 @@ AQUI = Path(__file__).resolve().parent
 
 
 def main(k: int = 1) -> int:
-    doc = yaml.safe_load((AQUI / "mock_anvil.yaml").read_text("utf-8"))
+    doc = yaml.safe_load((AQUI / "mock_shopfloor.yaml").read_text("utf-8"))
     truncados = 0
     for respuesta in doc["responses"].values():
         recuperados = respuesta.get("retrieved") or []
@@ -28,10 +28,10 @@ def main(k: int = 1) -> int:
             respuesta["retrieved"] = recuperados[:k]
             truncados += 1
 
-    salida = AQUI / f"mock_anvil_topk{k}.yaml"
+    salida = AQUI / f"mock_shopfloor_topk{k}.yaml"
     salida.write_text(
         "# GENERADO por tests/fixtures/degrade_topk.py — no editar a mano.\n"
-        f"# El mismo sistema guionado que mock_anvil.yaml, con top-k = {k}.\n"
+        f"# El mismo sistema guionado que mock_shopfloor.yaml, con top-k = {k}.\n"
         "# Unica diferencia: `retrieved` truncado. Respuestas y citas identicas, para que\n"
         "# la caida que detecte el gate sea atribuible a una sola causa.\n"
         + yaml.safe_dump(doc, allow_unicode=True, sort_keys=False),

@@ -29,22 +29,22 @@ jobs:
 
       - name: correr la suite contra el sistema de referencia
         run: |
-          assay run --suite suites/anvil-v1.yaml \
-                    --system mock:tests/fixtures/mock_anvil.yaml \
+          groundcheck run --suite suites/shopfloor-v1.yaml \
+                    --system mock:tests/fixtures/mock_shopfloor.yaml \
                     --out runs/ --quiet
 
       - name: gate contra el baseline
-        run: assay gate "$(ls -t runs/*.json | head -1)" --against baselines/mock.json
+        run: groundcheck gate "$(ls -t runs/*.json | head -1)" --against baselines/mock.json
 
       # Prueba que el gate SIRVE. Un gate que nunca falla es un adorno: aca se le pasa a
       # proposito el sistema con top-k=1 y se exige que salga con codigo 1. Si algun dia
       # este paso "pasa", el gate se rompio y hay que arreglarlo antes que nada.
       - name: el gate tiene que detectar la regresion inyectada
         run: |
-          assay run --suite suites/anvil-v1.yaml \
-                    --system mock:tests/fixtures/mock_anvil_topk1.yaml \
+          groundcheck run --suite suites/shopfloor-v1.yaml \
+                    --system mock:tests/fixtures/mock_shopfloor_topk1.yaml \
                     --out runs-degradado/ --quiet
-          if assay gate "$(ls -t runs-degradado/*.json | head -1)" \
+          if groundcheck gate "$(ls -t runs-degradado/*.json | head -1)" \
                         --against baselines/mock.json; then
             echo "::error::el gate NO detecto la regresion de top-k. El gate esta roto."
             exit 1

@@ -1,13 +1,13 @@
-# Mapeo de la respuesta de anvil al contrato de assay.
+# Mapeo de la respuesta de shopfloor al contrato de groundcheck.
 #
-# assay no sabe nada de anvil por dentro: todo lo especifico vive en este archivo, que es
+# groundcheck no sabe nada de shopfloor por dentro: todo lo especifico vive en este archivo, que es
 # lo que hace que el harness sirva para medir cualquier RAG y no solo este.
 #
 # ⚠️ HALLAZGO AL ESCRIBIR ESTE MAPEO — leer antes de interpretar cualquier número:
 #
-# El campo `citations` de anvil se construye desde TODOS los hits del retrieval
-# (`src/anvil/api/main.py`: `cites = [... for h in hits]`), no desde los pasajes que el
-# generador realmente citó. En anvil, entonces, **citations == retrieved**.
+# El campo `citations` de shopfloor se construye desde TODOS los hits del retrieval
+# (`src/shopfloor/api/main.py`: `cites = [... for h in hits]`), no desde los pasajes que el
+# generador realmente citó. En shopfloor, entonces, **citations == retrieved**.
 #
 # Consecuencias, que quedan escritas para que nadie lea de más en el reporte:
 #   · recall@k, MRR y precision@k son VÁLIDOS: se calculan sobre el conjunto recuperado,
@@ -18,8 +18,8 @@
 #   · `grounded` mide "fundamentado en el contexto recuperado", no "en lo citado". Es más
 #     débil que la definición estricta, y es lo máximo que el sistema permite verificar.
 #
-# Para medir exactitud de cita de verdad, anvil tendría que exponer qué pasajes usó el
-# generador, separado de lo que trajo el retrieval. Es un cambio en anvil, no en assay.
+# Para medir exactitud de cita de verdad, shopfloor tendría que exponer qué pasajes usó el
+# generador, separado de lo que trajo el retrieval. Es un cambio en shopfloor, no en groundcheck.
 
 request:
   question_field: question
@@ -33,9 +33,9 @@ response:
   citations_field: citations
   retrieved_field: citations
 
-  # anvil da un rango de páginas (page_from/page_to). assay compara contra una página
+  # shopfloor da un rango de páginas (page_from/page_to). groundcheck compara contra una página
   # concreta, así que se toma la inicial: es la que un humano citaría.
-  # anvil explica por que se abstuvo. Sin esto, una abstencion correcta llega al
+  # shopfloor explica por que se abstuvo. Sin esto, una abstencion correcta llega al
   # etiquetado humano como una respuesta vacia y se juzga como fallo.
   passthrough: [reason, verifier_passed, cached]
 

@@ -1,12 +1,12 @@
-"""M0 acceptance criterion: `assay run` runs against a mock system and emits JSON."""
+"""M0 acceptance criterion: `groundcheck run` runs against a mock system and emits JSON."""
 
 import json
 from pathlib import Path
 
-from assay.adapter import build_adapter
-from assay.cli import main
-from assay.run import run_suite
-from assay.suite import load_suite
+from groundcheck.adapter import build_adapter
+from groundcheck.cli import main
+from groundcheck.run import run_suite
+from groundcheck.suite import load_suite
 
 ROOT = Path(__file__).resolve().parents[1]
 SUITE = ROOT / "suites" / "mock.yaml"
@@ -80,7 +80,7 @@ def test_cli_run_with_out_leaves_the_file(tmp_path):
     assert code == 0
     escritos = list(tmp_path.glob("*.json"))
     assert len(escritos) == 1
-    assert json.loads(escritos[0].read_text("utf-8"))["assay_version"]
+    assert json.loads(escritos[0].read_text("utf-8"))["groundcheck_version"]
 
 
 def test_an_invalid_suite_exits_with_code_2(tmp_path, capsys):
@@ -96,7 +96,7 @@ def test_pending_subcommands_do_not_pretend_to_exist(capsys):
     The test stays — if a future subcommand is ever declared in `--help`, it has to exit
     with code 2 rather than pretend to work.
     """
-    from assay.cli import PENDING
+    from groundcheck.cli import PENDING
 
     for name in PENDING:
         assert main([name]) == 2
@@ -123,7 +123,7 @@ def test_what_was_retrieved_reaches_the_observation():
 
 def test_metrics_computed_from_a_real_run():
     """Bridge M0 -> M1: metrics are derived from a run, not stored inside it."""
-    from assay.metrics import RetrievedItem, precision_at_k, recall_at_k, reciprocal_rank
+    from groundcheck.metrics import RetrievedItem, precision_at_k, recall_at_k, reciprocal_rank
 
     suite = load_suite(SUITE)
     record = run_suite(suite, build_adapter(f"mock:{MOCK}"))
@@ -150,7 +150,7 @@ def test_checks_over_a_real_mock_run():
     mentions no 950 at all. It is an invented number, and it comes from a real CLI run, not
     from an object assembled inside the test.
     """
-    from assay.checks import evaluate
+    from groundcheck.checks import evaluate
 
     suite = load_suite(SUITE)
     record = run_suite(suite, build_adapter(f"mock:{MOCK}"))

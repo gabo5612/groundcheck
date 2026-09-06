@@ -20,7 +20,7 @@ STAGE = "M4"
 
 STAGE_NOTES = [
     "A run stores raw observations and NO metrics, by design. Retrieval metrics and the "
-    "deterministic checks are derived afterwards by `assay report`, which verifies the "
+    "deterministic checks are derived afterwards by `groundcheck report`, which verifies the "
     "golden set's sha256 before reporting. That way an old run can be re-evaluated with "
     "new checks, and nobody confuses the data with the judgement about the data.",
 ]
@@ -32,7 +32,7 @@ def _now() -> str:
 
 def run_suite(suite: Suite, adapter: Adapter, *, on_case=None) -> RunRecord:
     record = RunRecord(
-        assay_version=__version__,
+        groundcheck_version=__version__,
         stage=STAGE,
         suite={
             "name": suite.name,

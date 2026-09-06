@@ -7,15 +7,15 @@ from pathlib import Path
 
 import pytest
 
-from assay.adapter import build_adapter
-from assay.cli import main
-from assay.report import ReportError, aggregate, render, resolve_suite
-from assay.run import run_suite, write_run
-from assay.suite import load_suite
+from groundcheck.adapter import build_adapter
+from groundcheck.cli import main
+from groundcheck.report import ReportError, aggregate, render, resolve_suite
+from groundcheck.run import run_suite, write_run
+from groundcheck.suite import load_suite
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "suites" / "anvil-v1.yaml"
-MOCK = ROOT / "tests" / "fixtures" / "mock_anvil.yaml"
+SUITE = ROOT / "suites" / "shopfloor-v1.yaml"
+MOCK = ROOT / "tests" / "fixtures" / "mock_shopfloor.yaml"
 
 
 @pytest.fixture

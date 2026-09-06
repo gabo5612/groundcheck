@@ -100,7 +100,7 @@ def resolve_suite(run: dict[str, Any], *, suite_path: str | Path | None = None) 
             "the golden set CHANGED since this run and the report would be a lie.\n"
             f"  run  : {declared[:16]}…\n"
             f"  file : {suite.sha256[:16]}…\n"
-            "Re-run `assay run` with the current set, or report against the set's commit."
+            "Re-run `groundcheck run` with the current set, or report against the set's commit."
         )
     return suite
 
@@ -154,7 +154,7 @@ def render(run: dict[str, Any], rows: dict[str, CategoryRow], *, k: int = 5) -> 
     out.append("")
     out.append(f"  suite      {run['suite']['name']}  ·  sha256 {run['suite']['sha256'][:16]}…")
     out.append(f"  system     {system['kind']}  ·  {system['target']}")
-    out.append(f"  run        {run['started_at']}  ·  assay {run['assay_version']} ({run['stage']})")
+    out.append(f"  run        {run['started_at']}  ·  groundcheck {run['groundcheck_version']} ({run['stage']})")
     if system["kind"] == "mock":
         # Without this, the table from a run against a mock gets screenshotted and ends up
         # in a portfolio as if it were a measurement of the real system.

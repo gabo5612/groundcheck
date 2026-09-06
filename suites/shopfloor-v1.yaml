@@ -1,15 +1,15 @@
 # ════════════════════════════════════════════════════════════════════════════════
-# Golden set v1 (M3) — sistema bajo prueba: anvil
+# Golden set v1 (M3) — sistema bajo prueba: shopfloor
 #
 # 20 preguntas · 4 controles negativos (20% exacto)
 #
-# CORPUS: anvil/demo/corpus.json — 5 documentos, 1699 chunks. Cada número de este
+# CORPUS: shopfloor/demo/corpus.json — 5 documentos, 1699 chunks. Cada número de este
 # archivo se leyó del chunk que lo respalda; ninguno se estimó. Los doc_id son los
 # reales del corpus, no alias.
 #
-# ⚠️ NOTA DE FIDELIDAD AL CORPUS: el spec de assay (§3) usa como ejemplo ilustrativo
+# ⚠️ NOTA DE FIDELIDAD AL CORPUS: el spec de groundcheck (§3) usa como ejemplo ilustrativo
 # "M24 grado 8.8 → 680 N·m". El corpus real dice 720 ± 30. Este set usa 720. Copiar el
-# 680 del spec habría medido a anvil contra un número que no está en la documentación:
+# 680 del spec habría medido a shopfloor contra un número que no está en la documentación:
 # habría "fallado" una pregunta cuya respuesta correcta nunca existió.
 #
 # CATEGORÍAS AUSENTES Y POR QUÉ (no es olvido):
@@ -24,7 +24,7 @@
 # alfanumerico_exacto. El 20% de controles negativos NO se tocó: es la métrica que hace
 # que un sistema que siempre responde con seguridad no puntúe perfecto.
 # ════════════════════════════════════════════════════════════════════════════════
-name: anvil-v1
+name: shopfloor-v1
 cases:
 
 # ── factual_lookup (8) ──────────────────────────────────────────────────────
@@ -123,7 +123,7 @@ cases:
 
 # ── alfanumerico_exacto (4) ─────────────────────────────────────────────────
 # Prueban búsqueda híbrida: un código como E-114 se pierde en búsqueda puramente
-# densa, porque su vecindad semántica no dice nada. Es el Problema 2 de anvil.
+# densa, porque su vecindad semántica no dice nada. Es el Problema 2 de shopfloor.
 
   - id: alarma-e114
     question: "¿Qué significa la alarma E-114 del horno de induccion?"

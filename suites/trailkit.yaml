@@ -3,7 +3,7 @@
 #
 # 15 preguntas · 3 controles negativos (20%)
 #
-# POR QUÉ ESTE SET EXISTE, aparte del de anvil:
+# POR QUÉ ESTE SET EXISTE, aparte del de shopfloor:
 # El etiquetado humano del LLM-judge (M7) exige que una persona juzgue si una respuesta
 # es correcta. Con el manual del laminador o el manual militar, eso obliga a estudiar
 # documentación ajena antes de poder opinar — y una etiqueta puesta sin dominio del tema

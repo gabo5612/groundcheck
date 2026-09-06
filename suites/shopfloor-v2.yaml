@@ -1,11 +1,11 @@
 # ════════════════════════════════════════════════════════════════════════════════
-# Golden set v2 (M8) — sistema bajo prueba: anvil
+# Golden set v2 (M8) — sistema bajo prueba: shopfloor
 #
 # 39 preguntas · 9 controles negativos (23%)
 #
-# CORPUS: anvil/demo/corpus.json — 5 documentos, 1699 chunks. Cada número de este
+# CORPUS: shopfloor/demo/corpus.json — 5 documentos, 1699 chunks. Cada número de este
 # archivo se leyó del chunk que lo respalda; ninguno se estimó. Verificable con
-# `python3 scripts/verify_against_corpus.py <corpus> suites/anvil-v2.yaml`.
+# `python3 scripts/verify_against_corpus.py <corpus> suites/shopfloor-v2.yaml`.
 #
 # QUÉ CAMBIÓ DESDE v1 (y por qué importa)
 # v1 tenía 18 de 20 preguntas sobre LAM-2, que es un documento de UNA página. Como el
@@ -16,7 +16,7 @@
 #
 # ⚠️ NOTA DE FIDELIDAD AL CORPUS: el spec (§3) usa como ejemplo "M24 grado 8.8 →
 # 680 N·m". El corpus real dice 720 ± 30. Este set usa 720. Copiar el 680 habría
-# medido a anvil contra un número que no está en la documentación.
+# medido a shopfloor contra un número que no está en la documentación.
 #
 # ❌ DOS CATEGORÍAS SIGUEN AUSENTES, y no es olvido:
 #   · multi_documento     — el corpus no tiene ninguna relación genuina entre dos
@@ -31,7 +31,7 @@
 # El 20% de controles negativos NO se tocó: subió a 23%. Es la métrica que impide que
 # un sistema que siempre responde con seguridad puntúe perfecto.
 # ════════════════════════════════════════════════════════════════════════════════
-name: anvil-v2
+name: shopfloor-v2
 cases:
 
 # ── factual_lookup (8) ──────────────────────────────────────────────────────
@@ -130,7 +130,7 @@ cases:
 
 # ── alfanumerico_exacto (4) ─────────────────────────────────────────────────
 # Prueban búsqueda híbrida: un código como E-114 se pierde en búsqueda puramente
-# densa, porque su vecindad semántica no dice nada. Es el Problema 2 de anvil.
+# densa, porque su vecindad semántica no dice nada. Es el Problema 2 de shopfloor.
 
   - id: alarma-e114
     question: "¿Qué significa la alarma E-114 del horno de induccion?"

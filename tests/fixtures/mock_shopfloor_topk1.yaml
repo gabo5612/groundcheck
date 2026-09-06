@@ -1,5 +1,5 @@
 # GENERADO por tests/fixtures/degrade_topk.py — no editar a mano.
-# El mismo sistema guionado que mock_anvil.yaml, con top-k = 1.
+# El mismo sistema guionado que mock_shopfloor.yaml, con top-k = 1.
 # Unica diferencia: `retrieved` truncado. Respuestas y citas identicas, para que
 # la caida que detecte el gate sea atribuible a una sola causa.
 responses:

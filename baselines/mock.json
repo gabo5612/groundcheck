@@ -1,7 +1,7 @@
 {
   "suite": {
-    "name": "anvil-v1",
-    "path": "suites/anvil-v1.yaml",
+    "name": "shopfloor-v1",
+    "path": "suites/shopfloor-v1.yaml",
     "sha256": "7ab5bff813a5f34123ced00f8045486313c6a0143ff109cc68a0a160a5f3d1f3",
     "case_count": 20,
     "category_counts": {
@@ -15,7 +15,7 @@
   },
   "system": {
     "kind": "mock",
-    "target": "tests/fixtures/mock_anvil.yaml"
+    "target": "tests/fixtures/mock_shopfloor.yaml"
   },
   "k": 5,
   "categories": {

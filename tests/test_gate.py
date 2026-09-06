@@ -7,17 +7,17 @@ from pathlib import Path
 
 import pytest
 
-from assay.adapter import build_adapter
-from assay.cli import _report_payload, main
-from assay.gate import GateError, compare
-from assay.report import aggregate
-from assay.run import run_suite, write_run
-from assay.suite import load_suite
+from groundcheck.adapter import build_adapter
+from groundcheck.cli import _report_payload, main
+from groundcheck.gate import GateError, compare
+from groundcheck.report import aggregate
+from groundcheck.run import run_suite, write_run
+from groundcheck.suite import load_suite
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "suites" / "anvil-v1.yaml"
-MOCK = ROOT / "tests" / "fixtures" / "mock_anvil.yaml"
-MOCK_TOPK1 = ROOT / "tests" / "fixtures" / "mock_anvil_topk1.yaml"
+SUITE = ROOT / "suites" / "shopfloor-v1.yaml"
+MOCK = ROOT / "tests" / "fixtures" / "mock_shopfloor.yaml"
+MOCK_TOPK1 = ROOT / "tests" / "fixtures" / "mock_shopfloor_topk1.yaml"
 
 
 def report_of(fixture: Path, k: int = 5) -> dict:
