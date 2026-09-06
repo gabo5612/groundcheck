@@ -370,3 +370,76 @@ def test_el_control_negativo_no_se_escapa_por_la_exencion():
                               page=1, rev=None))
     assert r["grounded"].passed is True            # el 720 esta literal en la tabla
     assert r["abstention_correct"].passed is False  # y acá se lo atrapa
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# forbidden_codes — el hueco del formato que M3 dejo anotado
+# ─────────────────────────────────────────────────────────────────────────────
+ALARMAS = (
+    "| E-114 | Sobretemperatura de bobina        | Parar y purgar refrigerante |\n"
+    "| E-115 | Perdida de caudal de refrigerante | Verificar bomba P-3         |\n"
+    "| E-141 | Fallo de aislamiento              | Bloquear equipo             |\n"
+)
+
+
+def caso_alarma(**kw) -> Case:
+    base = dict(
+        id="alarma-e114",
+        question="¿Qué significa la alarma E-114?",
+        category="alfanumerico_exacto",
+        gold_answer="Sobretemperatura de bobina",
+        forbidden_codes=("E-115", "E-141"),
+        gold_sources=(GoldSource(doc_id="LAM", pages=(1,)),),
+    )
+    base.update(kw)
+    return Case(**base)
+
+
+def test_contestar_la_alarma_de_al_lado_lo_atrapa_forbidden_codes():
+    """La trampa que `forbidden_numbers` NO puede ver.
+
+    El "115" de E-115 vive dentro de un identificador y nunca se extrae como numero, asi
+    que sin este check la respuesta equivocada pasaba entera: cita bien, esta fundamentada
+    (la tabla trae las tres filas) y no trae ningun numero prohibido.
+    """
+    r = evaluate(caso_alarma(), respuesta(
+        "La alarma E-115 indica perdida de caudal de refrigerante.",
+        text=ALARMAS, doc="LAM", page=1, rev=None))
+    assert r["forbidden_codes_absent"].passed is False
+    assert "E-115" in r["forbidden_codes_absent"].evidence["presentes"]
+    # Y se ve por que hacia falta: los otros checks la dejan pasar.
+    assert r["grounded"].passed is True
+    assert r["citation_hits_gold"].passed is True
+
+
+def test_la_respuesta_correcta_pasa_forbidden_codes():
+    r = evaluate(caso_alarma(), respuesta(
+        "La alarma E-114 indica sobretemperatura de bobina.",
+        text=ALARMAS, doc="LAM", page=1, rev=None))
+    assert r["forbidden_codes_absent"].passed is True
+
+
+def test_sin_codigos_prohibidos_el_check_es_None():
+    r = evaluate(caso_alarma(forbidden_codes=()), respuesta(
+        "La alarma E-114 indica sobretemperatura.", text=ALARMAS, doc="LAM", page=1, rev=None))
+    assert r["forbidden_codes_absent"].passed is None
+
+
+def test_los_codigos_prohibidos_comparan_sin_importar_mayusculas():
+    r = evaluate(caso_alarma(forbidden_codes=("e-115",)), respuesta(
+        "Ver E-115.", text=ALARMAS, doc="LAM", page=1, rev=None))
+    assert r["forbidden_codes_absent"].passed is False
+
+
+def test_un_codigo_prohibido_que_esta_en_la_respuesta_de_oro_es_error(tmp_path):
+    """Seria una trampa contra la respuesta correcta: el caso fallaria siempre."""
+    from assay.suite import SuiteError, load_suite
+
+    body = (
+        "cases:\n  - id: x\n    question: q\n    category: alfanumerico_exacto\n"
+        "    gold_answer: 'Ver la alarma E-114'\n    forbidden_codes: ['E-114']\n"
+    )
+    p = tmp_path / "s.yaml"
+    p.write_text(body, "utf-8")
+    with pytest.raises(SuiteError, match="a la vez"):
+        load_suite(p)

@@ -28,7 +28,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: torque-m24-grado-109
@@ -39,7 +39,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: FALLA · forbidden numbers absent: FALLA · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: true
-    tu_veredicto:      # bien | mal
+    tu_veredicto: mal      # bien | mal
     por_que:           # opcional, una linea
 
   - id: torque-m16-tapa
@@ -50,7 +50,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: FALLA
     los_deterministas_ya_lo_atraparon: true
-    tu_veredicto:      # bien | mal
+    tu_veredicto: mal      # bien | mal
     por_que:           # opcional, una linea
 
   - id: precalentamiento-a516-espeso
@@ -61,7 +61,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: precalentamiento-a106
@@ -72,7 +72,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: precalentamiento-a516-delgado
@@ -83,7 +83,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: FALLA · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: true
-    tu_veredicto:      # bien | mal
+    tu_veredicto: mal      # bien | mal
     por_que:           # opcional, una linea
 
   - id: pasadas-cabezal
@@ -94,7 +94,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: version-leaflet-trailkit
@@ -105,7 +105,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: FALLA · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: true
-    tu_veredicto:      # bien | mal
+    tu_veredicto: mal      # bien | mal
     por_que:           # opcional, una linea
 
   - id: alarma-e114
@@ -116,7 +116,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: mal      # bien | mal
     por_que:           # opcional, una linea
 
   - id: alarma-e115-accion
@@ -127,7 +127,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: nsn-aceite-law
@@ -138,7 +138,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: seccionador-loto
@@ -149,7 +149,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: loto-linea-colada-completo
@@ -160,7 +160,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: loto-presion-cero
@@ -171,7 +171,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: loto-primer-paso
@@ -182,7 +182,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: montaje-cabezal-superficies
@@ -193,7 +193,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: torque-m30-inexistente
@@ -203,7 +203,7 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: FALLA · revision current: ok
     los_deterministas_ya_lo_atraparon: true
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: torque-m24-grado-129-inexistente
@@ -213,7 +213,7 @@ etiquetas:
     abstuvo: true
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: alarma-e200-inexistente
@@ -223,7 +223,7 @@ etiquetas:
     abstuvo: true
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea
 
   - id: precalentamiento-a312-inexistente
@@ -233,5 +233,5 @@ etiquetas:
     abstuvo: false
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: FALLA · revision current: ok
     los_deterministas_ya_lo_atraparon: true
-    tu_veredicto:      # bien | mal
+    tu_veredicto: bien      # bien | mal
     por_que:           # opcional, una linea

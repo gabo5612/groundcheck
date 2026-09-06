@@ -45,6 +45,10 @@ class Case:
     gold_answer: str | None = None
     gold_numbers: tuple[str, ...] = ()
     forbidden_numbers: tuple[str, ...] = ()
+    # Identificadores de otra fila/entrada que, si aparecen, delatan que el sistema
+    # contesto lo de al lado. `forbidden_numbers` no puede cubrirlos: el "115" de E-115
+    # vive dentro de un identificador y nunca se extrae como numero.
+    forbidden_codes: tuple[str, ...] = ()
     # Plural: un caso `multi_documento` tiene la respuesta repartida entre varias
     # fuentes, y con un solo `gold_source` esa categoria — 10% del set segun §3 del
     # contexto — no se puede medir. El YAML acepta un mapa o una lista de mapas.

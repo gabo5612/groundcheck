@@ -8,7 +8,7 @@ opina de calidad — solo verifica lo verificable:
   2. la revisión declarada coincide con la del documento
   3. las páginas declaradas existen y tienen chunks
   4. cada `gold_number` aparece literal en algún chunk de esa página
-  5. cada `forbidden_number` TAMBIÉN aparece en el corpus  ← ver abajo
+  5. cada `forbidden_number` y `forbidden_code` TAMBIÉN aparece en el corpus  ← ver abajo
   6. los controles negativos NO tienen su respuesta en la página citada
 
 El punto 5 es el menos obvio y el más importante: un `forbidden_number` que no está en
@@ -74,6 +74,14 @@ def main(corpus_path: str, suite_path: str) -> int:
                     fallos.append(
                         f"{case.id}: forbidden_number {n!r} no esta en el corpus — "
                         f"es ruido, no una trampa (el check nunca se dispararia)"
+                    )
+
+            for code in case.forbidden_codes:
+                total_prohibidos += 1
+                if code.upper() not in {c.upper() for c in extract_codes(texto)}:
+                    fallos.append(
+                        f"{case.id}: forbidden_code {code!r} no esta en el corpus — "
+                        f"es ruido, no una trampa"
                     )
 
             # Los identificadores de la respuesta de oro tambien tienen que existir.

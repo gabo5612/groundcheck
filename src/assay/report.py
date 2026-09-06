@@ -29,7 +29,8 @@ from .schema import CATEGORIES, Case, Response, Suite
 from .suite import load_suite
 
 CHECK_COLUMNS = ("grounded", "gold_numbers_present", "forbidden_numbers_absent",
-                 "citation_hits_gold", "abstention_correct", "revision_current")
+                 "forbidden_codes_absent", "citation_hits_gold", "abstention_correct",
+                 "revision_current")
 
 
 class ReportError(RuntimeError):

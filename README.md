@@ -10,7 +10,7 @@ determinista, ningún modelo juzgando a otro modelo**.
 > *assay* = ensayo metalúrgico, el análisis que determina qué contiene realmente una
 > muestra. Es literalmente lo que hace esta herramienta.
 
-## Estado: M6 de 8
+## Estado: M7–M8 en curso
 
 | Hito | Qué trae | Estado |
 |---|---|---|
@@ -21,8 +21,8 @@ determinista, ningún modelo juzgando a otro modelo**.
 | **M4** | Reporte con desglose por categoría | ✅ |
 | **M5** | Gate de CI | ✅ |
 | **M6** | `assay diff` | ✅ |
-| M7 | LLM-judge opcional (reporta, no bloquea) | ⬜ |
-| M8 | Golden set v2 (50 preguntas, es/en) | ⬜ |
+| M7 | LLM-judge opcional (reporta, no bloquea) | 🟡 planilla lista, faltan las etiquetas humanas |
+| M8 | Golden set v2 | 🟡 **39/50** — dos categorías sin corpus, ver abajo |
 
 **Una corrida no emite ni una métrica, a propósito.** Una corrida guarda sólo lo observado: qué se
 preguntó y qué contestó el sistema. Hay un test (`test_M0_no_emite_ni_una_metrica`) que
@@ -171,6 +171,27 @@ parece". Así está construido el grueso de los RAG que existen.
 
 El **20% de controles negativos** es lo que casi todos olvidan: sin ellos, un sistema que
 siempre responde con seguridad puntúa perfecto.
+
+## El golden set
+
+| | v1 | v2 |
+|---|---|---|
+| preguntas | 20 | **39** |
+| controles negativos | 4 (20%) | **9 (23%)** |
+| documentos | 2 | **3** |
+| idiomas | es | **es + en** |
+
+**Por qué v2 existe:** v1 tenía 18 de 20 preguntas sobre un documento de **una página**. Como
+el oro se empareja a nivel de página, su recall era trivialmente `1.00` — cualquier chunk de
+esa página contaba como relevante. v2 agrega 19 preguntas sobre documentos multipágina (un
+manual de 117 páginas en inglés y uno de 15 en español), que son las que dan señal de
+retrieval real.
+
+**Dos categorías siguen ausentes, y está dicho en el propio archivo:** `multi_documento`
+(el corpus no tiene una relación genuina entre dos documentos; una pregunta que cruce dos
+sería artificial, y una pregunta de oro falsa es peor que una categoría vacía) y
+`revision_supersedida` (cada documento existe en una sola revisión). Las dos necesitan corpus
+nuevo, no más trabajo.
 
 ## El golden set v1
 

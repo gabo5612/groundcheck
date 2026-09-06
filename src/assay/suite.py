@@ -27,6 +27,7 @@ CASE_KEYS = {
     "gold_answer",
     "gold_numbers",
     "forbidden_numbers",
+    "forbidden_codes",
     "gold_source",
     "must_abstain",
 }
@@ -138,6 +139,17 @@ def _parse_case(index: int, raw: Any) -> Case:
     languages = _as_str_tuple(where, "languages", raw.get("languages"))
     gold_numbers = _as_str_tuple(where, "gold_numbers", raw.get("gold_numbers"))
     forbidden = _as_str_tuple(where, "forbidden_numbers", raw.get("forbidden_numbers"))
+    forbidden_codes = _as_str_tuple(where, "forbidden_codes", raw.get("forbidden_codes"))
+
+    # Un codigo prohibido que aparece en la respuesta de oro seria una trampa contra la
+    # respuesta correcta: el caso fallaria siempre, hiciera lo que hiciera el sistema.
+    if case.get("gold_answer") if isinstance(case := raw, dict) else False:
+        from .numbers import extract_codes
+
+        en_oro = {c.upper() for c in extract_codes(raw.get("gold_answer") or "")}
+        choque = sorted({c.upper() for c in forbidden_codes} & en_oro)
+        if choque:
+            _fail(where, f"{choque} esta en `forbidden_codes` y en `gold_answer` a la vez")
 
     sources = _parse_sources(where, raw.get("gold_source"))
     if category == "multi_documento" and len({s.doc_id for s in sources}) < 2:
@@ -161,6 +173,7 @@ def _parse_case(index: int, raw: Any) -> Case:
         gold_answer=gold_answer,
         gold_numbers=gold_numbers,
         forbidden_numbers=forbidden,
+        forbidden_codes=forbidden_codes,
         gold_sources=_parse_sources(where, raw.get("gold_source")),
     )
 

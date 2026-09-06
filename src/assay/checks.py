@@ -22,7 +22,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from .metrics import RetrievedItem, matches
-from .numbers import contains_number, extract_codes, extract_numbers
+from .numbers import contains_code, contains_number, extract_codes, extract_numbers
 from .schema import Case, Response
 
 
@@ -102,6 +102,25 @@ def check_forbidden_numbers(case: Case, response: Response) -> CheckResult:
         not presentes,
         "ninguno presente" if not presentes else f"aparecen {presentes} — cruzo filas",
         {"prohibidos": list(case.forbidden_numbers), "presentes": presentes},
+    )
+
+
+def check_forbidden_codes(case: Case, response: Response) -> CheckResult:
+    """Ningun identificador prohibido aparece en la respuesta.
+
+    El hermano de `check_forbidden_numbers` para el mundo alfanumerico. La trampa tipica
+    de `alfanumerico_exacto`: preguntar por la alarma E-114 y recibir la descripcion de
+    E-115. `forbidden_numbers` no puede verlo — el "115" nunca se extrae como numero
+    porque vive dentro de un identificador.
+    """
+    if not case.forbidden_codes:
+        return CheckResult("forbidden_codes_absent", None, "el caso no define codigos prohibidos")
+    presentes = [c for c in case.forbidden_codes if contains_code(response.answer, c)]
+    return CheckResult(
+        "forbidden_codes_absent",
+        not presentes,
+        "ninguno presente" if not presentes else f"aparecen {presentes} — contesto lo de al lado",
+        {"prohibidos": list(case.forbidden_codes), "presentes": presentes},
     )
 
 
@@ -239,6 +258,7 @@ def check_revision_current(case: Case, response: Response) -> CheckResult:
 CHECKS = (
     check_gold_numbers,
     check_forbidden_numbers,
+    check_forbidden_codes,
     check_grounded,
     check_citation_hits_gold,
     check_abstention,
