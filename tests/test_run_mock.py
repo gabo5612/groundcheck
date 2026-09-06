@@ -38,16 +38,16 @@ def test_the_mock_script_arrives_verbatim():
 
 
 def test_a_run_emits_no_metric_at_all():
-    """La regla de §8 del contexto maestro, como test — invariante, no solo de M0.
+    """The §8 rule from the master spec, as a test — invariant, not just for M0.
 
-    Una run_of guarda observaciones; las metricas se derivan en el reporte (M4). Si
-    alguien agrega un promedio "provisional" a la output de `run`, esto se cae. Un cero
-    o un 0.5 de relleno en un JSON de evals es peor que una celda vacia: se copia a un
-    README y deja de ser provisional.
+    A run stores observations; metrics are derived in the report (M4). If someone adds a
+    "provisional" average to `run`'s output, this breaks. A filler zero or 0.5 in an
+    evaluation JSON is worse than an empty cell: it gets copied into a README and stops
+    being provisional.
 
-    Nota: `metrics` como palabra tambien esta prohibida acá, y el modulo `assay.metrics`
-    existe desde M1 — la prohibicion es sobre la SALIDA de una run_of, no sobre el
-    codigo que calcula despues.
+    Note: the `notes` field is excluded below because it is prose explaining that a run
+    emits no metrics — and that sentence naturally contains the forbidden words. The guard
+    aims at the DATA, not at the wording of a comment.
     """
     suite = load_suite(SUITE)
     record = run_suite(suite, build_adapter(f"mock:{MOCK}"))

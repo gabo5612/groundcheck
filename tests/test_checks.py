@@ -300,7 +300,7 @@ def test_an_invented_nsn_does_not_pass_groundedness():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Reglas 4 y exención por enunciado — los dos falsos negativos que encontró M4
+# Rule 4 and the question exemption — the two false negatives M4 found
 # ─────────────────────────────────────────────────────────────────────────────
 @pytest.mark.parametrize(
     "texto,esperado",
@@ -397,11 +397,11 @@ def alarm_case(**kw) -> Case:
 
 
 def test_answering_the_neighbouring_alarm_is_caught_by_forbidden_codes():
-    """La trampa que `forbidden_numbers` NO puede ver.
+    """The trap `forbidden_numbers` CANNOT see.
 
-    El "115" de E-115 vive dentro de un identificador y nunca se extrae como numero, asi
-    que sin este check la respuesta equivocada pasaba entera: cita bien, esta fundamentada
-    (la tabla trae las tres rows) y no trae ningun numero prohibgone.
+    The "115" in E-115 lives inside an identifier and is never extracted as a number, so
+    without this check the wrong answer passed everything: it cites correctly, it is
+    grounded (the table carries all three rows) and it holds no forbidden number.
     """
     r = evaluate(alarm_case(), answer(
         "La alarma E-115 indica perdida de caudal de refrigerante.",
@@ -447,7 +447,7 @@ def test_a_forbidden_code_present_in_the_gold_answer_is_an_error(tmp_path):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Regla 4b — marcadores de cita (el falso negativo que encontró la run_of real)
+# Rule 4b — citation markers (the false negative the real run found)
 # ─────────────────────────────────────────────────────────────────────────────
 @pytest.mark.parametrize(
     "texto,esperado",

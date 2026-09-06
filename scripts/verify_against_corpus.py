@@ -1,22 +1,22 @@
-"""Prueba que el golden set esté realmente respaldado por el corpus.
+"""Proves the golden set is actually backed by the corpus.
 
-Un golden set cuyos números no se pueden rastrear al documento es peor que no tener
-golden set: mide contra una respuesta inventada y culpa al sistema. Este script no
-opina de calidad — solo verifica lo verificable:
+A golden set whose numbers cannot be traced back to the document is worse than no golden
+set at all: it measures against an invented answer and blames the system. This script does
+not judge quality — it only verifies what is verifiable:
 
-  1. cada `gold_source.doc_id` existe en el corpus
-  2. la revisión declarada coincide con la del documento
-  3. las páginas declaradas existen y tienen chunks
-  4. cada `gold_number` aparece literal en algún chunk de esa página
-  5. cada `forbidden_number` y `forbidden_code` TAMBIÉN aparece en el corpus  ← ver abajo
-  6. los controles negativos NO tienen su respuesta en la página citada
+  1. every `gold_source.doc_id` exists in the corpus
+  2. the declared revision matches the document's
+  3. the declared pages exist and have chunks
+  4. every `gold_number` appears literally in some chunk of that page
+  5. every `forbidden_number` and `forbidden_code` ALSO appears in the corpus  ← see below
+  6. negative controls do NOT have their answer on the cited page
 
-El punto 5 es el menos obvio y el más importante: un `forbidden_number` que no está en
-el documento no es una trampa, es ruido. La trampa tiene que ser un número REAL de otra
-fila — si no, el check nunca se dispara y da una falsa sensación de rigor.
+Point 5 is the least obvious and the most important: a `forbidden_number` that is not in
+the document is not a trap, it is noise. The trap has to be a REAL number from another
+row — otherwise the check never fires and gives a false sense of rigour.
 
-Uso:
-    python3 scripts/verify_against_corpus.py ../anvil/demo/corpus.json suites/anvil-v1.yaml
+Usage:
+    python3 scripts/verify_against_corpus.py ../anvil/demo/corpus.json suites/anvil-v2.yaml
 """
 
 from __future__ import annotations
@@ -84,7 +84,7 @@ def main(corpus_path: str, suite_path: str) -> int:
                         f"es ruido, no una trampa"
                     )
 
-            # Los identificadores de la respuesta de oro tambien tienen que existir.
+            # The identifiers in the gold answer also have to exist.
             if case.gold_answer:
                 del_corpus = set(extract_codes(texto))
                 for code in extract_codes(case.gold_answer):

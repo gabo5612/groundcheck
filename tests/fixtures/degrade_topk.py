@@ -1,12 +1,12 @@
-"""Genera `mock_anvil_topk1.yaml`: el mismo sistema guionado, pero con top-k bajado a 1.
+"""Generates `mock_anvil_topk1.yaml`: the same scripted system, with top-k dropped to 1.
 
-Es la regresión que pide el criterio de aceptación de M5. Simula el cambio de config más
-banal y más común de un RAG —"traigamos menos chunks, va más rápido"— y deja todo lo demás
-idéntico: las mismas respuestas, las mismas citas. Solo se trunca `retrieved`.
+This is the regression the M5 acceptance criterion asks for. It simulates the most banal and
+most common RAG config change — "fetch fewer chunks, it's faster" — and leaves everything
+else identical: same answers, same citations. Only `retrieved` is truncated.
 
-Así la caída que detecte el gate es atribuible a UNA causa y no a una mezcla.
+That way the drop the gate detects is attributable to ONE cause and not to a mixture.
 
-Uso:  python3 tests/fixtures/degrade_topk.py [k]
+Usage:  python3 tests/fixtures/degrade_topk.py [k]
 """
 
 from __future__ import annotations

@@ -130,7 +130,7 @@ def test_negative_control_abstention_is_gated(baseline):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# CLI: los codigos de output son el contrato con el CI
+# CLI: the exit codes are the contract with CI
 # ─────────────────────────────────────────────────────────────────────────────
 @pytest.fixture
 def files(tmp_path):

@@ -1,13 +1,13 @@
-"""Genera `mock_anvil.yaml`: un sistema guionado que responde las 20 preguntas de
+"""Generates `mock_anvil.yaml`: a scripted system that answers the 20 questions in
 `suites/anvil-v1.yaml`.
 
-**Esto NO es una medición de anvil.** Es una ficción deliberada, escrita para que cada
-check del harness se dispare al menos una vez y para que el reporte de M4 se pueda ver
-lleno antes de que exista una corrida real. Los textos de los chunks salen del corpus de
-verdad (para no introducir errores de transcripción); las respuestas y los fallos son
-inventados a propósito, caso por caso, y la intención de cada uno está escrita al lado.
+**This is NOT a measurement of anvil.** It is a deliberate fiction, written so every check
+in the harness fires at least once and so the M4 report can be seen fully populated before
+a real run exists. The chunk texts come from the real corpus (to avoid introducing
+transcription errors); the answers and the failures are invented on purpose, case by case,
+with the intent of each written alongside it.
 
-Uso:
+Usage:
     python3 tests/fixtures/build_mock_anvil.py ../anvil/demo/corpus.json
 """
 
@@ -130,14 +130,13 @@ DOC_POR_CASO = {
     "version-leaflet-trailkit": TP,
 }
 
-# Ruido de retrieval: cuantos chunks NO relevantes se ponen ANTES del chunk de oro.
+# Retrieval noise: how many NON-relevant chunks are placed BEFORE the gold chunk.
 #
-# Sin esto el mock traia el chunk correcto en el rank 1 en las 20 preguntas, o sea
-# retrieval perfecto: recall@5 = 1.00 en todas las categorias. Un fixture asi no puede
-# detectar NINGUNA regresion de retrieval, que es justo lo que el gate de M5 tiene que
-# demostrar. Los valores de abajo estan elegidos para que el chunk de oro caiga en rank 2
-# o 3 en algunos casos — como se comporta un RAG real — y para que bajar top-k a 1 destruya
-# el recall de esos casos.
+# Without this the mock returned the correct chunk at rank 1 on all 20 questions — perfect
+# retrieval: recall@5 = 1.00 across every category. A fixture like that cannot detect ANY
+# retrieval regression, which is exactly what the M5 gate has to demonstrate. The values
+# below are chosen so the gold chunk lands at rank 2 or 3 in some cases — the way a real RAG
+# behaves — and so that dropping top-k to 1 destroys the recall of those cases.
 RUIDO = {
     "torque-m24-grado-88": 2,        # oro en rank 3
     "torque-m24-grado-109": 1,       # oro en rank 2
@@ -197,7 +196,7 @@ def main(corpus_path: str) -> int:
                 lineas.append(f"        revision: {revision}")
             lineas.append(f"        chunk_id: \"{c['id']}\"")
             lineas.append(f"        text: {json.dumps(c['text'], ensure_ascii=False)}")
-        # Ruido antes del oro: chunks del mismo documento que no cubren el objetivo.
+        # Noise before the gold: chunks from the same document that cover no target.
         ids_citados = {c["id"] for c in citados}
         paginas_oro = {p for src in caso.gold_sources for p in src.pages}
         ruido = [

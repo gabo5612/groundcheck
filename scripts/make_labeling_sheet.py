@@ -1,14 +1,14 @@
-"""Genera la planilla de etiquetado humano para el LLM-judge (M7).
+"""Generates the human labelling sheet for the LLM judge (M7).
 
-El juez se publica SIEMPRE junto a su tasa de acuerdo con etiquetas humanas (§4 del
-spec). Esa tasa se mide contra el juicio de una persona: si la produjera un modelo,
-seria un modelo juzgando a otro modelo, que es exactamente lo que este proyecto no hace.
+The judge is ALWAYS published alongside its agreement rate with human labels (§4 of the
+spec). That rate is measured against a person's judgement: if a model produced it, it would
+be a model judging another model, which is exactly what this project does not do.
 
-La planilla incluye a proposito casos donde los checks deterministas PASAN. Ahi es donde
-el juez tiene algo que aportar y donde su acuerdo con un humano es informativo; en un
-caso donde el verificador ya dijo "numero inventado" no hace falta juez.
+The sheet deliberately includes cases where the deterministic checks PASS. That is where the
+judge has something to contribute and where its agreement with a human is informative; in a
+case where the verifier already said "invented number", no judge is needed.
 
-Uso:  python3 scripts/make_labeling_sheet.py <corrida.json> [salida.yaml]
+Usage:  python3 scripts/make_labeling_sheet.py <run.json> [output.yaml] [corpus.json]
 """
 
 from __future__ import annotations
@@ -28,10 +28,10 @@ RAIZ = Path(__file__).resolve().parents[1]
 
 
 def _pasajes_de_oro(corpus_path: str, caso) -> list[str]:
-    """El texto del documento donde vive la respuesta correcta.
+    """The document text where the correct answer lives.
 
-    Sin esto la planilla pide juzgar una respuesta sin dar contra que juzgarla, que es
-    pedir una opinion, no una etiqueta.
+    Without this the sheet asks someone to judge an answer without giving them anything to
+    judge it against — which is asking for an opinion, not a label.
     """
     if not corpus_path or not Path(corpus_path).exists():
         return []
@@ -86,29 +86,29 @@ def main(run_path: str, out_path: str | None = None, corpus_path: str = "") -> i
 
     lineas = [
         "# ═══════════════════════════════════════════════════════════════════════════",
-        "# PLANILLA DE ETIQUETADO HUMANO — M7",
+        "# HUMAN LABELLING SHEET — M7",
         "#",
-        "# QUE HACER: compara la `respuesta` contra el bloque `fuente`, que es el texto",
-        "# LITERAL del documento donde vive la respuesta correcta. Despues escribi en",
-        "# `tu_veredicto` una de estas dos palabras:",
+        "# WHAT TO DO: compare `respuesta` against the `fuente` block, which is the",
+        "# LITERAL text of the document where the correct answer lives. Then write one",
+        "# of these two words in `tu_veredicto`:",
         "#",
-        "#     bien   la respuesta es correcta y util para quien pregunto",
-        "#     mal    la respuesta es incorrecta, incompleta o enganosa",
+        "#     bien   the answer is correct and useful to whoever asked",
+        "#     mal    the answer is incorrect, incomplete or misleading",
         "#",
-        "# `por_que` es opcional, una linea.",
+        "# `por_que` is optional, one line.",
         "#",
-        "# LA REGLA: si la respuesta dice algo que la fuente NO dice, es `mal`, por bien",
-        "# escrita que este. Si la pregunta es un control negativo (el dato no existe en la",
-        "# documentacion), la unica respuesta correcta es abstenerse: si contesta con una",
-        "# cifra, es `mal` aunque la cifra exista en otra fila.",
+        "# THE RULE: if the answer says something the source does NOT say, it is `mal`, however",
+        "# well written. If the question is a negative control (the fact does not exist in the",
+        "# documentation), the only correct answer is to abstain: if it answers with a figure,",
+        "# it is `mal` even when that figure exists in another row.",
         "#",
-        "# PARA QUE SIRVE: con estas etiquetas se calcula la TASA DE ACUERDO entre vos y",
-        "# el LLM-judge, y esa tasa se publica al lado de cada numero del juez. Un juez sin",
-        "# su tasa de acuerdo es una opinion con decimales (§4 del spec).",
+        "# WHY IT MATTERS: these labels are used to compute the AGREEMENT RATE between you and",
+        "# the LLM judge, and that rate is published next to every number the judge produces. A",
+        "# judge without its agreement rate is an opinion with decimals (§4 of the spec).",
         "#",
-        "# OJO CON LOS CASOS MARCADOS `los_deterministas_ya_lo_atraparon: true`: ahi el",
-        "# verificador YA dijo que hay algo mal. Igual etiquetalos — sirven para ver si el",
-        "# juez coincide en lo obvio antes de creerle en lo sutil.",
+        "# WATCH THE CASES MARKED `los_deterministas_ya_lo_atraparon: true`: there the verifier",
+        "# ALREADY said something is wrong. Label them anyway — they show whether the judge",
+        "# agrees on the obvious before you trust it on the subtle.",
         "# ═══════════════════════════════════════════════════════════════════════════",
         "",
         "etiquetas:",
@@ -123,29 +123,29 @@ def main(run_path: str, out_path: str | None = None, corpus_path: str = "") -> i
         if f["esperado"]:
             lineas.append(f"    esperado: {json.dumps(f['esperado'], ensure_ascii=False)}")
         else:
-            lineas.append("    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse")
+            lineas.append("    esperado: null   # NEGATIVE CONTROL: the correct behaviour is to abstain")
         if f["fuente"]:
-            lineas.append(f"    # ── FUENTE (doc {str(f['doc'])[:8]}, pagina {f['pagina']}) "
-                          "— el documento dice literalmente:")
+            lineas.append(f"    # ── SOURCE (doc {str(f['doc'])[:8]}, page {f['pagina']}) "
+                          "— the document says literally:")
             for pas in f["fuente"]:
                 lineas.append(f"    #   {pas}")
         lineas.append(f"    abstuvo: {str(f['abstuvo']).lower()}")
         if f.get("razon"):
-            # Lo que el sistema dijo cuando no dio una respuesta. Sin esto, una abstencion
-            # correcta se lee como una respuesta vacia y se etiqueta "mal" con razon.
+            # What the system said when it gave no answer. Without this, a correct
+            # abstention reads as an empty answer and gets labelled "wrong", reasonably.
             lineas.append(f"    lo_que_dijo_el_sistema: {json.dumps(f['razon'], ensure_ascii=False)}")
         lineas.append(f"    # checks deterministas → {f['checks']}")
         lineas.append(
             f"    los_deterministas_ya_lo_atraparon: {str(f['los_deterministas_ya_lo_atraparon']).lower()}"
         )
         lineas.append("    tu_veredicto:      # bien | mal")
-        lineas.append("    por_que:           # opcional, una linea")
+        lineas.append("    por_que:           # optional, one line")
 
-    # MUESTRA, no el set entero. La tasa de acuerdo se mide sobre una muestra (§4 del
-    # spec) y etiquetar 39 casos a mano garantiza que los ultimos se llenen sin leer —
-    # que es peor que tener menos etiquetas. Se priorizan los casos donde los checks
-    # deterministas NO detectaron nada: ahi el juez es la unica red, y su acuerdo con un
-    # humano es lo informativo. Se dejan unos pocos ya atrapados como control.
+    # A SAMPLE, not the whole set. The agreement rate is measured over a sample (§4 of the
+    # spec), and hand-labelling 39 cases guarantees the last ones get filled in without
+    # being read — which is worse than having fewer labels. Priority goes to cases where the
+    # deterministic checks caught NOTHING: there the judge is the only net, and its agreement
+    # with a human is what is informative. A few already-caught ones are kept as a control.
     limite = int(os.environ.get("ASSAY_MUESTRA", "12"))
     solo_juez = [f for f in filas if not f["los_deterministas_ya_lo_atraparon"]]
     ya_obvios = [f for f in filas if f["los_deterministas_ya_lo_atraparon"]]
@@ -157,8 +157,8 @@ def main(run_path: str, out_path: str | None = None, corpus_path: str = "") -> i
 
     obvios = sum(1 for f in filas if f["los_deterministas_ya_lo_atraparon"])
     print(f"escrito {salida}")
-    print(f"  {len(filas)} casos para etiquetar (muestra; ASSAY_MUESTRA para cambiar)")
-    print(f"  {len(filas) - obvios} donde el juez es la unica red · {obvios} de control")
+    print(f"  {len(filas)} cases to label (a sample; set ASSAY_MUESTRA to change)")
+    print(f"  {len(filas) - obvios} where the judge is the only net · {obvios} as control")
     return 0
 
 
