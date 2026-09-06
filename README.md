@@ -7,8 +7,9 @@ it doesn't know** — and it fails CI when a change degrades any of that.
 Sibling to [`crew`](https://github.com/gabo5612/crew): same thesis, **deterministic
 verification, no model ever judging another model**.
 
-> *groundcheck* = the metallurgical test that determines what a sample actually contains. That is
-> literally what this tool does.
+> *groundcheck* = checking the **ground** under an answer: that every number and every
+> citation is literally there in a retrieved chunk. That is the tool's central metric,
+> turned into its name.
 
 ## Status: M7–M8 in progress
 
