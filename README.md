@@ -30,6 +30,15 @@ asked and what the system answered. A test fails if anyone adds a "provisional" 
 the output — a filler zero in an evaluation JSON gets copied into a README and stops being
 provisional.
 
+## Demo
+
+`demo/` is a static page carrying a real run: the golden set against `shopfloor`. It is not
+a replay — the browser re-runs the deterministic half of the harness (number extraction,
+the seven checks, recall@k, MRR, precision@k, with `k` as a slider) and diffs its own
+results against the verdicts Python produced. `node demo/verify.mjs` is the same check in
+the terminal: 402/402 agree. Deploy with `cd demo && vercel --prod` — static files, no
+build step. See [`demo/README.md`](demo/README.md).
+
 ## Usage
 
 ```bash
