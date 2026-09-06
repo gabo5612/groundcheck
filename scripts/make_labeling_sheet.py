@@ -14,6 +14,7 @@ Uso:  python3 scripts/make_labeling_sheet.py <corrida.json> [salida.yaml]
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -26,7 +27,29 @@ from assay.suite import load_suite  # noqa: E402
 RAIZ = Path(__file__).resolve().parents[1]
 
 
-def main(run_path: str, out_path: str | None = None) -> int:
+def _pasajes_de_oro(corpus_path: str, caso) -> list[str]:
+    """El texto del documento donde vive la respuesta correcta.
+
+    Sin esto la planilla pide juzgar una respuesta sin dar contra que juzgarla, que es
+    pedir una opinion, no una etiqueta.
+    """
+    if not corpus_path or not Path(corpus_path).exists():
+        return []
+    corpus = json.loads(Path(corpus_path).read_text("utf-8"))
+    out = []
+    for src in caso.gold_sources:
+        for c in corpus["chunks"]:
+            if c["doc"] != src.doc_id:
+                continue
+            if src.pages and not any(c["p0"] <= pg <= c["p1"] for pg in src.pages):
+                continue
+            texto = " ".join(c["text"].split())
+            if len(texto) > 40:
+                out.append(texto[:600])
+    return out[:3]
+
+
+def main(run_path: str, out_path: str | None = None, corpus_path: str = "") -> int:
     run = json.loads(Path(run_path).read_text("utf-8"))
     suite = load_suite(run["suite"]["path"] if Path(run["suite"]["path"]).exists()
                        else RAIZ / "suites" / "anvil-v1.yaml")
@@ -55,19 +78,28 @@ def main(run_path: str, out_path: str | None = None) -> int:
             "esperado": caso.gold_answer,
             "checks": resumen,
             "los_deterministas_ya_lo_atraparon": fallo_algo,
+            "fuente": _pasajes_de_oro(corpus_path, caso),
+            "doc": (caso.gold_sources[0].doc_id if caso.gold_sources else None),
+            "pagina": (list(caso.gold_sources[0].pages) if caso.gold_sources else []),
         })
 
     lineas = [
         "# ═══════════════════════════════════════════════════════════════════════════",
         "# PLANILLA DE ETIQUETADO HUMANO — M7",
         "#",
-        "# QUE HACER: por cada caso, escribi en `tu_veredicto` una de estas dos palabras:",
+        "# QUE HACER: compara la `respuesta` contra el bloque `fuente`, que es el texto",
+        "# LITERAL del documento donde vive la respuesta correcta. Despues escribi en",
+        "# `tu_veredicto` una de estas dos palabras:",
         "#",
         "#     bien   la respuesta es correcta y util para quien pregunto",
         "#     mal    la respuesta es incorrecta, incompleta o enganosa",
         "#",
-        "# `por_que` es opcional, una linea. Nada mas. No mires lo que dicen los checks",
-        "# deterministas si no querres: estan ahi como contexto, no como sugerencia.",
+        "# `por_que` es opcional, una linea.",
+        "#",
+        "# LA REGLA: si la respuesta dice algo que la fuente NO dice, es `mal`, por bien",
+        "# escrita que este. Si la pregunta es un control negativo (el dato no existe en la",
+        "# documentacion), la unica respuesta correcta es abstenerse: si contesta con una",
+        "# cifra, es `mal` aunque la cifra exista en otra fila.",
         "#",
         "# PARA QUE SIRVE: con estas etiquetas se calcula la TASA DE ACUERDO entre vos y",
         "# el LLM-judge, y esa tasa se publica al lado de cada numero del juez. Un juez sin",
@@ -89,6 +121,13 @@ def main(run_path: str, out_path: str | None = None) -> int:
         lineas.append(f"    respuesta: {json.dumps(f['respuesta'], ensure_ascii=False)}")
         if f["esperado"]:
             lineas.append(f"    esperado: {json.dumps(f['esperado'], ensure_ascii=False)}")
+        else:
+            lineas.append("    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse")
+        if f["fuente"]:
+            lineas.append(f"    # ── FUENTE (doc {str(f['doc'])[:8]}, pagina {f['pagina']}) "
+                          "— el documento dice literalmente:")
+            for pas in f["fuente"]:
+                lineas.append(f"    #   {pas}")
         lineas.append(f"    abstuvo: {str(f['abstuvo']).lower()}")
         lineas.append(f"    # checks deterministas → {f['checks']}")
         lineas.append(
@@ -97,17 +136,26 @@ def main(run_path: str, out_path: str | None = None) -> int:
         lineas.append("    tu_veredicto:      # bien | mal")
         lineas.append("    por_que:           # opcional, una linea")
 
+    # MUESTRA, no el set entero. La tasa de acuerdo se mide sobre una muestra (§4 del
+    # spec) y etiquetar 39 casos a mano garantiza que los ultimos se llenen sin leer —
+    # que es peor que tener menos etiquetas. Se priorizan los casos donde los checks
+    # deterministas NO detectaron nada: ahi el juez es la unica red, y su acuerdo con un
+    # humano es lo informativo. Se dejan unos pocos ya atrapados como control.
+    limite = int(os.environ.get("ASSAY_MUESTRA", "12"))
+    solo_juez = [f for f in filas if not f["los_deterministas_ya_lo_atraparon"]]
+    ya_obvios = [f for f in filas if f["los_deterministas_ya_lo_atraparon"]]
+    filas = (solo_juez + ya_obvios)[:limite]
+
     salida = Path(out_path or (RAIZ / "judge" / "etiquetas-humanas.yaml"))
     salida.parent.mkdir(parents=True, exist_ok=True)
     salida.write_text("\n".join(lineas) + "\n", "utf-8")
 
     obvios = sum(1 for f in filas if f["los_deterministas_ya_lo_atraparon"])
     print(f"escrito {salida}")
-    print(f"  {len(filas)} casos para etiquetar")
-    print(f"  {obvios} ya atrapados por los checks deterministas · {len(filas) - obvios} donde")
-    print("  el juez es la unica forma de detectar un problema")
+    print(f"  {len(filas)} casos para etiquetar (muestra; ASSAY_MUESTRA para cambiar)")
+    print(f"  {len(filas) - obvios} donde el juez es la unica red · {obvios} de control")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(*sys.argv[1:3]))
+    raise SystemExit(main(*sys.argv[1:4]))

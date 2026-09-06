@@ -45,8 +45,8 @@ from dataclasses import dataclass
 # Un token es una corrida de alfanumericos unida por separadores internos. Se clasifica
 # despues; no se intenta distinguir numero de identificador con la regex, porque ahi es
 # donde se cuelan los casos raros.
-_TOKEN = re.compile(r"[A-Za-z0-9]+(?:[.,\-/][A-Za-z0-9]+)*")
-_SEPARATORS = ".,-/"
+_TOKEN = re.compile(r"[A-Za-z0-9]+(?:[.,\-/:][A-Za-z0-9]+)*")
+_SEPARATORS = ".,-/:"
 
 # Marcador de lista: un numero suelto seguido de `)` o de `.` mas espacio, ya sea al
 # principio de una linea o detras de un parentesis/espacio. Implementa la regla 4.
@@ -90,10 +90,12 @@ def is_number(token: str) -> bool:
     if len(seps) == 0:
         return True                       # 720
     if len(seps) == 1:
-        return True                       # 68,5 · 1.200 -> lo resuelve canonicalize
+        return seps[0] != ":"             # 68,5 · 1.200 -> lo resuelve canonicalize
     # Tres o mas grupos (regla 2): solo es numero si se ve como miles + decimal.
     if set(seps) in ({".", ","}, {",", "."}):
         return True                       # 1.200,50 · 1,200.50
+    if ":" in seps:
+        return False                      # 09:00 — una hora es un valor, no una magnitud
     if seps[0] in "-/":
         return False                      # 9150-00-292-9689 · 12/07/2024
     # Mismo separador repetido: numero solo si todos los grupos menos el primero son de
@@ -145,6 +147,24 @@ def _enumerator_spans(text: str) -> list[tuple[int, int]]:
     ]
 
 
+def _split_unidad(token: str) -> list[str]:
+    """Separa un valor de su unidad cuando van unidos por `/`.
+
+    `149.99/año` es un precio con unidad, no un identificador: sin esta separacion el
+    token entero se clasifica como identificador (porque "año" son letras) y el 149.99
+    nunca se compara contra nada. Lo mismo con `USD/lb` o `5.56/mm`.
+
+    Un `/` entre grupos que AMBOS traen digitos si une: `12/07/2024` sigue siendo una
+    fecha entera, no tres numeros sueltos.
+    """
+    if "/" not in token:
+        return [token]
+    partes = token.split("/")
+    if all(any(ch.isdigit() for ch in p) for p in partes):
+        return [token]        # 12/07/2024 — se conserva entero
+    return [p for p in partes if any(ch.isdigit() for ch in p)]
+
+
 def _tokens(text: str | None) -> list[str]:
     if not text:
         return []
@@ -155,8 +175,8 @@ def _tokens(text: str | None) -> list[str]:
             # Un token sin digitos no interesa a este modulo: es una palabra.
             continue
         if any(ini <= m.start() and m.end() <= fin for ini, fin in enumeradores):
-            continue    # marcador de lista (regla 4)
-        out.append(m.group(0))
+            continue    # marcador de lista o de cita (reglas 4 y 4b)
+        out.extend(_split_unidad(m.group(0)))
     return out
 
 

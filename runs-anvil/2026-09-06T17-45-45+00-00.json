@@ -1,0 +1,2589 @@
+{
+  "assay_version": "0.1.0",
+  "stage": "M4",
+  "suite": {
+    "name": "trailkit",
+    "path": "suites/trailkit.yaml",
+    "sha256": "b8cfaf1a56e3610ca4c3e23396e0521fd57ee5fd0bcfd22b49aba7050aa82841",
+    "case_count": 16,
+    "category_counts": {
+      "factual_lookup": 7,
+      "alfanumerico_exacto": 4,
+      "procedimental": 2,
+      "multi_documento": 0,
+      "negative_control": 3,
+      "revision_supersedida": 0
+    }
+  },
+  "system": {
+    "kind": "http",
+    "target": "http://127.0.0.1:8080/api/ask"
+  },
+  "started_at": "2026-09-06T17:45:45+00:00",
+  "finished_at": "2026-09-06T17:46:17+00:00",
+  "observations": [
+    {
+      "case_id": "tk-precio-single",
+      "category": "factual_lookup",
+      "question": "¿Cuánto cuesta el plan Single de TrailKit?",
+      "must_abstain": false,
+      "response": {
+        "answer": "$249 único [2]",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto.",
+            "page": 6,
+            "text": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |",
+            "page": 6,
+            "text": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.",
+            "page": 6,
+            "text": "Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente",
+            "page": 1,
+            "text": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "TrailKit Website — Documentación técnica",
+            "page": 1,
+            "text": "TrailKit Website — Documentación técnica"
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto.",
+            "page": 6,
+            "text": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |",
+            "page": 6,
+            "text": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.",
+            "page": 6,
+            "text": "Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente",
+            "page": 1,
+            "text": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "TrailKit Website — Documentación técnica",
+            "page": 1,
+            "text": "TrailKit Website — Documentación técnica"
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 1236
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-precio-lifetime",
+      "category": "factual_lookup",
+      "question": "¿Cuál es el precio del plan Lifetime?",
+      "must_abstain": false,
+      "response": {
+        "answer": "$249 único [2]",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto.",
+            "page": 6,
+            "text": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |",
+            "page": 6,
+            "text": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.",
+            "page": 6,
+            "text": "Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente",
+            "page": 1,
+            "text": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "TrailKit Website — Documentación técnica",
+            "page": 1,
+            "text": "TrailKit Website — Documentación técnica"
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto.",
+            "page": 6,
+            "text": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |",
+            "page": 6,
+            "text": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.",
+            "page": 6,
+            "text": "Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente",
+            "page": 1,
+            "text": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "TrailKit Website — Documentación técnica",
+            "page": 1,
+            "text": "TrailKit Website — Documentación técnica"
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 132
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-precio-agency",
+      "category": "factual_lookup",
+      "question": "¿Cuánto vale el plan Agency y cuántos sitios permite?",
+      "must_abstain": false,
+      "response": {
+        "answer": "$149.99/año, 2 sitios [2]",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |",
+            "page": 6,
+            "text": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 15,
+            "page_to": 15,
+            "section_path": "Puntos a revisar",
+            "snippet": "2. **Planes fantasma.** Agency y Unlimited existen en tipos y backend pero no en el checkout.",
+            "page": 15,
+            "text": "2. **Planes fantasma.** Agency y Unlimited existen en tipos y backend pero no en el checkout."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto.",
+            "page": 6,
+            "text": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "1. **Sitio de marketing** — landing, precios, blog, documentación, demo\n2. **Servidor de licencias** — el plugin de WordPress instalado en el sitio de un cliente",
+            "page": 2,
+            "text": "1. **Sitio de marketing** — landing, precios, blog, documentación, demo\n2. **Servidor de licencias** — el plugin de WordPress instalado en el sitio de un cliente"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "---",
+            "page": 6,
+            "text": "---"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |",
+            "page": 6,
+            "text": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 15,
+            "page_to": 15,
+            "section_path": "Puntos a revisar",
+            "snippet": "2. **Planes fantasma.** Agency y Unlimited existen en tipos y backend pero no en el checkout.",
+            "page": 15,
+            "text": "2. **Planes fantasma.** Agency y Unlimited existen en tipos y backend pero no en el checkout."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto.",
+            "page": 6,
+            "text": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "1. **Sitio de marketing** — landing, precios, blog, documentación, demo\n2. **Servidor de licencias** — el plugin de WordPress instalado en el sitio de un cliente",
+            "page": 2,
+            "text": "1. **Sitio de marketing** — landing, precios, blog, documentación, demo\n2. **Servidor de licencias** — el plugin de WordPress instalado en el sitio de un cliente"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "---",
+            "page": 6,
+            "text": "---"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 6633
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-duracion-trial",
+      "category": "factual_lookup",
+      "question": "¿Cuántos días dura el plan Trial?",
+      "must_abstain": false,
+      "response": {
+        "answer": "14 días [1]",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |",
+            "page": 6,
+            "text": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto.",
+            "page": 6,
+            "text": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto."
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "1. El problema",
+            "snippet": "Cuando un técnico necesita un dato concreto —*\"¿con cuánta fuerza aprieto este perno?\"*—\ntiene que abrir el PDF correcto, encontrar la sección correcta y leer la tabla correcta.\nEso toma entre veinte minutos y media jornada.",
+            "page": 2,
+            "text": "Cuando un técnico necesita un dato concreto —*\"¿con cuánta fuerza aprieto este perno?\"*—\ntiene que abrir el PDF correcto, encontrar la sección correcta y leer la tabla correcta.\nEso toma entre veinte minutos y media jornada."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "---",
+            "page": 6,
+            "text": "---"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 8,
+            "page_to": 8,
+            "section_path": "Middleware — seguridad",
+            "snippet": "| Endpoint | Límite |\n|---|---|\n| `/api/auth/callback/credentials` | 5/min — protección contra fuerza bruta |\n| `/api/trials/start` | 5/min |\n| `/api/checkout/paypal` | 10/min |\n| `/api/checkout/nowpayments` | 10/min |\n| `/api/checkout/validate-promo` | 15/min |\n| `/api/licenses/validate` | 20/min |",
+            "page": 8,
+            "text": "| Endpoint | Límite |\n|---|---|\n| `/api/auth/callback/credentials` | 5/min — protección contra fuerza bruta |\n| `/api/trials/start` | 5/min |\n| `/api/checkout/paypal` | 10/min |\n| `/api/checkout/nowpayments` | 10/min |\n| `/api/checkout/validate-promo` | 15/min |\n| `/api/licenses/validate` | 20/min |"
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |",
+            "page": 6,
+            "text": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto.",
+            "page": 6,
+            "text": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto."
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "1. El problema",
+            "snippet": "Cuando un técnico necesita un dato concreto —*\"¿con cuánta fuerza aprieto este perno?\"*—\ntiene que abrir el PDF correcto, encontrar la sección correcta y leer la tabla correcta.\nEso toma entre veinte minutos y media jornada.",
+            "page": 2,
+            "text": "Cuando un técnico necesita un dato concreto —*\"¿con cuánta fuerza aprieto este perno?\"*—\ntiene que abrir el PDF correcto, encontrar la sección correcta y leer la tabla correcta.\nEso toma entre veinte minutos y media jornada."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "---",
+            "page": 6,
+            "text": "---"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 8,
+            "page_to": 8,
+            "section_path": "Middleware — seguridad",
+            "snippet": "| Endpoint | Límite |\n|---|---|\n| `/api/auth/callback/credentials` | 5/min — protección contra fuerza bruta |\n| `/api/trials/start` | 5/min |\n| `/api/checkout/paypal` | 10/min |\n| `/api/checkout/nowpayments` | 10/min |\n| `/api/checkout/validate-promo` | 15/min |\n| `/api/licenses/validate` | 20/min |",
+            "page": 8,
+            "text": "| Endpoint | Límite |\n|---|---|\n| `/api/auth/callback/credentials` | 5/min — protección contra fuerza bruta |\n| `/api/trials/start` | 5/min |\n| `/api/checkout/paypal` | 10/min |\n| `/api/checkout/nowpayments` | 10/min |\n| `/api/checkout/validate-promo` | 15/min |\n| `/api/licenses/validate` | 20/min |"
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 1897
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-defaults-precio",
+      "category": "factual_lookup",
+      "question": "Si falla la consulta a pricing_config, ¿qué precios usa el código por defecto?",
+      "must_abstain": false,
+      "response": {
+        "answer": "Single $79, Lifetime $249 [1]",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Modelo de datos (Supabase)",
+            "snippet": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d",
+            "page": 7,
+            "text": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d"
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "La trampa que había que esquivar",
+            "snippet": "**La solución:** para reutilizar una respuesta se exigen **dos** condiciones —\nque se parezca lo suficiente **y** que mencione exactamente los mismos códigos técnicos\n(`M24`, `8.8`, `E-114`). Si cambia un código, se recalcula desde cero.",
+            "page": 7,
+            "text": "**La solución:** para reutilizar una respuesta se exigen **dos** condiciones —\nque se parezca lo suficiente **y** que mencione exactamente los mismos códigos técnicos\n(`M24`, `8.8`, `E-114`). Si cambia un código, se recalcula desde cero."
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "[5] Verificar — la pieza que hace confiable al sistema",
+            "snippet": "Si falla, al modelo se le dice **exactamente qué dato inventó** y se le da un segundo\nintento. Si vuelve a fallar, el sistema **se abstiene**.",
+            "page": 6,
+            "text": "Si falla, al modelo se le dice **exactamente qué dato inventó** y se le da un segundo\nintento. Si vuelve a fallar, el sistema **se abstiene**."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |",
+            "page": 6,
+            "text": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.",
+            "page": 6,
+            "text": "Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`."
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Modelo de datos (Supabase)",
+            "snippet": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d",
+            "page": 7,
+            "text": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d"
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "La trampa que había que esquivar",
+            "snippet": "**La solución:** para reutilizar una respuesta se exigen **dos** condiciones —\nque se parezca lo suficiente **y** que mencione exactamente los mismos códigos técnicos\n(`M24`, `8.8`, `E-114`). Si cambia un código, se recalcula desde cero.",
+            "page": 7,
+            "text": "**La solución:** para reutilizar una respuesta se exigen **dos** condiciones —\nque se parezca lo suficiente **y** que mencione exactamente los mismos códigos técnicos\n(`M24`, `8.8`, `E-114`). Si cambia un código, se recalcula desde cero."
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "[5] Verificar — la pieza que hace confiable al sistema",
+            "snippet": "Si falla, al modelo se le dice **exactamente qué dato inventó** y se le da un segundo\nintento. Si vuelve a fallar, el sistema **se abstiene**.",
+            "page": 6,
+            "text": "Si falla, al modelo se le dice **exactamente qué dato inventó** y se le da un segundo\nintento. Si vuelve a fallar, el sistema **se abstiene**."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |",
+            "page": 6,
+            "text": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.",
+            "page": 6,
+            "text": "Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`."
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 2566
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-horario-cron-expiry",
+      "category": "factual_lookup",
+      "question": "¿A qué hora corre el cron de recordatorios de vencimiento?",
+      "must_abstain": false,
+      "response": {
+        "answer": "09:00 diario [1]",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |",
+            "page": 9,
+            "text": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |"
+          },
+          {
+            "doc_id": "75b2742de4b3a05f",
+            "title": "TM 05576A-23&P Maintenance Manual",
+            "revision": "A",
+            "superseded_by": null,
+            "page_from": 73,
+            "page_to": 73,
+            "section_path": "NOTE",
+            "snippet": "END OF TASK",
+            "page": 73,
+            "text": "END OF TASK"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "Ambas se protegen con `CRON_SECRET`.",
+            "page": 9,
+            "text": "Ambas se protegen con `CRON_SECRET`."
+          },
+          {
+            "doc_id": "75b2742de4b3a05f",
+            "title": "TM 05576A-23&P Maintenance Manual",
+            "revision": "A",
+            "superseded_by": null,
+            "page_from": 57,
+            "page_to": 57,
+            "section_path": "INSPECT",
+            "snippet": "END OF TASK",
+            "page": 57,
+            "text": "END OF TASK"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "Tareas programadas (Vercel Cron)",
+            "page": 9,
+            "text": "Tareas programadas (Vercel Cron)"
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Cuando llega una revisión nueva del manual",
+            "snippet": "---",
+            "page": 7,
+            "text": "---"
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |",
+            "page": 9,
+            "text": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |"
+          },
+          {
+            "doc_id": "75b2742de4b3a05f",
+            "title": "TM 05576A-23&P Maintenance Manual",
+            "revision": "A",
+            "superseded_by": null,
+            "page_from": 73,
+            "page_to": 73,
+            "section_path": "NOTE",
+            "snippet": "END OF TASK",
+            "page": 73,
+            "text": "END OF TASK"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "Ambas se protegen con `CRON_SECRET`.",
+            "page": 9,
+            "text": "Ambas se protegen con `CRON_SECRET`."
+          },
+          {
+            "doc_id": "75b2742de4b3a05f",
+            "title": "TM 05576A-23&P Maintenance Manual",
+            "revision": "A",
+            "superseded_by": null,
+            "page_from": 57,
+            "page_to": 57,
+            "section_path": "INSPECT",
+            "snippet": "END OF TASK",
+            "page": 57,
+            "text": "END OF TASK"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "Tareas programadas (Vercel Cron)",
+            "page": 9,
+            "text": "Tareas programadas (Vercel Cron)"
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Cuando llega una revisión nueva del manual",
+            "snippet": "---",
+            "page": 7,
+            "text": "---"
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 1553
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-horario-cron-carrito",
+      "category": "factual_lookup",
+      "question": "¿A qué hora se ejecuta la tarea de carritos abandonados?",
+      "must_abstain": false,
+      "response": {
+        "answer": "14:00 diario [1]",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |",
+            "page": 9,
+            "text": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |"
+          },
+          {
+            "doc_id": "75b2742de4b3a05f",
+            "title": "TM 05576A-23&P Maintenance Manual",
+            "revision": "A",
+            "superseded_by": null,
+            "page_from": 57,
+            "page_to": 57,
+            "section_path": "INSPECT",
+            "snippet": "END OF TASK",
+            "page": 57,
+            "text": "END OF TASK"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 10,
+            "page_to": 10,
+            "section_path": "Emails (Resend)",
+            "snippet": "Bienvenida · recibo de compra · recordatorio de renovación · fin de prueba ·\ncarrito abandonado.",
+            "page": 10,
+            "text": "Bienvenida · recibo de compra · recordatorio de renovación · fin de prueba ·\ncarrito abandonado."
+          },
+          {
+            "doc_id": "75b2742de4b3a05f",
+            "title": "TM 05576A-23&P Maintenance Manual",
+            "revision": "A",
+            "superseded_by": null,
+            "page_from": 73,
+            "page_to": 73,
+            "section_path": "NOTE",
+            "snippet": "END OF TASK",
+            "page": 73,
+            "text": "END OF TASK"
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "8. La idea de fondo",
+            "snippet": "| Tarea | Quién la hace |\n|---|---|\n| Encontrar textos parecidos | 🤖 el modelo |\n| Redactar la respuesta | 🤖 el modelo |\n| Detectar que falta un dato | ⚙️ procedimiento fijo |\n| Verificar que los números sean reales | ⚙️ procedimiento fijo |\n| Decidir si reutilizar una respuesta | ⚙️ procedimiento fijo |\n| Detectar que el manual cambió | ⚙️ procedimiento fijo |",
+            "page": 9,
+            "text": "| Tarea | Quién la hace |\n|---|---|\n| Encontrar textos parecidos | 🤖 el modelo |\n| Redactar la respuesta | 🤖 el modelo |\n| Detectar que falta un dato | ⚙️ procedimiento fijo |\n| Verificar que los números sean reales | ⚙️ procedimiento fijo |\n| Decidir si reutilizar una respuesta | ⚙️ procedimiento fijo |\n| Detectar que el manual cambió | ⚙️ procedimiento fijo |"
+          },
+          {
+            "doc_id": "75b2742de4b3a05f",
+            "title": "TM 05576A-23&P Maintenance Manual",
+            "revision": "A",
+            "superseded_by": null,
+            "page_from": 77,
+            "page_to": 77,
+            "section_path": "PRE-INSPECTION",
+            "snippet": "END OF TASK",
+            "page": 77,
+            "text": "END OF TASK"
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |",
+            "page": 9,
+            "text": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |"
+          },
+          {
+            "doc_id": "75b2742de4b3a05f",
+            "title": "TM 05576A-23&P Maintenance Manual",
+            "revision": "A",
+            "superseded_by": null,
+            "page_from": 57,
+            "page_to": 57,
+            "section_path": "INSPECT",
+            "snippet": "END OF TASK",
+            "page": 57,
+            "text": "END OF TASK"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 10,
+            "page_to": 10,
+            "section_path": "Emails (Resend)",
+            "snippet": "Bienvenida · recibo de compra · recordatorio de renovación · fin de prueba ·\ncarrito abandonado.",
+            "page": 10,
+            "text": "Bienvenida · recibo de compra · recordatorio de renovación · fin de prueba ·\ncarrito abandonado."
+          },
+          {
+            "doc_id": "75b2742de4b3a05f",
+            "title": "TM 05576A-23&P Maintenance Manual",
+            "revision": "A",
+            "superseded_by": null,
+            "page_from": 73,
+            "page_to": 73,
+            "section_path": "NOTE",
+            "snippet": "END OF TASK",
+            "page": 73,
+            "text": "END OF TASK"
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "8. La idea de fondo",
+            "snippet": "| Tarea | Quién la hace |\n|---|---|\n| Encontrar textos parecidos | 🤖 el modelo |\n| Redactar la respuesta | 🤖 el modelo |\n| Detectar que falta un dato | ⚙️ procedimiento fijo |\n| Verificar que los números sean reales | ⚙️ procedimiento fijo |\n| Decidir si reutilizar una respuesta | ⚙️ procedimiento fijo |\n| Detectar que el manual cambió | ⚙️ procedimiento fijo |",
+            "page": 9,
+            "text": "| Tarea | Quién la hace |\n|---|---|\n| Encontrar textos parecidos | 🤖 el modelo |\n| Redactar la respuesta | 🤖 el modelo |\n| Detectar que falta un dato | ⚙️ procedimiento fijo |\n| Verificar que los números sean reales | ⚙️ procedimiento fijo |\n| Decidir si reutilizar una respuesta | ⚙️ procedimiento fijo |\n| Detectar que el manual cambió | ⚙️ procedimiento fijo |"
+          },
+          {
+            "doc_id": "75b2742de4b3a05f",
+            "title": "TM 05576A-23&P Maintenance Manual",
+            "revision": "A",
+            "superseded_by": null,
+            "page_from": 77,
+            "page_to": 77,
+            "section_path": "PRE-INSPECTION",
+            "snippet": "END OF TASK",
+            "page": 77,
+            "text": "END OF TASK"
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 1769
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-estados-licencia",
+      "category": "alfanumerico_exacto",
+      "question": "¿Cuáles son los estados posibles de una licencia?",
+      "must_abstain": false,
+      "response": {
+        "answer": "active · expired · suspended [5]",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "Estados de una licencia",
+            "page": 7,
+            "text": "Estados de una licencia"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte.",
+            "page": 7,
+            "text": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "---",
+            "page": 7,
+            "text": "---"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Modelo de datos (Supabase)",
+            "snippet": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d",
+            "page": 7,
+            "text": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "`active` · `expired` · `suspended`",
+            "page": 7,
+            "text": "`active` · `expired` · `suspended`"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "llama a esta API para validar su licencia",
+            "page": 2,
+            "text": "llama a esta API para validar su licencia"
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "Estados de una licencia",
+            "page": 7,
+            "text": "Estados de una licencia"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte.",
+            "page": 7,
+            "text": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "---",
+            "page": 7,
+            "text": "---"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Modelo de datos (Supabase)",
+            "snippet": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d",
+            "page": 7,
+            "text": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "`active` · `expired` · `suspended`",
+            "page": 7,
+            "text": "`active` · `expired` · `suspended`"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "llama a esta API para validar su licencia",
+            "page": 2,
+            "text": "llama a esta API para validar su licencia"
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 1904
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-secret-cron",
+      "category": "alfanumerico_exacto",
+      "question": "¿Con qué variable se protegen las tareas programadas?",
+      "must_abstain": false,
+      "response": {
+        "answer": "CRON_SECRET [1]",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "Ambas se protegen con `CRON_SECRET`.",
+            "page": 9,
+            "text": "Ambas se protegen con `CRON_SECRET`."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |",
+            "page": 9,
+            "text": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 12,
+            "page_to": 12,
+            "section_path": "Variables de entorno",
+            "snippet": "> Las variables de LemonSqueezy siguen declaradas aunque el checkout activo usa PayPal y\n> NowPayments. Conviene verificar si esa integración sigue viva antes de removerlas.",
+            "page": 12,
+            "text": "> Las variables de LemonSqueezy siguen declaradas aunque el checkout activo usa PayPal y\n> NowPayments. Conviene verificar si esa integración sigue viva antes de removerlas."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "Tareas programadas (Vercel Cron)",
+            "page": 9,
+            "text": "Tareas programadas (Vercel Cron)"
+          },
+          {
+            "doc_id": "f249e4c7030ba22b",
+            "title": "DOE TECHNICAL STANDARDS PROGRAM OVERVIEW AND RESPONSIBILITIES",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "3.5 Technical Standards Program Manager",
+            "snippet": "In partnership with TSMs, screens all TSP actions (new draft standards, revised draft standards, and standard cancellations) to ensure that they meet the intent of a DOE technical standard and are not duplicative of existing, adequate VCSs or other DOE Technical Standards.",
+            "page": 9,
+            "text": "In partnership with TSMs, screens all TSP actions (new draft standards, revised draft standards, and standard cancellations) to ensure that they meet the intent of a DOE technical standard and are not duplicative of existing, adequate VCSs or other DOE Technical Standards."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "---",
+            "page": 9,
+            "text": "---"
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "Ambas se protegen con `CRON_SECRET`.",
+            "page": 9,
+            "text": "Ambas se protegen con `CRON_SECRET`."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |",
+            "page": 9,
+            "text": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 12,
+            "page_to": 12,
+            "section_path": "Variables de entorno",
+            "snippet": "> Las variables de LemonSqueezy siguen declaradas aunque el checkout activo usa PayPal y\n> NowPayments. Conviene verificar si esa integración sigue viva antes de removerlas.",
+            "page": 12,
+            "text": "> Las variables de LemonSqueezy siguen declaradas aunque el checkout activo usa PayPal y\n> NowPayments. Conviene verificar si esa integración sigue viva antes de removerlas."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "Tareas programadas (Vercel Cron)",
+            "page": 9,
+            "text": "Tareas programadas (Vercel Cron)"
+          },
+          {
+            "doc_id": "f249e4c7030ba22b",
+            "title": "DOE TECHNICAL STANDARDS PROGRAM OVERVIEW AND RESPONSIBILITIES",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "3.5 Technical Standards Program Manager",
+            "snippet": "In partnership with TSMs, screens all TSP actions (new draft standards, revised draft standards, and standard cancellations) to ensure that they meet the intent of a DOE technical standard and are not duplicative of existing, adequate VCSs or other DOE Technical Standards.",
+            "page": 9,
+            "text": "In partnership with TSMs, screens all TSP actions (new draft standards, revised draft standards, and standard cancellations) to ensure that they meet the intent of a DOE technical standard and are not duplicative of existing, adequate VCSs or other DOE Technical Standards."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "---",
+            "page": 9,
+            "text": "---"
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 1603
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-tabla-central",
+      "category": "alfanumerico_exacto",
+      "question": "¿Cuál es la tabla central del sistema de licencias en Supabase?",
+      "must_abstain": false,
+      "response": {
+        "answer": "licenses [1]",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Modelo de datos (Supabase)",
+            "snippet": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d",
+            "page": 7,
+            "text": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Modelo de datos (Supabase)",
+            "snippet": "Tablas en uso, por frecuencia de acceso en el código:",
+            "page": 7,
+            "text": "Tablas en uso, por frecuencia de acceso en el código:"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 12,
+            "page_to": 12,
+            "section_path": "Variables de entorno",
+            "snippet": "**Supabase:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,\n`SUPABASE_SERVICE_ROLE_KEY`",
+            "page": 12,
+            "text": "**Supabase:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,\n`SUPABASE_SERVICE_ROLE_KEY`"
+          },
+          {
+            "doc_id": "75b2742de4b3a05f",
+            "title": "TM 05576A-23&P Maintenance Manual",
+            "revision": "A",
+            "superseded_by": null,
+            "page_from": 13,
+            "page_to": 13,
+            "section_path": "Chapter 4 - PARTS INFORMATION",
+            "snippet": "| REPAIR PARTS AND SPECIAL TOOLS LIST (RPSTL) INTRODUCTION................................ ............... WP                                      | REPAIR PARTS AND SPECIAL TOOLS LIST (RPSTL) INTRODUCTION................................ ............... WP                                                                              | 0014    |\n|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|\n| MAINTE",
+            "page": 13,
+            "text": "| REPAIR PARTS AND SPECIAL TOOLS LIST (RPSTL) INTRODUCTION................................ ............... WP                                      | REPAIR PARTS AND SPECIAL TOOLS LIST (RPSTL) INTRODUCTION................................ ............... WP                                                                              | 0014    |\n|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|\n| MAINTE"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte.",
+            "page": 7,
+            "text": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte."
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Modelo de datos (Supabase)",
+            "snippet": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d",
+            "page": 7,
+            "text": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Modelo de datos (Supabase)",
+            "snippet": "Tablas en uso, por frecuencia de acceso en el código:",
+            "page": 7,
+            "text": "Tablas en uso, por frecuencia de acceso en el código:"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 12,
+            "page_to": 12,
+            "section_path": "Variables de entorno",
+            "snippet": "**Supabase:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,\n`SUPABASE_SERVICE_ROLE_KEY`",
+            "page": 12,
+            "text": "**Supabase:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,\n`SUPABASE_SERVICE_ROLE_KEY`"
+          },
+          {
+            "doc_id": "75b2742de4b3a05f",
+            "title": "TM 05576A-23&P Maintenance Manual",
+            "revision": "A",
+            "superseded_by": null,
+            "page_from": 13,
+            "page_to": 13,
+            "section_path": "Chapter 4 - PARTS INFORMATION",
+            "snippet": "| REPAIR PARTS AND SPECIAL TOOLS LIST (RPSTL) INTRODUCTION................................ ............... WP                                      | REPAIR PARTS AND SPECIAL TOOLS LIST (RPSTL) INTRODUCTION................................ ............... WP                                                                              | 0014    |\n|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|\n| MAINTE",
+            "page": 13,
+            "text": "| REPAIR PARTS AND SPECIAL TOOLS LIST (RPSTL) INTRODUCTION................................ ............... WP                                      | REPAIR PARTS AND SPECIAL TOOLS LIST (RPSTL) INTRODUCTION................................ ............... WP                                                                              | 0014    |\n|--------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|\n| MAINTE"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte.",
+            "page": 7,
+            "text": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte."
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 2244
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-endpoint-validacion",
+      "category": "alfanumerico_exacto",
+      "question": "¿Qué endpoint usa el plugin de WordPress para validar una licencia y qué recibe?",
+      "must_abstain": false,
+      "response": {
+        "answer": "/api/licenses/validate [1]",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 5,
+            "page_to": 5,
+            "section_path": "Contrato con el plugin de WordPress",
+            "snippet": "| Endpoint | Método | Entrada | Devuelve |\n|---|---|---|---|\n| `/api/licenses/validate` | POST | `{ key, domain }` | `{ valid, plan, status, expires_at }` o `{ valid: false, status, message }` |\n| `/api/licenses/checkin` | POST | `{ key, domain }` | `{ valid }` + datos de la licencia |\n| `/api/plugin/version` | GET | `?key=` | versión disponible, o `{ valid: false, expired: true }` |\n| `/api/download` | GET | — | Descarga del plugin |",
+            "page": 5,
+            "text": "| Endpoint | Método | Entrada | Devuelve |\n|---|---|---|---|\n| `/api/licenses/validate` | POST | `{ key, domain }` | `{ valid, plan, status, expires_at }` o `{ valid: false, status, message }` |\n| `/api/licenses/checkin` | POST | `{ key, domain }` | `{ valid }` + datos de la licencia |\n| `/api/plugin/version` | GET | `?key=` | versión disponible, o `{ valid: false, expired: true }` |\n| `/api/download` | GET | — | Descarga del plugin |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "1. **Sitio de marketing** — landing, precios, blog, documentación, demo\n2. **Servidor de licencias** — el plugin de WordPress instalado en el sitio de un cliente",
+            "page": 2,
+            "text": "1. **Sitio de marketing** — landing, precios, blog, documentación, demo\n2. **Servidor de licencias** — el plugin de WordPress instalado en el sitio de un cliente"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 5,
+            "page_to": 5,
+            "section_path": "Contrato con el plugin de WordPress",
+            "snippet": "Estos son los endpoints que consume el plugin instalado en el sitio del cliente. **Cambiarlos\nrompe instalaciones en producción.**",
+            "page": 5,
+            "text": "Estos son los endpoints que consume el plugin instalado en el sitio del cliente. **Cambiarlos\nrompe instalaciones en producción.**"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "llama a esta API para validar su licencia",
+            "page": 2,
+            "text": "llama a esta API para validar su licencia"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte.",
+            "page": 7,
+            "text": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 5,
+            "page_to": 5,
+            "section_path": "Contrato con el plugin de WordPress",
+            "snippet": "Contrato con el plugin de WordPress",
+            "page": 5,
+            "text": "Contrato con el plugin de WordPress"
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 5,
+            "page_to": 5,
+            "section_path": "Contrato con el plugin de WordPress",
+            "snippet": "| Endpoint | Método | Entrada | Devuelve |\n|---|---|---|---|\n| `/api/licenses/validate` | POST | `{ key, domain }` | `{ valid, plan, status, expires_at }` o `{ valid: false, status, message }` |\n| `/api/licenses/checkin` | POST | `{ key, domain }` | `{ valid }` + datos de la licencia |\n| `/api/plugin/version` | GET | `?key=` | versión disponible, o `{ valid: false, expired: true }` |\n| `/api/download` | GET | — | Descarga del plugin |",
+            "page": 5,
+            "text": "| Endpoint | Método | Entrada | Devuelve |\n|---|---|---|---|\n| `/api/licenses/validate` | POST | `{ key, domain }` | `{ valid, plan, status, expires_at }` o `{ valid: false, status, message }` |\n| `/api/licenses/checkin` | POST | `{ key, domain }` | `{ valid }` + datos de la licencia |\n| `/api/plugin/version` | GET | `?key=` | versión disponible, o `{ valid: false, expired: true }` |\n| `/api/download` | GET | — | Descarga del plugin |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "1. **Sitio de marketing** — landing, precios, blog, documentación, demo\n2. **Servidor de licencias** — el plugin de WordPress instalado en el sitio de un cliente",
+            "page": 2,
+            "text": "1. **Sitio de marketing** — landing, precios, blog, documentación, demo\n2. **Servidor de licencias** — el plugin de WordPress instalado en el sitio de un cliente"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 5,
+            "page_to": 5,
+            "section_path": "Contrato con el plugin de WordPress",
+            "snippet": "Estos son los endpoints que consume el plugin instalado en el sitio del cliente. **Cambiarlos\nrompe instalaciones en producción.**",
+            "page": 5,
+            "text": "Estos son los endpoints que consume el plugin instalado en el sitio del cliente. **Cambiarlos\nrompe instalaciones en producción.**"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "llama a esta API para validar su licencia",
+            "page": 2,
+            "text": "llama a esta API para validar su licencia"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte.",
+            "page": 7,
+            "text": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 5,
+            "page_to": 5,
+            "section_path": "Contrato con el plugin de WordPress",
+            "snippet": "Contrato con el plugin de WordPress",
+            "page": 5,
+            "text": "Contrato con el plugin de WordPress"
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 1896
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-cuando-expira",
+      "category": "procedimental",
+      "question": "¿Cómo se marca una licencia como vencida?",
+      "must_abstain": false,
+      "response": {
+        "answer": "La licencia se marca como `expired` en la base de datos cuando detecta un vencimiento durante la validación [1].",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte.",
+            "page": 7,
+            "text": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "llama a esta API para validar su licencia",
+            "page": 2,
+            "text": "llama a esta API para validar su licencia"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "`active` · `expired` · `suspended`",
+            "page": 7,
+            "text": "`active` · `expired` · `suspended`"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "---",
+            "page": 7,
+            "text": "---"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 5,
+            "page_to": 5,
+            "section_path": "Contrato con el plugin de WordPress",
+            "snippet": "| Endpoint | Método | Entrada | Devuelve |\n|---|---|---|---|\n| `/api/licenses/validate` | POST | `{ key, domain }` | `{ valid, plan, status, expires_at }` o `{ valid: false, status, message }` |\n| `/api/licenses/checkin` | POST | `{ key, domain }` | `{ valid }` + datos de la licencia |\n| `/api/plugin/version` | GET | `?key=` | versión disponible, o `{ valid: false, expired: true }` |\n| `/api/download` | GET | — | Descarga del plugin |",
+            "page": 5,
+            "text": "| Endpoint | Método | Entrada | Devuelve |\n|---|---|---|---|\n| `/api/licenses/validate` | POST | `{ key, domain }` | `{ valid, plan, status, expires_at }` o `{ valid: false, status, message }` |\n| `/api/licenses/checkin` | POST | `{ key, domain }` | `{ valid }` + datos de la licencia |\n| `/api/plugin/version` | GET | `?key=` | versión disponible, o `{ valid: false, expired: true }` |\n| `/api/download` | GET | — | Descarga del plugin |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Modelo de datos (Supabase)",
+            "snippet": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d",
+            "page": 7,
+            "text": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d"
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte.",
+            "page": 7,
+            "text": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "llama a esta API para validar su licencia",
+            "page": 2,
+            "text": "llama a esta API para validar su licencia"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "`active` · `expired` · `suspended`",
+            "page": 7,
+            "text": "`active` · `expired` · `suspended`"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "---",
+            "page": 7,
+            "text": "---"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 5,
+            "page_to": 5,
+            "section_path": "Contrato con el plugin de WordPress",
+            "snippet": "| Endpoint | Método | Entrada | Devuelve |\n|---|---|---|---|\n| `/api/licenses/validate` | POST | `{ key, domain }` | `{ valid, plan, status, expires_at }` o `{ valid: false, status, message }` |\n| `/api/licenses/checkin` | POST | `{ key, domain }` | `{ valid }` + datos de la licencia |\n| `/api/plugin/version` | GET | `?key=` | versión disponible, o `{ valid: false, expired: true }` |\n| `/api/download` | GET | — | Descarga del plugin |",
+            "page": 5,
+            "text": "| Endpoint | Método | Entrada | Devuelve |\n|---|---|---|---|\n| `/api/licenses/validate` | POST | `{ key, domain }` | `{ valid, plan, status, expires_at }` o `{ valid: false, status, message }` |\n| `/api/licenses/checkin` | POST | `{ key, domain }` | `{ valid }` + datos de la licencia |\n| `/api/plugin/version` | GET | `?key=` | versión disponible, o `{ valid: false, expired: true }` |\n| `/api/download` | GET | — | Descarga del plugin |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Modelo de datos (Supabase)",
+            "snippet": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d",
+            "page": 7,
+            "text": "| Tabla | Para qué |\n|---|---|\n| `licenses` | Licencias emitidas. La tabla central del sistema |\n| `pending_payments` | Pagos iniciados y aún no confirmados |\n| `appsumo_licenses` | Licencias provenientes de AppSumo |\n| `promo_codes` | Códigos promocionales |\n| `license_domains` | Dominios activados por licencia (soporte multi-sitio) |\n| `checkout_intents` | Intenciones de compra, base de la recuperación de carrito |\n| `planner_usage` | Uso del planificador, para límites de cuota |\n| `pricing_config` | Precios editables (fila única, `id = 1`) |\n| `checkins` | Registro de check-ins del plugin |\n| `appsumo_webhook_log` | Auditoría de webhooks de AppSumo |\n| `admin_users` | Usuarios del panel d"
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 3225
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-middleware-admin",
+      "category": "procedimental",
+      "question": "¿Qué hace el middleware con las rutas bajo /admin?",
+      "must_abstain": false,
+      "response": {
+        "answer": "Devuelve 404 sin contenido [1]",
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 8,
+            "page_to": 8,
+            "section_path": "Middleware — seguridad",
+            "snippet": "**1. Oculta el panel antiguo.** Toda ruta bajo `/admin` devuelve `404` sin contenido.",
+            "page": 8,
+            "text": "**1. Oculta el panel antiguo.** Toda ruta bajo `/admin` devuelve `404` sin contenido."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 4,
+            "page_to": 4,
+            "section_path": "Operaciones (interno)",
+            "snippet": "> **Nota de seguridad:** la ruta antigua `/admin` devuelve **404 deliberadamente** desde el\n> middleware, para no revelar dónde está el panel real. El panel vive en `/ops`.",
+            "page": 4,
+            "text": "> **Nota de seguridad:** la ruta antigua `/admin` devuelve **404 deliberadamente** desde el\n> middleware, para no revelar dónde está el panel real. El panel vive en `/ops`."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 8,
+            "page_to": 8,
+            "section_path": "Middleware — seguridad",
+            "snippet": "`middleware.ts` hace tres cosas:",
+            "page": 8,
+            "text": "`middleware.ts` hace tres cosas:"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 4,
+            "page_to": 4,
+            "section_path": "Públicas",
+            "snippet": "| Ruta | Función |\n|---|---|\n| `/` | Landing principal |\n| `/pricing` | Planes y precios |\n| `/docs` | Documentación del plugin |\n| `/demo` | Demostración |\n| `/planner` | Planificador de rutas con mapa |\n| `/blog`, `/blog/[slug]` | Blog |\n| `/changelog` | Historial de versiones |\n| `/about` | Acerca de |\n| `/privacy` | Política de privacidad (10 secciones) |\n| `/terms` | Términos de servicio (12 secciones) |",
+            "page": 4,
+            "text": "| Ruta | Función |\n|---|---|\n| `/` | Landing principal |\n| `/pricing` | Planes y precios |\n| `/docs` | Documentación del plugin |\n| `/demo` | Demostración |\n| `/planner` | Planificador de rutas con mapa |\n| `/blog`, `/blog/[slug]` | Blog |\n| `/changelog` | Historial de versiones |\n| `/about` | Acerca de |\n| `/privacy` | Política de privacidad (10 secciones) |\n| `/terms` | Términos de servicio (12 secciones) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 8,
+            "page_to": 8,
+            "section_path": "Middleware — seguridad",
+            "snippet": "Middleware — seguridad",
+            "page": 8,
+            "text": "Middleware — seguridad"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 8,
+            "page_to": 8,
+            "section_path": "Middleware — seguridad",
+            "snippet": "---",
+            "page": 8,
+            "text": "---"
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 8,
+            "page_to": 8,
+            "section_path": "Middleware — seguridad",
+            "snippet": "**1. Oculta el panel antiguo.** Toda ruta bajo `/admin` devuelve `404` sin contenido.",
+            "page": 8,
+            "text": "**1. Oculta el panel antiguo.** Toda ruta bajo `/admin` devuelve `404` sin contenido."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 4,
+            "page_to": 4,
+            "section_path": "Operaciones (interno)",
+            "snippet": "> **Nota de seguridad:** la ruta antigua `/admin` devuelve **404 deliberadamente** desde el\n> middleware, para no revelar dónde está el panel real. El panel vive en `/ops`.",
+            "page": 4,
+            "text": "> **Nota de seguridad:** la ruta antigua `/admin` devuelve **404 deliberadamente** desde el\n> middleware, para no revelar dónde está el panel real. El panel vive en `/ops`."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 8,
+            "page_to": 8,
+            "section_path": "Middleware — seguridad",
+            "snippet": "`middleware.ts` hace tres cosas:",
+            "page": 8,
+            "text": "`middleware.ts` hace tres cosas:"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 4,
+            "page_to": 4,
+            "section_path": "Públicas",
+            "snippet": "| Ruta | Función |\n|---|---|\n| `/` | Landing principal |\n| `/pricing` | Planes y precios |\n| `/docs` | Documentación del plugin |\n| `/demo` | Demostración |\n| `/planner` | Planificador de rutas con mapa |\n| `/blog`, `/blog/[slug]` | Blog |\n| `/changelog` | Historial de versiones |\n| `/about` | Acerca de |\n| `/privacy` | Política de privacidad (10 secciones) |\n| `/terms` | Términos de servicio (12 secciones) |",
+            "page": 4,
+            "text": "| Ruta | Función |\n|---|---|\n| `/` | Landing principal |\n| `/pricing` | Planes y precios |\n| `/docs` | Documentación del plugin |\n| `/demo` | Demostración |\n| `/planner` | Planificador de rutas con mapa |\n| `/blog`, `/blog/[slug]` | Blog |\n| `/changelog` | Historial de versiones |\n| `/about` | Acerca de |\n| `/privacy` | Política de privacidad (10 secciones) |\n| `/terms` | Términos de servicio (12 secciones) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 8,
+            "page_to": 8,
+            "section_path": "Middleware — seguridad",
+            "snippet": "Middleware — seguridad",
+            "page": 8,
+            "text": "Middleware — seguridad"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 8,
+            "page_to": 8,
+            "section_path": "Middleware — seguridad",
+            "snippet": "---",
+            "page": 8,
+            "text": "---"
+          }
+        ],
+        "abstained": false,
+        "latency_ms": 1866
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-precio-enterprise-inexistente",
+      "category": "negative_control",
+      "question": "¿Cuánto cuesta el plan Enterprise de TrailKit?",
+      "must_abstain": true,
+      "response": {
+        "answer": null,
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |",
+            "page": 6,
+            "text": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente",
+            "page": 1,
+            "text": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto.",
+            "page": 6,
+            "text": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "El backend y sitio comercial de TrailKit. Cumple cuatro funciones distintas en una sola\naplicación Next.js:",
+            "page": 2,
+            "text": "El backend y sitio comercial de TrailKit. Cumple cuatro funciones distintas en una sola\naplicación Next.js:"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "TrailKit Website — Documentación técnica",
+            "page": 1,
+            "text": "TrailKit Website — Documentación técnica"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |",
+            "page": 6,
+            "text": "| Plan | Precio | Sitios | Vencimiento | ¿En el checkout? |\n|---|---|---|---|---|\n| Lite | $0 | 1 | Nunca | — (gratuito) |\n| **Single** | **$79/año** | 1 | 1 año | ✅ |\n| **Lifetime** | **$249 único** | 1 | Nunca | ✅ |\n| Agency | $149.99/año | 2 | 1 año | ❌ sólo backend |\n| Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend |\n| Trial | $0 | 1 | 14 días | — (vía API) |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente",
+            "page": 1,
+            "text": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto.",
+            "page": 6,
+            "text": "> **Corrección a la documentación previa:** el `CLAUDE.md` del proyecto reporta un\n> *\"bug activo\"* — `app/terms/page.tsx` mostrando Lifetime a $199. **Ese bug ya está\n> corregido**: la línea 53 dice `$249 one-time`. El $199.99 que aparece en la línea 52\n> corresponde al plan Unlimited, que es correcto. El `CLAUDE.md` está desactualizado en\n> este punto."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "El backend y sitio comercial de TrailKit. Cumple cuatro funciones distintas en una sola\naplicación Next.js:",
+            "page": 2,
+            "text": "El backend y sitio comercial de TrailKit. Cumple cuatro funciones distintas en una sola\naplicación Next.js:"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "TrailKit Website — Documentación técnica",
+            "page": 1,
+            "text": "TrailKit Website — Documentación técnica"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 6,
+            "page_to": 6,
+            "section_path": "Planes y precios",
+            "snippet": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.",
+            "page": 6,
+            "text": "**Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la\nconsulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**."
+          }
+        ],
+        "abstained": true,
+        "latency_ms": 1268
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-idioma-frances-inexistente",
+      "category": "negative_control",
+      "question": "¿Qué archivo tiene las cadenas en francés de TrailKit?",
+      "must_abstain": true,
+      "response": {
+        "answer": null,
+        "citations": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente",
+            "page": 1,
+            "text": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "TrailKit Website — Documentación técnica",
+            "page": 1,
+            "text": "TrailKit Website — Documentación técnica"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "---",
+            "page": 1,
+            "text": "---"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "El backend y sitio comercial de TrailKit. Cumple cuatro funciones distintas en una sola\naplicación Next.js:",
+            "page": 2,
+            "text": "El backend y sitio comercial de TrailKit. Cumple cuatro funciones distintas en una sola\naplicación Next.js:"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 11,
+            "page_to": 11,
+            "section_path": "Internacionalización",
+            "snippet": "`lib/i18n.tsx` — dos idiomas: **inglés (`en`)** y **español (`es`)**.\nLas cadenas viven en `lib/messages.ts`.",
+            "page": 11,
+            "text": "`lib/i18n.tsx` — dos idiomas: **inglés (`en`)** y **español (`es`)**.\nLas cadenas viven en `lib/messages.ts`."
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 3,
+            "page_to": 3,
+            "section_path": "2. Las piezas",
+            "snippet": "Los dos modelos (`bge-m3` y `Qwen`) son archivos que se descargan una vez y corren en el\nservidor. No llaman a internet.",
+            "page": 3,
+            "text": "Los dos modelos (`bge-m3` y `Qwen`) son archivos que se descargan una vez y corren en el\nservidor. No llaman a internet."
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente",
+            "page": 1,
+            "text": "> **Producto:** TrailKit — plugin de WordPress para rutas de aventura\n> **Sitio:** [trailplugin.com](https://trailplugin.com)\n> **Repositorio:** `trailkit/Website` (`trailkit-backend`)\n> **Generado:** 2026-09-02, leyendo el código fuente"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "TrailKit Website — Documentación técnica",
+            "page": 1,
+            "text": "TrailKit Website — Documentación técnica"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 1,
+            "page_to": 1,
+            "section_path": "TrailKit Website — Documentación técnica",
+            "snippet": "---",
+            "page": 1,
+            "text": "---"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "Qué es este proyecto",
+            "snippet": "El backend y sitio comercial de TrailKit. Cumple cuatro funciones distintas en una sola\naplicación Next.js:",
+            "page": 2,
+            "text": "El backend y sitio comercial de TrailKit. Cumple cuatro funciones distintas en una sola\naplicación Next.js:"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 11,
+            "page_to": 11,
+            "section_path": "Internacionalización",
+            "snippet": "`lib/i18n.tsx` — dos idiomas: **inglés (`en`)** y **español (`es`)**.\nLas cadenas viven en `lib/messages.ts`.",
+            "page": 11,
+            "text": "`lib/i18n.tsx` — dos idiomas: **inglés (`en`)** y **español (`es`)**.\nLas cadenas viven en `lib/messages.ts`."
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 3,
+            "page_to": 3,
+            "section_path": "2. Las piezas",
+            "snippet": "Los dos modelos (`bge-m3` y `Qwen`) son archivos que se descargan una vez y corren en el\nservidor. No llaman a internet.",
+            "page": 3,
+            "text": "Los dos modelos (`bge-m3` y `Qwen`) son archivos que se descargan una vez y corren en el\nservidor. No llaman a internet."
+          }
+        ],
+        "abstained": true,
+        "latency_ms": 1220
+      },
+      "error": null
+    },
+    {
+      "case_id": "tk-cron-backup-inexistente",
+      "category": "negative_control",
+      "question": "¿A qué hora corre el cron de backup de la base de datos?",
+      "must_abstain": true,
+      "response": {
+        "answer": null,
+        "citations": [
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "1. El problema",
+            "snippet": "Cuando un técnico necesita un dato concreto —*\"¿con cuánta fuerza aprieto este perno?\"*—\ntiene que abrir el PDF correcto, encontrar la sección correcta y leer la tabla correcta.\nEso toma entre veinte minutos y media jornada.",
+            "page": 2,
+            "text": "Cuando un técnico necesita un dato concreto —*\"¿con cuánta fuerza aprieto este perno?\"*—\ntiene que abrir el PDF correcto, encontrar la sección correcta y leer la tabla correcta.\nEso toma entre veinte minutos y media jornada."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |",
+            "page": 9,
+            "text": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 12,
+            "page_to": 12,
+            "section_path": "Variables de entorno",
+            "snippet": "**Otros:** `RESEND_API_KEY`, `CRON_SECRET`",
+            "page": 12,
+            "text": "**Otros:** `RESEND_API_KEY`, `CRON_SECRET`"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte.",
+            "page": 7,
+            "text": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte."
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Cuando llega una revisión nueva del manual",
+            "snippet": "---",
+            "page": 7,
+            "text": "---"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 3,
+            "page_to": 3,
+            "section_path": "Stack",
+            "snippet": "| Capa | Tecnología |\n|---|---|\n| Framework | Next.js 14.2.29 (App Router) |\n| Lenguaje | TypeScript |\n| UI | React 18 |\n| Base de datos | Supabase (PostgreSQL) |\n| Autenticación | NextAuth 4.24 |\n| Mapas | Leaflet 1.9.4 |\n| Emails | Resend |\n| Pagos | PayPal + NowPayments (cripto) |\n| Hosting | Vercel |\n| Analítica | Vercel Analytics, Speed Insights, GTM, GA4 |\n| Hash de contraseñas | bcryptjs |",
+            "page": 3,
+            "text": "| Capa | Tecnología |\n|---|---|\n| Framework | Next.js 14.2.29 (App Router) |\n| Lenguaje | TypeScript |\n| UI | React 18 |\n| Base de datos | Supabase (PostgreSQL) |\n| Autenticación | NextAuth 4.24 |\n| Mapas | Leaflet 1.9.4 |\n| Emails | Resend |\n| Pagos | PayPal + NowPayments (cripto) |\n| Hosting | Vercel |\n| Analítica | Vercel Analytics, Speed Insights, GTM, GA4 |\n| Hash de contraseñas | bcryptjs |"
+          }
+        ],
+        "retrieved": [
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 2,
+            "page_to": 2,
+            "section_path": "1. El problema",
+            "snippet": "Cuando un técnico necesita un dato concreto —*\"¿con cuánta fuerza aprieto este perno?\"*—\ntiene que abrir el PDF correcto, encontrar la sección correcta y leer la tabla correcta.\nEso toma entre veinte minutos y media jornada.",
+            "page": 2,
+            "text": "Cuando un técnico necesita un dato concreto —*\"¿con cuánta fuerza aprieto este perno?\"*—\ntiene que abrir el PDF correcto, encontrar la sección correcta y leer la tabla correcta.\nEso toma entre veinte minutos y media jornada."
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 9,
+            "page_to": 9,
+            "section_path": "Tareas programadas (Vercel Cron)",
+            "snippet": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |",
+            "page": 9,
+            "text": "| Tarea | Horario (UTC) | Función |\n|---|---|---|\n| `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos |\n| `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 12,
+            "page_to": 12,
+            "section_path": "Variables de entorno",
+            "snippet": "**Otros:** `RESEND_API_KEY`, `CRON_SECRET`",
+            "page": 12,
+            "text": "**Otros:** `RESEND_API_KEY`, `CRON_SECRET`"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Estados de una licencia",
+            "snippet": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte.",
+            "page": 7,
+            "text": "La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como\n`expired` en la base de datos** cuando detecta una licencia vencida durante la validación —\nel vencimiento se materializa al consultarse, no por un proceso aparte."
+          },
+          {
+            "doc_id": "5dfc53bb1096377f",
+            "title": "anvil — cómo funciona",
+            "revision": "1",
+            "superseded_by": null,
+            "page_from": 7,
+            "page_to": 7,
+            "section_path": "Cuando llega una revisión nueva del manual",
+            "snippet": "---",
+            "page": 7,
+            "text": "---"
+          },
+          {
+            "doc_id": "3f328ec9cc2bb39f",
+            "title": "Trailplugin Documentacion",
+            "revision": null,
+            "superseded_by": null,
+            "page_from": 3,
+            "page_to": 3,
+            "section_path": "Stack",
+            "snippet": "| Capa | Tecnología |\n|---|---|\n| Framework | Next.js 14.2.29 (App Router) |\n| Lenguaje | TypeScript |\n| UI | React 18 |\n| Base de datos | Supabase (PostgreSQL) |\n| Autenticación | NextAuth 4.24 |\n| Mapas | Leaflet 1.9.4 |\n| Emails | Resend |\n| Pagos | PayPal + NowPayments (cripto) |\n| Hosting | Vercel |\n| Analítica | Vercel Analytics, Speed Insights, GTM, GA4 |\n| Hash de contraseñas | bcryptjs |",
+            "page": 3,
+            "text": "| Capa | Tecnología |\n|---|---|\n| Framework | Next.js 14.2.29 (App Router) |\n| Lenguaje | TypeScript |\n| UI | React 18 |\n| Base de datos | Supabase (PostgreSQL) |\n| Autenticación | NextAuth 4.24 |\n| Mapas | Leaflet 1.9.4 |\n| Emails | Resend |\n| Pagos | PayPal + NowPayments (cripto) |\n| Hosting | Vercel |\n| Analítica | Vercel Analytics, Speed Insights, GTM, GA4 |\n| Hash de contraseñas | bcryptjs |"
+          }
+        ],
+        "abstained": true,
+        "latency_ms": 1531
+      },
+      "error": null
+    }
+  ],
+  "notes": [
+    "Una corrida guarda observaciones crudas y NINGUNA metrica, por diseno. Las metricas de retrieval y los checks deterministas se derivan despues con `assay report`, que verifica el sha256 del golden set antes de reportar. Asi una corrida vieja se puede re-evaluar con checks nuevos, y nadie confunde el dato con el juicio sobre el dato."
+  ]
+}

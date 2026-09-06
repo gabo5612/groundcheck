@@ -1,0 +1,196 @@
+# ════════════════════════════════════════════════════════════════════════════════
+# Golden set — documentación de TrailKit
+#
+# 15 preguntas · 3 controles negativos (20%)
+#
+# POR QUÉ ESTE SET EXISTE, aparte del de anvil:
+# El etiquetado humano del LLM-judge (M7) exige que una persona juzgue si una respuesta
+# es correcta. Con el manual del laminador o el manual militar, eso obliga a estudiar
+# documentación ajena antes de poder opinar — y una etiqueta puesta sin dominio del tema
+# es ruido con formato de dato. TrailKit es del propio usuario: puede juzgar de memoria y
+# verificar en dos segundos.
+#
+# Fuente: doc 3f328ec9cc2bb39f, 15 páginas, español. Cada número verificado contra el
+# chunk que lo respalda con scripts/verify_against_corpus.py.
+# ════════════════════════════════════════════════════════════════════════════════
+name: trailkit
+cases:
+
+# ── factual_lookup: la tabla de precios ────────────────────────────────────
+# Seis filas con seis precios: cada pregunta lleva como forbidden_numbers los precios
+# de las OTRAS filas. Es la trampa exacta de una tabla — contestar la fila de al lado.
+
+  - id: tk-precio-single
+    question: "¿Cuánto cuesta el plan Single de TrailKit?"
+    category: factual_lookup
+    difficulty: easy
+    languages: [es]
+    gold_answer: "$79/año, 1 sitio, vence en 1 año"
+    gold_numbers: ["79"]
+    forbidden_numbers: ["249", "149.99", "199.99"]
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [6]}
+
+  - id: tk-precio-lifetime
+    question: "¿Cuál es el precio del plan Lifetime?"
+    category: factual_lookup
+    difficulty: easy
+    languages: [es]
+    gold_answer: "$249 único, 1 sitio, no vence"
+    gold_numbers: ["249"]
+    forbidden_numbers: ["79", "149.99", "199.99"]
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [6]}
+
+  - id: tk-precio-agency
+    question: "¿Cuánto vale el plan Agency y cuántos sitios permite?"
+    category: factual_lookup
+    difficulty: medium
+    languages: [es]
+    gold_answer: "$149.99/año, 2 sitios, vence en 1 año. Sólo backend, no está en el checkout."
+    gold_numbers: ["149.99", "2"]
+    forbidden_numbers: ["199.99", "79", "249"]
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [6]}
+
+  - id: tk-duracion-trial
+    question: "¿Cuántos días dura el plan Trial?"
+    category: factual_lookup
+    difficulty: medium
+    languages: [es]
+    gold_answer: "14 días, 1 sitio, gratuito, vía API"
+    gold_numbers: ["14"]
+    forbidden_numbers: []
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [6]}
+
+  - id: tk-defaults-precio
+    question: "Si falla la consulta a pricing_config, ¿qué precios usa el código por defecto?"
+    category: factual_lookup
+    difficulty: hard
+    languages: [es]
+    # Exige distinguir la fuente de verdad (la tabla de Supabase) del fallback del código.
+    gold_answer: "Single $79 y Lifetime $249"
+    gold_numbers: ["79", "249"]
+    forbidden_numbers: ["149.99", "199.99"]
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [6]}
+
+  - id: tk-horario-cron-expiry
+    question: "¿A qué hora corre el cron de recordatorios de vencimiento?"
+    category: factual_lookup
+    difficulty: medium
+    languages: [es]
+    gold_answer: "09:00 UTC, diario"
+    # Las horas son identificadores, no magnitudes: `09:00` se compara entero. Lo decidió
+    # este set — el extractor partía "09" y "00" hasta que estas dos preguntas lo mostraron.
+    gold_numbers: []
+    forbidden_codes: ["14:00"]        # el cron del carrito abandonado
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [9]}
+
+  - id: tk-horario-cron-carrito
+    question: "¿A qué hora se ejecuta la tarea de carritos abandonados?"
+    category: factual_lookup
+    difficulty: medium
+    languages: [es]
+    gold_answer: "14:00 UTC, diario"
+    gold_numbers: []
+    forbidden_codes: ["09:00"]
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [9]}
+
+# ── alfanumerico_exacto ────────────────────────────────────────────────────
+  - id: tk-estados-licencia
+    question: "¿Cuáles son los estados posibles de una licencia?"
+    category: alfanumerico_exacto
+    difficulty: easy
+    languages: [es]
+    gold_answer: "active, expired y suspended"
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [7]}
+
+  - id: tk-secret-cron
+    question: "¿Con qué variable se protegen las tareas programadas?"
+    category: alfanumerico_exacto
+    difficulty: medium
+    languages: [es]
+    gold_answer: "CRON_SECRET"
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [9]}
+
+  - id: tk-tabla-central
+    question: "¿Cuál es la tabla central del sistema de licencias en Supabase?"
+    category: alfanumerico_exacto
+    difficulty: medium
+    languages: [es]
+    gold_answer: "`licenses` — las licencias emitidas"
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [7]}
+
+  - id: tk-endpoint-validacion
+    question: "¿Qué endpoint usa el plugin de WordPress para validar una licencia y qué recibe?"
+    category: alfanumerico_exacto
+    difficulty: hard
+    languages: [es]
+    gold_answer: >-
+      POST /api/licenses/validate con { key, domain }; devuelve
+      { valid, plan, status, expires_at }.
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [5]}
+
+# ── procedimental ──────────────────────────────────────────────────────────
+  - id: tk-cuando-expira
+    question: "¿Cómo se marca una licencia como vencida?"
+    category: procedimental
+    difficulty: hard
+    languages: [es]
+    # El detalle no obvio: NO hay proceso aparte. El vencimiento se materializa al
+    # consultarse. Un sistema que "razona" contesta que hay un cron, que es lo plausible.
+    gold_answer: >-
+      La validación en lib/license.ts la marca como expired en la base de datos cuando
+      detecta que venció durante la validación: el vencimiento se materializa al
+      consultarse, no por un proceso aparte.
+    gold_numbers: []
+    forbidden_numbers: []
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [7]}
+
+  - id: tk-middleware-admin
+    question: "¿Qué hace el middleware con las rutas bajo /admin?"
+    category: procedimental
+    difficulty: medium
+    languages: [es]
+    gold_answer: "Devuelve 404 sin contenido: oculta el panel antiguo."
+    gold_numbers: ["404"]
+    forbidden_numbers: []
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [8]}
+
+# ── negative_control (3 = 20%) ─────────────────────────────────────────────
+  - id: tk-precio-enterprise-inexistente
+    question: "¿Cuánto cuesta el plan Enterprise de TrailKit?"
+    category: negative_control
+    difficulty: medium
+    languages: [es]
+    # La tabla tiene Lite, Single, Lifetime, Agency, Unlimited y Trial. Enterprise no
+    # existe, pero es el nombre de plan más predecible del mundo SaaS.
+    gold_answer: null
+    must_abstain: true
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [6]}
+
+  - id: tk-idioma-frances-inexistente
+    question: "¿Qué archivo tiene las cadenas en francés de TrailKit?"
+    category: negative_control
+    difficulty: medium
+    languages: [es]
+    # La doc dice explícitamente DOS idiomas: inglés y español.
+    gold_answer: null
+    must_abstain: true
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [11]}
+
+  - id: tk-cron-backup-inexistente
+    question: "¿A qué hora corre el cron de backup de la base de datos?"
+    category: negative_control
+    difficulty: hard
+    languages: [es]
+    # Hay exactamente dos crons y ninguno es de backup. La pregunta calca el formato de
+    # las dos que sí existen.
+    gold_answer: null
+    must_abstain: true
+    gold_source: {doc_id: 3f328ec9cc2bb39f, pages: [9]}

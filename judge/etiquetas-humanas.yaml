@@ -1,13 +1,19 @@
 # ═══════════════════════════════════════════════════════════════════════════
 # PLANILLA DE ETIQUETADO HUMANO — M7
 #
-# QUE HACER: por cada caso, escribi en `tu_veredicto` una de estas dos palabras:
+# QUE HACER: compara la `respuesta` contra el bloque `fuente`, que es el texto
+# LITERAL del documento donde vive la respuesta correcta. Despues escribi en
+# `tu_veredicto` una de estas dos palabras:
 #
 #     bien   la respuesta es correcta y util para quien pregunto
 #     mal    la respuesta es incorrecta, incompleta o enganosa
 #
-# `por_que` es opcional, una linea. Nada mas. No mires lo que dicen los checks
-# deterministas si no querres: estan ahi como contexto, no como sugerencia.
+# `por_que` es opcional, una linea.
+#
+# LA REGLA: si la respuesta dice algo que la fuente NO dice, es `mal`, por bien
+# escrita que este. Si la pregunta es un control negativo (el dato no existe en la
+# documentacion), la unica respuesta correcta es abstenerse: si contesta con una
+# cifra, es `mal` aunque la cifra exista en otra fila.
 #
 # PARA QUE SIRVE: con estas etiquetas se calcula la TASA DE ACUERDO entre vos y
 # el LLM-judge, y esa tasa se publica al lado de cada numero del juez. Un juez sin
@@ -23,215 +29,580 @@ etiquetas:
   - id: torque-m24-grado-88
     categoria: factual_lookup
     pregunta: "¿Cuál es el par de apriete del perno M24 del cabezal en grado 8.8?"
-    respuesta: "El par de apriete del perno M24 del cabezal en grado 8.8 es 720 +/- 30 N.m, en secuencia cruzada, 3 pasadas."
+    respuesta: "720 +/- 30 N.m [1]"
     esperado: "720 +/- 30 N.m, en secuencia cruzada, 3 pasadas"
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
-    los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: torque-m24-grado-109
     categoria: factual_lookup
     pregunta: "¿Qué par de apriete corresponde al M24 del cabezal en grado 10.9?"
-    respuesta: "El par de apriete del M24 del cabezal es 720 +/- 30 N.m."
+    respuesta: "950 +/- 40 N.m [1]"
     esperado: "950 +/- 40 N.m"
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: FALLA · forbidden numbers absent: FALLA · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: FALLA
     los_deterministas_ya_lo_atraparon: true
-    tu_veredicto: mal      # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: torque-m16-tapa
     categoria: factual_lookup
     pregunta: "¿Cuál es el torque del perno M16 de la tapa?"
-    respuesta: "El perno M16 de la tapa lleva 190 +/- 10 N.m, cruzada, 2 pasadas."
+    respuesta: "190 +/- 10 N.m [1]"
     esperado: "190 +/- 10 N.m, cruzada, 2 pasadas"
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: FALLA
     los_deterministas_ya_lo_atraparon: true
-    tu_veredicto: mal      # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: precalentamiento-a516-espeso
     categoria: factual_lookup
     pregunta: "¿Qué precalentamiento requiere el A516 Gr.70 en espesores mayores a 20 mm?"
-    respuesta: "Para el A516 Gr.70 en espesores mayores a 20 mm se requiere precalentamiento a 95 C."
+    respuesta: null
     esperado: "95 C"
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
-    los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    # checks deterministas → gold numbers present: FALLA · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: FALLA · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: precalentamiento-a106
     categoria: factual_lookup
     pregunta: "¿Cuál es la temperatura de precalentamiento para el A106 Gr.B?"
-    respuesta: "El A106 Gr.B requiere precalentamiento a 80 C para cualquier espesor."
+    respuesta: "80 [3]"
     esperado: "80 C, para cualquier espesor"
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
-    los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: precalentamiento-a516-delgado
     categoria: factual_lookup
     pregunta: "¿Hay que precalentar el A516 Gr.70 de 15 mm de espesor?"
-    respuesta: "El A516 Gr.70 de 15 mm requiere precalentamiento a 80 C."
+    respuesta: null
     esperado: "Ninguno. Hasta 20 mm el A516 Gr.70 no requiere precalentamiento."
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: FALLA · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: FALLA · revision current: FALLA
     los_deterministas_ya_lo_atraparon: true
-    tu_veredicto: mal      # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: pasadas-cabezal
     categoria: factual_lookup
     pregunta: "¿En cuántas pasadas se aprietan los pernos del cabezal y con qué patrón?"
-    respuesta: "Los pernos del cabezal se aprietan en patron cruzado, en 3 pasadas."
+    respuesta: "3 pasadas [cruzada]"
     esperado: "3 pasadas, en patron cruzado"
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
-    los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: version-leaflet-trailkit
     categoria: factual_lookup
     pregunta: "¿Qué versión de Leaflet usa el sitio de TrailKit?"
-    respuesta: "El sitio de TrailKit usa Leaflet 1.9.5."
+    respuesta: "Leaflet 1.9.4 [5]"
     esperado: "Leaflet 1.9.4"
+    # ── FUENTE (doc 3f328ec9, pagina [3]) — el documento dice literalmente:
+    #   | Capa | Tecnología | |---|---| | Framework | Next.js 14.2.29 (App Router) | | Lenguaje | TypeScript | | UI | React 18 | | Base de datos | Supabase (PostgreSQL) | | Autenticación | NextAuth 4.24 | | Mapas | Leaflet 1.9.4 | | Emails | Resend | | Pagos | PayPal + NowPayments (cripto) | | Hosting | Vercel | | Analítica | Vercel Analytics, Speed Insights, GTM, GA4 | | Hash de contraseñas | bcryptjs |
+    #   **Navegadores soportados** (definido en `package.json` → `browserslist`): Chrome 93+, Edge 93+, Firefox 92+, Safari 15.4+, Opera 79+. Esta restricción elimina 11,6 KiB de polyfills legacy del bundle.
     abstuvo: false
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: FALLA · citation hits gold: ok · abstention correct: ok · revision current: n/a
-    los_deterministas_ya_lo_atraparon: true
-    tu_veredicto: mal      # bien | mal
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: alarma-e114
     categoria: alfanumerico_exacto
     pregunta: "¿Qué significa la alarma E-114 del horno de induccion?"
-    respuesta: "La alarma E-114 indica sobretemperatura de bobina. Accion: parar y purgar refrigerante."
+    respuesta: "Sobretemperatura de bobina [1]"
     esperado: "Sobretemperatura de bobina. Accion: parar y purgar refrigerante."
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
-    los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: mal      # bien | mal
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: alarma-e115-accion
     categoria: alfanumerico_exacto
     pregunta: "Ante la alarma E-115, ¿qué hay que verificar?"
-    respuesta: "Ante la alarma E-115 hay que verificar la bomba P-3, por perdida de caudal de refrigerante."
+    respuesta: "Verificar bomba P-3 [1]"
     esperado: "La bomba P-3 (perdida de caudal de refrigerante)."
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
-    los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: mal      # bien | mal
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: nsn-aceite-law
     categoria: alfanumerico_exacto
     pregunta: "What is the National Stock Number for LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW)?"
-    respuesta: "The National Stock Number is 9150-00-292-9689."
+    respuesta: "9150-00-292-9689 [1]"
     esperado: "9150-00-292-9689"
+    # ── FUENTE (doc 75b2742d, pagina [126]) — el documento dice literalmente:
+    #   Table 1. Expendable and Durable Items List. | (1) ITEM NO. | (2) LEVEL | (3) NATIONAL STOCK NUMBER (NSN) | (4) ITEM NAME, DESCRIPTION, PART NUMBER/ (CAGEC) | (5) U/I | |----------------|-------------|-----------------------------------|----------------------------------------------------------------------------------------|-----------| | 1 | F | 1005-00-242-5687 | BOTTLE ASSEMBLY, CYLINDRICAL 8448444 (19204) | AY | | 2 | F | 7920-00-205-2401 | BRUSH, CLEANING, TOOLS AND PARTS 7920-00-205-2401 (80244) | EA | | 3 | F | 9150-01-054-6453 | CLEANER, LUBRICANT AND PRESERVATIVE, (CLP) 1 pt (0.47 l) t
+    #   Table 1. Expendable and Durable Items List. | 9 | C | 9150-00-292-9689 | LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW) MIL-PRF-14107 (81349) | QT | | 10 | C | 9150-00-935-6597 | LUBRICATING OIL, SEMIFLUID (LSA) 2 oz (59.15 ml) bottle QPL-46000 (81349) | BT | | 11 | C | 9150-00-889-3522 | LUBRICATING OIL, SEMIFLUID (LSA) 4 oz (118.30 ml) bottle 8436793 (19204) | BT | | 12 | F | 9150-00-687-4241 | LUBRICATING OIL, SEMIFLUID (LSA) 1 qt (0.95 ml) QPL-46000 (81349) | QT | | 13 | F | 9150-00-753-4686 | LUBRICATING OIL, SEMIFLUID (LSA) 1 gal (3.79 l) QPL-46000 (81349) | GL | | 14 | F | 3990-00-795-3
+    #   Table 1. Expendable and Durable Items List.
     abstuvo: false
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: seccionador-loto
     categoria: alfanumerico_exacto
     pregunta: "¿Qué seccionador se abre en el bloqueo de la linea de colada?"
-    respuesta: "Se abre el seccionador principal QS-1, verificando ausencia de tension."
+    respuesta: "QS-1 [2]"
     esperado: "El seccionador principal QS-1, verificando ausencia de tension."
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: loto-linea-colada-completo
     categoria: procedimental
     pregunta: "¿Cuál es el procedimiento de bloqueo y etiquetado (LOTO) de la linea de colada?"
-    respuesta: "1) Notificar a produccion y detener la linea. 2) Abrir el seccionador principal QS-1 y verificar ausencia de tension. 3) Colocar candado personal y tarjeta de identificacion en QS-1. 4) Purgar la linea hidraulica y confirmar presion cero en el manometro PI-7. 5) Verificar enclavamiento antes de iniciar la intervencion."
+    respuesta: "7.4 Bloqueo y etiquetado (LOTO) - linea de colada [2]"
     esperado: "1) Notificar a produccion y detener la linea. 2) Abrir el seccionador principal QS-1 y verificar ausencia de tension. 3) Colocar candado personal y tarjeta de identificacion en QS-1. 4) Purgar la linea hidraulica y confirmar presion cero en el manometro PI-7. 5) Verificar enclavamiento antes de iniciar la intervencion."
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: loto-presion-cero
     categoria: procedimental
     pregunta: "¿Dónde se confirma la presion cero durante el LOTO de la linea de colada?"
-    respuesta: "La presion cero se confirma en el manometro PI-7, despues de purgar la linea hidraulica."
+    respuesta: "manometro PI-7 [2]"
     esperado: "En el manometro PI-7, despues de purgar la linea hidraulica."
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: loto-primer-paso
     categoria: procedimental
     pregunta: "¿Cuál es el primer paso del LOTO de la linea de colada?"
-    respuesta: "El primer paso es abrir el seccionador principal QS-1 y verificar ausencia de tension."
+    respuesta: "7.4 Bloqueo y etiquetado (LOTO) - linea de colada [2]"
     esperado: "Notificar a produccion y detener la linea."
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: montaje-cabezal-superficies
     categoria: procedimental
     pregunta: "Antes de montar el cabezal, ¿qué hay que verificar en las superficies?"
-    respuesta: "Hay que verificar que las superficies esten libres de cascarilla."
+    respuesta: "verificar que las superficies esten libres de cascarilla [1]"
     esperado: "Que esten libres de cascarilla."
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: false
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: ok
-    los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: torque-m30-inexistente
     categoria: negative_control
     pregunta: "¿Cuál es el par de apriete del perno M30 del cabezal?"
-    respuesta: "El par de apriete del perno M30 del cabezal es 720 +/- 30 N.m."
-    abstuvo: false
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: FALLA · revision current: ok
+    respuesta: null
+    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
+    abstuvo: true
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: FALLA
     los_deterministas_ya_lo_atraparon: true
-    tu_veredicto: bien      # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: torque-m24-grado-129-inexistente
     categoria: negative_control
     pregunta: "¿Qué torque lleva el M24 del cabezal en grado 12.9?"
-    respuesta: "No encontre el par de apriete para el M24 en grado 12.9 en la documentacion. La Tabla 4-7 solo especifica los grados 8.8 y 10.9."
-    abstuvo: true
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: ok
-    los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    respuesta: null
+    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: alarma-e200-inexistente
     categoria: negative_control
     pregunta: "¿Qué indica la alarma E-200 del horno de induccion?"
-    respuesta: "No figura ninguna alarma E-200 en la documentacion del horno de induccion."
+    respuesta: null
+    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
     abstuvo: true
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: ok
-    los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien      # bien | mal
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: precalentamiento-a312-inexistente
     categoria: negative_control
     pregunta: "¿Qué precalentamiento requiere el A312 antes de soldar?"
-    respuesta: "El A312 requiere precalentamiento a 80 C antes de soldar."
-    abstuvo: false
-    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: FALLA · revision current: ok
+    respuesta: null
+    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
+    abstuvo: true
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: FALLA
     los_deterministas_ya_lo_atraparon: true
-    tu_veredicto: bien      # bien | mal
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tm-hoja-okc3s-largo
+    categoria: factual_lookup
+    pregunta: "How long is the OKC-3S bayonet blade?"
+    respuesta: "less than 8 in. (20.32 cm) long from handguard [1]"
+    esperado: "8.00 in. (20.32 cm) long"
+    # ── FUENTE (doc 75b2742d, pagina [22]) — el documento dice literalmente:
+    #   The M9 Multipurpose Bayonet System Scabbard consists of four major parts: the scabbard body, wire cutter plate, attaching assembly load-bearing end, and attaching assembly scabbard end. The M10 Bayonet-Knife Scabbard is a single piece. The OKC-3S Bayonet-Knife consists of the bayonet knife, scabbard assembly, and strap. The OKC-3S Bayonet-Knife Scabbard has a fitted internal stainless steel spring friction device at the throat of the scabbard to secure the bayonet.
+    #   On the M7 and M9 Bayonet-Knives there are left- and right-hand lock-release levers at the rear of the bayonet. Interchangeability of parts is limited to the lock-release levers and springs for the M7 and M9.
+    #   The M9 is longer and wider (blade is more than 7 in. (17.78 cm) long and 1.4 in. (3.56 cm) wide) and heavier than the M7. The OKC-3S blade is 8.00 in. (20.32 cm) long and 1.375 in. (3.49 cm) wide.
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: FALLA · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tm-hoja-okc3s-ancho
+    categoria: factual_lookup
+    pregunta: "How wide is the OKC-3S bayonet blade?"
+    respuesta: "less than 8 in. (20.32 cm) long from handguard [1]"
+    esperado: "1.375 in. (3.49 cm) wide"
+    # ── FUENTE (doc 75b2742d, pagina [22]) — el documento dice literalmente:
+    #   The M9 Multipurpose Bayonet System Scabbard consists of four major parts: the scabbard body, wire cutter plate, attaching assembly load-bearing end, and attaching assembly scabbard end. The M10 Bayonet-Knife Scabbard is a single piece. The OKC-3S Bayonet-Knife consists of the bayonet knife, scabbard assembly, and strap. The OKC-3S Bayonet-Knife Scabbard has a fitted internal stainless steel spring friction device at the throat of the scabbard to secure the bayonet.
+    #   On the M7 and M9 Bayonet-Knives there are left- and right-hand lock-release levers at the rear of the bayonet. Interchangeability of parts is limited to the lock-release levers and springs for the M7 and M9.
+    #   The M9 is longer and wider (blade is more than 7 in. (17.78 cm) long and 1.4 in. (3.56 cm) wide) and heavier than the M7. The OKC-3S blade is 8.00 in. (20.32 cm) long and 1.375 in. (3.49 cm) wide.
+    abstuvo: false
+    # checks deterministas → gold numbers present: FALLA · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: FALLA · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tm-hoja-m9-largo
+    categoria: factual_lookup
+    pregunta: "How long is the M9 bayonet blade?"
+    respuesta: null
+    esperado: "More than 7 in. (17.78 cm) long"
+    # ── FUENTE (doc 75b2742d, pagina [22]) — el documento dice literalmente:
+    #   The M9 Multipurpose Bayonet System Scabbard consists of four major parts: the scabbard body, wire cutter plate, attaching assembly load-bearing end, and attaching assembly scabbard end. The M10 Bayonet-Knife Scabbard is a single piece. The OKC-3S Bayonet-Knife consists of the bayonet knife, scabbard assembly, and strap. The OKC-3S Bayonet-Knife Scabbard has a fitted internal stainless steel spring friction device at the throat of the scabbard to secure the bayonet.
+    #   On the M7 and M9 Bayonet-Knives there are left- and right-hand lock-release levers at the rear of the bayonet. Interchangeability of parts is limited to the lock-release levers and springs for the M7 and M9.
+    #   The M9 is longer and wider (blade is more than 7 in. (17.78 cm) long and 1.4 in. (3.56 cm) wide) and heavier than the M7. The OKC-3S blade is 8.00 in. (20.32 cm) long and 1.375 in. (3.49 cm) wide.
+    abstuvo: false
+    # checks deterministas → gold numbers present: FALLA · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: FALLA · revision current: ok
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tm-pmcs-inactivo
+    categoria: factual_lookup
+    pregunta: "How many days without use make a bayonet 'inactive' for PMCS purposes?"
+    respuesta: "90 days [1]"
+    esperado: "90 days stored in an arms room without use"
+    # ── FUENTE (doc 75b2742d, pagina [27]) — el documento dice literalmente:
+    #   To ensure maximum operational readiness, it is necessary that the M7 Bayonet-Knife, M10 Bayonet-Knife Scabbard, M9 Multipurpose Bayonet System, and OKC-3S Bayonet-Knife (USMC only) be systematically inspected at regular intervals so defects may be discovered and corrected before they result in serious damage or failure.
+    #   PREVENTIVE MAINTENANCE CHECKS AND SERVICES
+    #   Work Package (WP) 0005 lists those Preventive Maintenance Checks and Services (PMCS) to be performed at their designated intervals.
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tm-partes-vaina-m9
+    categoria: factual_lookup
+    pregunta: "How many major parts does the M9 scabbard consist of, and which are they?"
+    respuesta: null
+    esperado: "Four: the scabbard body, wire cutter plate, attaching assembly load-bearing end, and attaching assembly scabbard end."
+    # ── FUENTE (doc 75b2742d, pagina [22]) — el documento dice literalmente:
+    #   The M9 Multipurpose Bayonet System Scabbard consists of four major parts: the scabbard body, wire cutter plate, attaching assembly load-bearing end, and attaching assembly scabbard end. The M10 Bayonet-Knife Scabbard is a single piece. The OKC-3S Bayonet-Knife consists of the bayonet knife, scabbard assembly, and strap. The OKC-3S Bayonet-Knife Scabbard has a fitted internal stainless steel spring friction device at the throat of the scabbard to secure the bayonet.
+    #   On the M7 and M9 Bayonet-Knives there are left- and right-hand lock-release levers at the rear of the bayonet. Interchangeability of parts is limited to the lock-release levers and springs for the M7 and M9.
+    #   The M9 is longer and wider (blade is more than 7 in. (17.78 cm) long and 1.4 in. (3.56 cm) wide) and heavier than the M7. The OKC-3S blade is 8.00 in. (20.32 cm) long and 1.375 in. (3.49 cm) wide.
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: FALLA · revision current: ok
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tp-version-nextjs
+    categoria: factual_lookup
+    pregunta: "¿Qué versión de Next.js usa el sitio de TrailKit?"
+    respuesta: "Next.js 14.2.29 (App Router) [4]"
+    esperado: "Next.js 14.2.29 (App Router)"
+    # ── FUENTE (doc 3f328ec9, pagina [3]) — el documento dice literalmente:
+    #   | Capa | Tecnología | |---|---| | Framework | Next.js 14.2.29 (App Router) | | Lenguaje | TypeScript | | UI | React 18 | | Base de datos | Supabase (PostgreSQL) | | Autenticación | NextAuth 4.24 | | Mapas | Leaflet 1.9.4 | | Emails | Resend | | Pagos | PayPal + NowPayments (cripto) | | Hosting | Vercel | | Analítica | Vercel Analytics, Speed Insights, GTM, GA4 | | Hash de contraseñas | bcryptjs |
+    #   **Navegadores soportados** (definido en `package.json` → `browserslist`): Chrome 93+, Edge 93+, Firefox 92+, Safari 15.4+, Opera 79+. Esta restricción elimina 11,6 KiB de polyfills legacy del bundle.
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: ok · forbidden codes absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tp-version-nextauth
+    categoria: factual_lookup
+    pregunta: "¿Qué versión de NextAuth usa TrailKit?"
+    respuesta: "Next.js 14.2.29 (App Router) [4]"
+    esperado: "NextAuth 4.24"
+    # ── FUENTE (doc 3f328ec9, pagina [3]) — el documento dice literalmente:
+    #   | Capa | Tecnología | |---|---| | Framework | Next.js 14.2.29 (App Router) | | Lenguaje | TypeScript | | UI | React 18 | | Base de datos | Supabase (PostgreSQL) | | Autenticación | NextAuth 4.24 | | Mapas | Leaflet 1.9.4 | | Emails | Resend | | Pagos | PayPal + NowPayments (cripto) | | Hosting | Vercel | | Analítica | Vercel Analytics, Speed Insights, GTM, GA4 | | Hash de contraseñas | bcryptjs |
+    #   **Navegadores soportados** (definido en `package.json` → `browserslist`): Chrome 93+, Edge 93+, Firefox 92+, Safari 15.4+, Opera 79+. Esta restricción elimina 11,6 KiB de polyfills legacy del bundle.
+    abstuvo: false
+    # checks deterministas → gold numbers present: FALLA · forbidden numbers absent: n/a · forbidden codes absent: FALLA · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tm-nsn-lsa-2oz
+    categoria: alfanumerico_exacto
+    pregunta: "What is the NSN for LUBRICATING OIL, SEMIFLUID (LSA) in the 2 oz bottle?"
+    respuesta: "9150-00-935-6597 [1]"
+    esperado: "9150-00-935-6597"
+    # ── FUENTE (doc 75b2742d, pagina [126]) — el documento dice literalmente:
+    #   Table 1. Expendable and Durable Items List. | (1) ITEM NO. | (2) LEVEL | (3) NATIONAL STOCK NUMBER (NSN) | (4) ITEM NAME, DESCRIPTION, PART NUMBER/ (CAGEC) | (5) U/I | |----------------|-------------|-----------------------------------|----------------------------------------------------------------------------------------|-----------| | 1 | F | 1005-00-242-5687 | BOTTLE ASSEMBLY, CYLINDRICAL 8448444 (19204) | AY | | 2 | F | 7920-00-205-2401 | BRUSH, CLEANING, TOOLS AND PARTS 7920-00-205-2401 (80244) | EA | | 3 | F | 9150-01-054-6453 | CLEANER, LUBRICANT AND PRESERVATIVE, (CLP) 1 pt (0.47 l) t
+    #   Table 1. Expendable and Durable Items List. | 9 | C | 9150-00-292-9689 | LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW) MIL-PRF-14107 (81349) | QT | | 10 | C | 9150-00-935-6597 | LUBRICATING OIL, SEMIFLUID (LSA) 2 oz (59.15 ml) bottle QPL-46000 (81349) | BT | | 11 | C | 9150-00-889-3522 | LUBRICATING OIL, SEMIFLUID (LSA) 4 oz (118.30 ml) bottle 8436793 (19204) | BT | | 12 | F | 9150-00-687-4241 | LUBRICATING OIL, SEMIFLUID (LSA) 1 qt (0.95 ml) QPL-46000 (81349) | QT | | 13 | F | 9150-00-753-4686 | LUBRICATING OIL, SEMIFLUID (LSA) 1 gal (3.79 l) QPL-46000 (81349) | GL | | 14 | F | 3990-00-795-3
+    #   Table 1. Expendable and Durable Items List.
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tm-spec-aceite-law
+    categoria: alfanumerico_exacto
+    pregunta: "Which military specification covers LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW)?"
+    respuesta: "MIL-PRF-14107 [1]"
+    esperado: "MIL-PRF-14107"
+    # ── FUENTE (doc 75b2742d, pagina [126]) — el documento dice literalmente:
+    #   Table 1. Expendable and Durable Items List. | (1) ITEM NO. | (2) LEVEL | (3) NATIONAL STOCK NUMBER (NSN) | (4) ITEM NAME, DESCRIPTION, PART NUMBER/ (CAGEC) | (5) U/I | |----------------|-------------|-----------------------------------|----------------------------------------------------------------------------------------|-----------| | 1 | F | 1005-00-242-5687 | BOTTLE ASSEMBLY, CYLINDRICAL 8448444 (19204) | AY | | 2 | F | 7920-00-205-2401 | BRUSH, CLEANING, TOOLS AND PARTS 7920-00-205-2401 (80244) | EA | | 3 | F | 9150-01-054-6453 | CLEANER, LUBRICANT AND PRESERVATIVE, (CLP) 1 pt (0.47 l) t
+    #   Table 1. Expendable and Durable Items List. | 9 | C | 9150-00-292-9689 | LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW) MIL-PRF-14107 (81349) | QT | | 10 | C | 9150-00-935-6597 | LUBRICATING OIL, SEMIFLUID (LSA) 2 oz (59.15 ml) bottle QPL-46000 (81349) | BT | | 11 | C | 9150-00-889-3522 | LUBRICATING OIL, SEMIFLUID (LSA) 4 oz (118.30 ml) bottle 8436793 (19204) | BT | | 12 | F | 9150-00-687-4241 | LUBRICATING OIL, SEMIFLUID (LSA) 1 qt (0.95 ml) QPL-46000 (81349) | QT | | 13 | F | 9150-00-753-4686 | LUBRICATING OIL, SEMIFLUID (LSA) 1 gal (3.79 l) QPL-46000 (81349) | GL | | 14 | F | 3990-00-795-3
+    #   Table 1. Expendable and Durable Items List.
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: lam2-alarma-e141
+    categoria: alfanumerico_exacto
+    pregunta: "¿Qué acción corresponde a la alarma E-141?"
+    respuesta: "Bloquear equipo, avisar a mantenimiento [1]"
+    esperado: "Bloquear equipo, avisar a mantenimiento (fallo de aislamiento)"
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: ok · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: lam2-bomba-refrigerante
+    categoria: alfanumerico_exacto
+    pregunta: "¿Qué bomba hay que verificar ante una pérdida de caudal de refrigerante?"
+    respuesta: "Verificar bomba P-3 [2]"
+    esperado: "La bomba P-3"
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tm-que-rifles-okc3s
+    categoria: procedimental
+    pregunta: "On which weapons is the OKC-3S Multipurpose Bayonet System used?"
+    respuesta: "M16 Rifle series and the M4 carbine and hand weapon [2]"
+    esperado: "On the M16 rifle series and the M4 Carbine (USMC only)."
+    # ── FUENTE (doc 75b2742d, pagina [21]) — el documento dice literalmente:
+    #   FIELD MAINTENANCE EQUIPMENT DESCRIPTION AND DATA
+    #   Figure 1. M7 Bayonet-Knife and M10 Scabbard.
+    #   Figure 2. M9 Multipurpose Bayonet System.
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: FALLA · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tm-pmcs-frecuencia-inactivo
+    categoria: procedimental
+    pregunta: "How often is normal PMCS cleaning performed on an inactive bayonet?"
+    respuesta: "90 days [1]"
+    esperado: "Every 90 days, quarterly, unless inspection reveals more frequent servicing is necessary."
+    # ── FUENTE (doc 75b2742d, pagina [27]) — el documento dice literalmente:
+    #   To ensure maximum operational readiness, it is necessary that the M7 Bayonet-Knife, M10 Bayonet-Knife Scabbard, M9 Multipurpose Bayonet System, and OKC-3S Bayonet-Knife (USMC only) be systematically inspected at regular intervals so defects may be discovered and corrected before they result in serious damage or failure.
+    #   PREVENTIVE MAINTENANCE CHECKS AND SERVICES
+    #   Work Package (WP) 0005 lists those Preventive Maintenance Checks and Services (PMCS) to be performed at their designated intervals.
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tp-ruta-planificador
+    categoria: procedimental
+    pregunta: "¿Qué ruta del sitio de TrailKit tiene el planificador de rutas con mapa?"
+    respuesta: "/planner [2]"
+    esperado: "/planner"
+    # ── FUENTE (doc 3f328ec9, pagina [4]) — el documento dice literalmente:
+    #   | Ruta | Función | |---|---| | `/` | Landing principal | | `/pricing` | Planes y precios | | `/docs` | Documentación del plugin | | `/demo` | Demostración | | `/planner` | Planificador de rutas con mapa | | `/blog`, `/blog/[slug]` | Blog | | `/changelog` | Historial de versiones | | `/about` | Acerca de | | `/privacy` | Política de privacidad (10 secciones) | | `/terms` | Términos de servicio (12 secciones) |
+    #   | Ruta | Función | |---|---| | `/register`, `/login` | Alta e ingreso | | `/forgot-password`, `/reset-password` | Recuperación de contraseña | | `/dashboard` | Panel del cliente | | `/my-license` | Consulta de licencia |
+    #   | Ruta | Función | |---|---| | `/payment/success`, `/payment/cancel` | Retorno de la pasarela | | `/success` | Confirmación de compra |
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tm-bayoneta-m12-inexistente
+    categoria: negative_control
+    pregunta: "What are the blade dimensions of the M12 Bayonet-Knife?"
+    respuesta: null
+    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse
+    # ── FUENTE (doc 75b2742d, pagina [22]) — el documento dice literalmente:
+    #   The M9 Multipurpose Bayonet System Scabbard consists of four major parts: the scabbard body, wire cutter plate, attaching assembly load-bearing end, and attaching assembly scabbard end. The M10 Bayonet-Knife Scabbard is a single piece. The OKC-3S Bayonet-Knife consists of the bayonet knife, scabbard assembly, and strap. The OKC-3S Bayonet-Knife Scabbard has a fitted internal stainless steel spring friction device at the throat of the scabbard to secure the bayonet.
+    #   On the M7 and M9 Bayonet-Knives there are left- and right-hand lock-release levers at the rear of the bayonet. Interchangeability of parts is limited to the lock-release levers and springs for the M7 and M9.
+    #   The M9 is longer and wider (blade is more than 7 in. (17.78 cm) long and 1.4 in. (3.56 cm) wide) and heavier than the M7. The OKC-3S blade is 8.00 in. (20.32 cm) long and 1.375 in. (3.49 cm) wide.
+    abstuvo: true
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: FALLA · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tm-peso-hoja-inexistente
+    categoria: negative_control
+    pregunta: "What is the exact weight in grams of the OKC-3S bayonet blade?"
+    respuesta: "less than 8 in. (20.32 cm) long from handguard [1]"
+    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse
+    # ── FUENTE (doc 75b2742d, pagina [22]) — el documento dice literalmente:
+    #   The M9 Multipurpose Bayonet System Scabbard consists of four major parts: the scabbard body, wire cutter plate, attaching assembly load-bearing end, and attaching assembly scabbard end. The M10 Bayonet-Knife Scabbard is a single piece. The OKC-3S Bayonet-Knife consists of the bayonet knife, scabbard assembly, and strap. The OKC-3S Bayonet-Knife Scabbard has a fitted internal stainless steel spring friction device at the throat of the scabbard to secure the bayonet.
+    #   On the M7 and M9 Bayonet-Knives there are left- and right-hand lock-release levers at the rear of the bayonet. Interchangeability of parts is limited to the lock-release levers and springs for the M7 and M9.
+    #   The M9 is longer and wider (blade is more than 7 in. (17.78 cm) long and 1.4 in. (3.56 cm) wide) and heavier than the M7. The OKC-3S blade is 8.00 in. (20.32 cm) long and 1.375 in. (3.49 cm) wide.
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: FALLA · citation hits gold: ok · abstention correct: FALLA · revision current: ok
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tp-version-vue-inexistente
+    categoria: negative_control
+    pregunta: "¿Qué versión de Vue usa el sitio de TrailKit?"
+    respuesta: null
+    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse
+    # ── FUENTE (doc 3f328ec9, pagina [3]) — el documento dice literalmente:
+    #   | Capa | Tecnología | |---|---| | Framework | Next.js 14.2.29 (App Router) | | Lenguaje | TypeScript | | UI | React 18 | | Base de datos | Supabase (PostgreSQL) | | Autenticación | NextAuth 4.24 | | Mapas | Leaflet 1.9.4 | | Emails | Resend | | Pagos | PayPal + NowPayments (cripto) | | Hosting | Vercel | | Analítica | Vercel Analytics, Speed Insights, GTM, GA4 | | Hash de contraseñas | bcryptjs |
+    #   **Navegadores soportados** (definido en `package.json` → `browserslist`): Chrome 93+, Edge 93+, Firefox 92+, Safari 15.4+, Opera 79+. Esta restricción elimina 11,6 KiB de polyfills legacy del bundle.
+    abstuvo: true
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: FALLA · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: lam2-alarma-e150-inexistente
+    categoria: negative_control
+    pregunta: "¿Qué indica la alarma E-150 del horno de inducción?"
+    respuesta: null
+    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse
+    # ── FUENTE (doc c0d5f95f, pagina [1]) — el documento dice literalmente:
+    #   MANUAL DE MANTENIMIENTO - LAMINADOR 2 (LAM-2) - Rev F
+    #   Los pernos se aprietan en patron cruzado, en tres pasadas. Verificar que las superficies esten libres de cascarilla.
+    #   Tabla 4-7. Pares de apriete del cabezal | Perno | Grado | Torque (N.m) | Secuencia | |-------------|---------|----------------|--------------------| | M24 cabezal | 8.8 | 720 +/- 30 | cruzada, 3 pasadas | | M24 cabezal | 10.9 | 950 +/- 40 | cruzada, 3 pasadas | | M16 tapa | 8.8 | 190 +/- 10 | cruzada, 2 pasadas |
+    abstuvo: true
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: FALLA
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tm-nsn-inexistente
+    categoria: negative_control
+    pregunta: "What is the NSN for LUBRICATING OIL, SEMIFLUID (LSA) in the 8 oz bottle?"
+    respuesta: null
+    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse
+    # ── FUENTE (doc 75b2742d, pagina [126]) — el documento dice literalmente:
+    #   Table 1. Expendable and Durable Items List. | (1) ITEM NO. | (2) LEVEL | (3) NATIONAL STOCK NUMBER (NSN) | (4) ITEM NAME, DESCRIPTION, PART NUMBER/ (CAGEC) | (5) U/I | |----------------|-------------|-----------------------------------|----------------------------------------------------------------------------------------|-----------| | 1 | F | 1005-00-242-5687 | BOTTLE ASSEMBLY, CYLINDRICAL 8448444 (19204) | AY | | 2 | F | 7920-00-205-2401 | BRUSH, CLEANING, TOOLS AND PARTS 7920-00-205-2401 (80244) | EA | | 3 | F | 9150-01-054-6453 | CLEANER, LUBRICANT AND PRESERVATIVE, (CLP) 1 pt (0.47 l) t
+    #   Table 1. Expendable and Durable Items List. | 9 | C | 9150-00-292-9689 | LUBRICATING OIL, WEAPONS LOW TEMPERATURE (LAW) MIL-PRF-14107 (81349) | QT | | 10 | C | 9150-00-935-6597 | LUBRICATING OIL, SEMIFLUID (LSA) 2 oz (59.15 ml) bottle QPL-46000 (81349) | BT | | 11 | C | 9150-00-889-3522 | LUBRICATING OIL, SEMIFLUID (LSA) 4 oz (118.30 ml) bottle 8436793 (19204) | BT | | 12 | F | 9150-00-687-4241 | LUBRICATING OIL, SEMIFLUID (LSA) 1 qt (0.95 ml) QPL-46000 (81349) | QT | | 13 | F | 9150-00-753-4686 | LUBRICATING OIL, SEMIFLUID (LSA) 1 gal (3.79 l) QPL-46000 (81349) | GL | | 14 | F | 3990-00-795-3
+    #   Table 1. Expendable and Durable Items List.
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: ok
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea

@@ -1,0 +1,257 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# PLANILLA DE ETIQUETADO HUMANO — M7
+#
+# QUE HACER: compara la `respuesta` contra el bloque `fuente`, que es el texto
+# LITERAL del documento donde vive la respuesta correcta. Despues escribi en
+# `tu_veredicto` una de estas dos palabras:
+#
+#     bien   la respuesta es correcta y util para quien pregunto
+#     mal    la respuesta es incorrecta, incompleta o enganosa
+#
+# `por_que` es opcional, una linea.
+#
+# LA REGLA: si la respuesta dice algo que la fuente NO dice, es `mal`, por bien
+# escrita que este. Si la pregunta es un control negativo (el dato no existe en la
+# documentacion), la unica respuesta correcta es abstenerse: si contesta con una
+# cifra, es `mal` aunque la cifra exista en otra fila.
+#
+# PARA QUE SIRVE: con estas etiquetas se calcula la TASA DE ACUERDO entre vos y
+# el LLM-judge, y esa tasa se publica al lado de cada numero del juez. Un juez sin
+# su tasa de acuerdo es una opinion con decimales (§4 del spec).
+#
+# OJO CON LOS CASOS MARCADOS `los_deterministas_ya_lo_atraparon: true`: ahi el
+# verificador YA dijo que hay algo mal. Igual etiquetalos — sirven para ver si el
+# juez coincide en lo obvio antes de creerle en lo sutil.
+# ═══════════════════════════════════════════════════════════════════════════
+
+etiquetas:
+
+  - id: tk-precio-single
+    categoria: factual_lookup
+    pregunta: "¿Cuánto cuesta el plan Single de TrailKit?"
+    respuesta: "$249 único [2]"
+    esperado: "$79/año, 1 sitio, vence en 1 año"
+    # ── FUENTE (doc 3f328ec9, pagina [6]) — el documento dice literalmente:
+    #   **Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la consulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.
+    #   | Plan | Precio | Sitios | Vencimiento | ¿En el checkout? | |---|---|---|---|---| | Lite | $0 | 1 | Nunca | — (gratuito) | | **Single** | **$79/año** | 1 | 1 año | ✅ | | **Lifetime** | **$249 único** | 1 | Nunca | ✅ | | Agency | $149.99/año | 2 | 1 año | ❌ sólo backend | | Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend | | Trial | $0 | 1 | 14 días | — (vía API) |
+    #   Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.
+    abstuvo: false
+    # checks deterministas → gold numbers present: FALLA · forbidden numbers absent: FALLA · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: true
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-precio-lifetime
+    categoria: factual_lookup
+    pregunta: "¿Cuál es el precio del plan Lifetime?"
+    respuesta: "$249 único [2]"
+    esperado: "$249 único, 1 sitio, no vence"
+    # ── FUENTE (doc 3f328ec9, pagina [6]) — el documento dice literalmente:
+    #   **Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la consulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.
+    #   | Plan | Precio | Sitios | Vencimiento | ¿En el checkout? | |---|---|---|---|---| | Lite | $0 | 1 | Nunca | — (gratuito) | | **Single** | **$79/año** | 1 | 1 año | ✅ | | **Lifetime** | **$249 único** | 1 | Nunca | ✅ | | Agency | $149.99/año | 2 | 1 año | ❌ sólo backend | | Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend | | Trial | $0 | 1 | 14 días | — (vía API) |
+    #   Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-precio-agency
+    categoria: factual_lookup
+    pregunta: "¿Cuánto vale el plan Agency y cuántos sitios permite?"
+    respuesta: "$149.99/año, 2 sitios [2]"
+    esperado: "$149.99/año, 2 sitios, vence en 1 año. Sólo backend, no está en el checkout."
+    # ── FUENTE (doc 3f328ec9, pagina [6]) — el documento dice literalmente:
+    #   **Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la consulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.
+    #   | Plan | Precio | Sitios | Vencimiento | ¿En el checkout? | |---|---|---|---|---| | Lite | $0 | 1 | Nunca | — (gratuito) | | **Single** | **$79/año** | 1 | 1 año | ✅ | | **Lifetime** | **$249 único** | 1 | Nunca | ✅ | | Agency | $149.99/año | 2 | 1 año | ❌ sólo backend | | Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend | | Trial | $0 | 1 | 14 días | — (vía API) |
+    #   Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-duracion-trial
+    categoria: factual_lookup
+    pregunta: "¿Cuántos días dura el plan Trial?"
+    respuesta: "14 días [1]"
+    esperado: "14 días, 1 sitio, gratuito, vía API"
+    # ── FUENTE (doc 3f328ec9, pagina [6]) — el documento dice literalmente:
+    #   **Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la consulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.
+    #   | Plan | Precio | Sitios | Vencimiento | ¿En el checkout? | |---|---|---|---|---| | Lite | $0 | 1 | Nunca | — (gratuito) | | **Single** | **$79/año** | 1 | 1 año | ✅ | | **Lifetime** | **$249 único** | 1 | Nunca | ✅ | | Agency | $149.99/año | 2 | 1 año | ❌ sólo backend | | Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend | | Trial | $0 | 1 | 14 días | — (vía API) |
+    #   Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-defaults-precio
+    categoria: factual_lookup
+    pregunta: "Si falla la consulta a pricing_config, ¿qué precios usa el código por defecto?"
+    respuesta: "Single $79, Lifetime $249 [1]"
+    esperado: "Single $79 y Lifetime $249"
+    # ── FUENTE (doc 3f328ec9, pagina [6]) — el documento dice literalmente:
+    #   **Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la consulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.
+    #   | Plan | Precio | Sitios | Vencimiento | ¿En el checkout? | |---|---|---|---|---| | Lite | $0 | 1 | Nunca | — (gratuito) | | **Single** | **$79/año** | 1 | 1 año | ✅ | | **Lifetime** | **$249 único** | 1 | Nunca | ✅ | | Agency | $149.99/año | 2 | 1 año | ❌ sólo backend | | Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend | | Trial | $0 | 1 | 14 días | — (vía API) |
+    #   Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-horario-cron-expiry
+    categoria: factual_lookup
+    pregunta: "¿A qué hora corre el cron de recordatorios de vencimiento?"
+    respuesta: "09:00 diario [1]"
+    esperado: "09:00 UTC, diario"
+    # ── FUENTE (doc 3f328ec9, pagina [9]) — el documento dice literalmente:
+    #   | Tarea | Horario (UTC) | Función | |---|---|---| | `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos | | `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-horario-cron-carrito
+    categoria: factual_lookup
+    pregunta: "¿A qué hora se ejecuta la tarea de carritos abandonados?"
+    respuesta: "14:00 diario [1]"
+    esperado: "14:00 UTC, diario"
+    # ── FUENTE (doc 3f328ec9, pagina [9]) — el documento dice literalmente:
+    #   | Tarea | Horario (UTC) | Función | |---|---|---| | `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos | | `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-estados-licencia
+    categoria: alfanumerico_exacto
+    pregunta: "¿Cuáles son los estados posibles de una licencia?"
+    respuesta: "active · expired · suspended [5]"
+    esperado: "active, expired y suspended"
+    # ── FUENTE (doc 3f328ec9, pagina [7]) — el documento dice literalmente:
+    #   Tablas en uso, por frecuencia de acceso en el código:
+    #   | Tabla | Para qué | |---|---| | `licenses` | Licencias emitidas. La tabla central del sistema | | `pending_payments` | Pagos iniciados y aún no confirmados | | `appsumo_licenses` | Licencias provenientes de AppSumo | | `promo_codes` | Códigos promocionales | | `license_domains` | Dominios activados por licencia (soporte multi-sitio) | | `checkout_intents` | Intenciones de compra, base de la recuperación de carrito | | `planner_usage` | Uso del planificador, para límites de cuota | | `pricing_config` | Precios editables (fila única, `id = 1`) | | `checkins` | Registro de check-ins del plugin |
+    #   La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como `expired` en la base de datos** cuando detecta una licencia vencida durante la validación — el vencimiento se materializa al consultarse, no por un proceso aparte.
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-secret-cron
+    categoria: alfanumerico_exacto
+    pregunta: "¿Con qué variable se protegen las tareas programadas?"
+    respuesta: "CRON_SECRET [1]"
+    esperado: "CRON_SECRET"
+    # ── FUENTE (doc 3f328ec9, pagina [9]) — el documento dice literalmente:
+    #   | Tarea | Horario (UTC) | Función | |---|---|---| | `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos | | `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-tabla-central
+    categoria: alfanumerico_exacto
+    pregunta: "¿Cuál es la tabla central del sistema de licencias en Supabase?"
+    respuesta: "licenses [1]"
+    esperado: "`licenses` — las licencias emitidas"
+    # ── FUENTE (doc 3f328ec9, pagina [7]) — el documento dice literalmente:
+    #   Tablas en uso, por frecuencia de acceso en el código:
+    #   | Tabla | Para qué | |---|---| | `licenses` | Licencias emitidas. La tabla central del sistema | | `pending_payments` | Pagos iniciados y aún no confirmados | | `appsumo_licenses` | Licencias provenientes de AppSumo | | `promo_codes` | Códigos promocionales | | `license_domains` | Dominios activados por licencia (soporte multi-sitio) | | `checkout_intents` | Intenciones de compra, base de la recuperación de carrito | | `planner_usage` | Uso del planificador, para límites de cuota | | `pricing_config` | Precios editables (fila única, `id = 1`) | | `checkins` | Registro de check-ins del plugin |
+    #   La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como `expired` en la base de datos** cuando detecta una licencia vencida durante la validación — el vencimiento se materializa al consultarse, no por un proceso aparte.
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-endpoint-validacion
+    categoria: alfanumerico_exacto
+    pregunta: "¿Qué endpoint usa el plugin de WordPress para validar una licencia y qué recibe?"
+    respuesta: "/api/licenses/validate [1]"
+    esperado: "POST /api/licenses/validate con { key, domain }; devuelve { valid, plan, status, expires_at }."
+    # ── FUENTE (doc 3f328ec9, pagina [5]) — el documento dice literalmente:
+    #   Estos son los endpoints que consume el plugin instalado en el sitio del cliente. **Cambiarlos rompe instalaciones en producción.**
+    #   | Endpoint | Método | Entrada | Devuelve | |---|---|---|---| | `/api/licenses/validate` | POST | `{ key, domain }` | `{ valid, plan, status, expires_at }` o `{ valid: false, status, message }` | | `/api/licenses/checkin` | POST | `{ key, domain }` | `{ valid }` + datos de la licencia | | `/api/plugin/version` | GET | `?key=` | versión disponible, o `{ valid: false, expired: true }` | | `/api/download` | GET | — | Descarga del plugin |
+    #   | Endpoint | Función | |---|---| | `/api/checkout/intent` | Crea la intención de compra | | `/api/checkout/paypal` | Inicia pago con PayPal | | `/api/checkout/paypal/capture` | Captura el pago | | `/api/checkout/nowpayments` | Inicia pago en cripto | | `/api/checkout/validate-promo` | Valida un código promocional | | `/api/webhooks/nowpayments` | Webhook de confirmación (idempotente) |
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-cuando-expira
+    categoria: procedimental
+    pregunta: "¿Cómo se marca una licencia como vencida?"
+    respuesta: "La licencia se marca como `expired` en la base de datos cuando detecta un vencimiento durante la validación [1]."
+    esperado: "La validación en lib/license.ts la marca como expired en la base de datos cuando detecta que venció durante la validación: el vencimiento se materializa al consultarse, no por un proceso aparte."
+    # ── FUENTE (doc 3f328ec9, pagina [7]) — el documento dice literalmente:
+    #   Tablas en uso, por frecuencia de acceso en el código:
+    #   | Tabla | Para qué | |---|---| | `licenses` | Licencias emitidas. La tabla central del sistema | | `pending_payments` | Pagos iniciados y aún no confirmados | | `appsumo_licenses` | Licencias provenientes de AppSumo | | `promo_codes` | Códigos promocionales | | `license_domains` | Dominios activados por licencia (soporte multi-sitio) | | `checkout_intents` | Intenciones de compra, base de la recuperación de carrito | | `planner_usage` | Uso del planificador, para límites de cuota | | `pricing_config` | Precios editables (fila única, `id = 1`) | | `checkins` | Registro de check-ins del plugin |
+    #   La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como `expired` en la base de datos** cuando detecta una licencia vencida durante la validación — el vencimiento se materializa al consultarse, no por un proceso aparte.
+    abstuvo: false
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-middleware-admin
+    categoria: procedimental
+    pregunta: "¿Qué hace el middleware con las rutas bajo /admin?"
+    respuesta: "Devuelve 404 sin contenido [1]"
+    esperado: "Devuelve 404 sin contenido: oculta el panel antiguo."
+    # ── FUENTE (doc 3f328ec9, pagina [8]) — el documento dice literalmente:
+    #   **1. Oculta el panel antiguo.** Toda ruta bajo `/admin` devuelve `404` sin contenido.
+    #   **2. Protege `/ops/*`.** Sin token de sesión válido, redirige a `/ops/login`.
+    #   **3. Limita la tasa de peticiones** con una ventana deslizante en memoria:
+    abstuvo: false
+    # checks deterministas → gold numbers present: ok · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-precio-enterprise-inexistente
+    categoria: negative_control
+    pregunta: "¿Cuánto cuesta el plan Enterprise de TrailKit?"
+    respuesta: null
+    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse
+    # ── FUENTE (doc 3f328ec9, pagina [6]) — el documento dice literalmente:
+    #   **Fuente de verdad:** la tabla `pricing_config` de Supabase (`lib/pricing.ts`). Si la consulta falla, se usan los valores por defecto del código: Single **$79**, Lifetime **$249**.
+    #   | Plan | Precio | Sitios | Vencimiento | ¿En el checkout? | |---|---|---|---|---| | Lite | $0 | 1 | Nunca | — (gratuito) | | **Single** | **$79/año** | 1 | 1 año | ✅ | | **Lifetime** | **$249 único** | 1 | Nunca | ✅ | | Agency | $149.99/año | 2 | 1 año | ❌ sólo backend | | Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend | | Trial | $0 | 1 | 14 días | — (vía API) |
+    #   Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.
+    abstuvo: true
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-idioma-frances-inexistente
+    categoria: negative_control
+    pregunta: "¿Qué archivo tiene las cadenas en francés de TrailKit?"
+    respuesta: null
+    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse
+    # ── FUENTE (doc 3f328ec9, pagina [11]) — el documento dice literalmente:
+    #   `lib/i18n.tsx` — dos idiomas: **inglés (`en`)** y **español (`es`)**. Las cadenas viven en `lib/messages.ts`.
+    abstuvo: true
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
+
+  - id: tk-cron-backup-inexistente
+    categoria: negative_control
+    pregunta: "¿A qué hora corre el cron de backup de la base de datos?"
+    respuesta: null
+    esperado: null   # CONTROL NEGATIVO: lo correcto es abstenerse
+    # ── FUENTE (doc 3f328ec9, pagina [9]) — el documento dice literalmente:
+    #   | Tarea | Horario (UTC) | Función | |---|---|---| | `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos | | `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |
+    abstuvo: true
+    # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
+    los_deterministas_ya_lo_atraparon: false
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
