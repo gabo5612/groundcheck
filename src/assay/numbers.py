@@ -1,40 +1,39 @@
-"""Extraccion de numeros e identificadores del texto de una respuesta.
+"""Extraction of numbers and identifiers from an answer's text.
 
-Este modulo decide si `grounded` da verdadero o falso, asi que sus reglas estan escritas
-explicitas. Las tres primeras salieron de **intentar etiquetar el golden set (M3) y ver
-que fallaba**, no de imaginar casos:
+This module decides whether `grounded` returns true or false, so its rules are written out
+explicitly. The first three came from **actually trying to label the golden set (M3) and
+watching it fail**, not from imagining cases:
 
-**Regla 1 — un digito pegado a una letra no es un numero, es un identificador.**
-`E-114` no aporta el numero 114 ni `M24` el 24. Extraerlos como numeros haria que la
-respuesta *correcta* "la alarma E-114 indica sobretemperatura" diera `grounded: false`
-porque "114" no aparece suelto en el chunk. Ese falso negativo manda a arreglar un sistema
-sano.
+**Rule 1 — a digit glued to a letter is not a number, it is an identifier.**
+`E-114` does not contribute the number 114, nor `M24` the 24. Extracting them as numbers
+would make the *correct* answer "alarm E-114 indicates overtemperature" return
+`grounded: false` because "114" never appears loose in the chunk. That false negative sends
+you to fix a healthy system.
 
-**Regla 2 — un token con tres o mas grupos separados es un identificador, no varios
-numeros.** `1.9.4` no son "1.9 y 4", y `9150-00-292-9689` (un NSN) no es nada partido en
-pedazos. Sin esta regla, un sistema que contestara "Leaflet 1.9.5" pasaria groundedness
-si el chunk trae un `1.9` y un `5` en cualquier parte — un **falso positivo**, que es peor
-que un falso negativo: publica como fundamentado algo que no lo esta.
+**Rule 2 — a token with three or more separated groups is an identifier, not several
+numbers.** `1.9.4` is not "1.9 and 4", and `9150-00-292-9689` (an NSN) is not anything cut
+into pieces. Without this rule, a system answering "Leaflet 1.9.5" would pass groundedness
+if the chunk contains a `1.9` and a `5` anywhere — a **false positive**, which is worse than
+a false negative: it publishes as grounded something that is not.
 
-**Regla 3 — un identificador se compara entero.** `MIL-PRF-14107` se compara asi, no como
+**Rule 3 — an identifier is compared whole.** `MIL-PRF-14107` is compared as such, not as
 `PRF-14107`.
 
-**Regla 4 — un numero que enumera no es un numero que afirma.** En "1) Notificar. 2) Abrir
-QS-1." los `1` y `2` son marcadores de lista, no datos. Extraerlos hacia que un sistema que
-numera sus pasos fallara groundedness por numerar — otro falso negativo que manda a
-arreglar un sistema sano. (Encontrado al llenar el reporte de M4 con el caso del LOTO.)
+**Rule 4 — a number that enumerates is not a number that asserts.** In "1) Notify. 2) Open
+QS-1." the `1` and `2` are list markers, not data. Extracting them made a system that
+numbers its steps fail groundedness *for numbering* — another false negative sending you to
+fix a healthy system. (Found while filling in the M4 report with the LOTO case.)
 
-**Regla 4b — un marcador de cita no es un dato.** En "720 +/- 30 N.m [1]" el `[1]` es una
-referencia al pasaje, no una magnitud. Exigirle respaldo en el chunk hace fallar
-groundedness a un sistema **por citar bien**, que es el comportamiento que el harness
-premia en todos los demas checks. (Encontrado en la primera corrida contra anvil real, que
-cita con `[n]`: sin esta regla su groundedness medida daba 0.18 cuando las respuestas eran
-correctas.)
+**Rule 4b — a citation marker is not data.** In "720 +/- 30 N.m [1]" the `[1]` is a
+reference to the passage, not a magnitude. Demanding it be grounded in the chunk fails a
+system **for citing properly**, which is the behaviour the harness rewards in every other
+check. (Found on the first run against the real anvil, which cites with `[n]`: without this
+rule its measured groundedness was 0.18 while the answers were correct.)
 
-**Regla 5 — la ambiguedad de `1.200` se documenta, no se adivina en silencio.** En espanol
-es mil doscientos; en ingles, uno punto dos. La convencion esta en `canonicalize`, con
-test, y cada check guarda **el token crudo junto al canonico** para poder auditar
-cualquier desacuerdo sin leer el codigo.
+**Rule 5 — the ambiguity of `1.200` is documented, not silently guessed.** In Spanish it is
+one thousand two hundred; in English, one point two. The convention lives in `canonicalize`,
+with a test, and every check stores **the raw token alongside the canonical one** so any
+disagreement can be audited without reading the code.
 """
 
 from __future__ import annotations
@@ -42,17 +41,17 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-# Un token es una corrida de alfanumericos unida por separadores internos. Se clasifica
-# despues; no se intenta distinguir numero de identificador con la regex, porque ahi es
-# donde se cuelan los casos raros.
+# A token is a run of alphanumerics joined by internal separators. Classification happens
+# afterwards; the regex does not try to tell a number from an identifier, because that is
+# exactly where the odd cases slip through.
 _TOKEN = re.compile(r"[A-Za-z0-9]+(?:[.,\-/:][A-Za-z0-9]+)*")
 _SEPARATORS = ".,-/:"
 
-# Marcador de lista: un numero suelto seguido de `)` o de `.` mas espacio, ya sea al
-# principio de una linea o detras de un parentesis/espacio. Implementa la regla 4.
+# List marker: a bare number followed by `)` or `.` plus a space, either at the start of a
+# line or after a parenthesis/space. Implements rule 4.
 _ENUMERATOR = re.compile(r"(?:^|[\s(\[])\d{1,2}[.)](?=\s|$)", re.MULTILINE)
 
-# Marcador de cita: [1] · [12] · [1,2] · [1-3]. Implementa la regla 4b.
+# Citation marker: [1] · [12] · [1,2] · [1-3]. Implements rule 4b.
 _CITATION_MARK = re.compile(r"\[\s*\d{1,3}(?:\s*[,;-]\s*\d{1,3})*\s*\]")
 
 
@@ -61,65 +60,65 @@ class NumberToken:
     raw: str
     canonical: str
 
-    def __str__(self) -> str:  # pragma: no cover - conveniencia de debug
+    def __str__(self) -> str:  # pragma: no cover - debugging convenience
         return f"{self.raw}→{self.canonical}"
 
 
 def _split_groups(token: str) -> tuple[list[str], list[str]]:
-    """Separa un token en grupos y en los separadores que los unen."""
-    grupos, seps, actual = [], [], ""
+    """Split a token into its groups and the separators joining them."""
+    groups, seps, current = [], [], ""
     for ch in token:
         if ch in _SEPARATORS:
-            grupos.append(actual)
+            groups.append(current)
             seps.append(ch)
-            actual = ""
+            current = ""
         else:
-            actual += ch
-    grupos.append(actual)
-    return grupos, seps
+            current += ch
+    groups.append(current)
+    return groups, seps
 
 
 def is_number(token: str) -> bool:
-    """El token es un numero, y no un identificador?
+    """Is this token a number rather than an identifier?
 
-    Implementa las reglas 1 y 2. Los casos limite estan cubiertos por tests con nombre.
+    Implements rules 1 and 2. The edge cases are covered by named tests.
     """
-    grupos, seps = _split_groups(token)
-    if any(not g.isdigit() for g in grupos):
-        return False                      # tiene letras -> identificador (regla 1)
+    groups, seps = _split_groups(token)
+    if any(not g.isdigit() for g in groups):
+        return False                      # has letters -> identifier (rule 1)
     if len(seps) == 0:
         return True                       # 720
     if len(seps) == 1:
-        return seps[0] != ":"             # 68,5 · 1.200 -> lo resuelve canonicalize
-    # Tres o mas grupos (regla 2): solo es numero si se ve como miles + decimal.
+        return seps[0] != ":"             # 68,5 · 1.200 -> canonicalize resolves it
+    # Three or more groups (rule 2): a number only if it looks like thousands + decimal.
     if set(seps) in ({".", ","}, {",", "."}):
         return True                       # 1.200,50 · 1,200.50
     if ":" in seps:
-        return False                      # 09:00 — una hora es un valor, no una magnitud
+        return False                      # 09:00 — a time is a value, not a magnitude
     if seps[0] in "-/":
         return False                      # 9150-00-292-9689 · 12/07/2024
-    # Mismo separador repetido: numero solo si todos los grupos menos el primero son de
-    # 3 digitos (1.200.000). Si no, es una version: 1.9.4
-    return all(len(g) == 3 for g in grupos[1:])
+    # Same separator repeated: a number only if every group but the first has 3 digits
+    # (1.200.000). Otherwise it is a version: 1.9.4
+    return all(len(g) == 3 for g in groups[1:])
 
 
 def canonicalize(raw: str) -> str:
-    """Forma canonica de un numero escrito.
+    """Canonical form of a written number.
 
-    Convencion, elegida y fijada con test:
-    - Si aparecen `.` y `,` en el mismo token, **el ultimo es el decimal**
-      (`1.200,50` → `1200.50`). No tiene ambiguedad.
-    - Un solo separador **seguido por exactamente 3 digitos** se lee como separador de
-      miles (`1.200` → `1200`).
-      ⚠️ **Limitacion conocida y aceptada:** `68.500` se lee `68500`, no 68.5 con ceros de
-      relleno. En documentacion tecnica el separador de miles es mucho mas frecuente que
-      tres decimales, y adivinar por contexto seria menos predecible. El token crudo
-      queda guardado para auditarlo.
-    - Cualquier otro separador unico es decimal (`68,5` → `68.5`).
-    - Los ceros de cola de un decimal se recortan (`680.0` → `680`) para que `680` y
-      `680.0` no cuenten como numeros distintos.
+    The convention, chosen and pinned by tests:
+    - If `.` and `,` both appear in the same token, **the last one is the decimal**
+      (`1.200,50` → `1200.50`). No ambiguity there.
+    - A single separator **followed by exactly 3 digits** reads as a thousands separator
+      (`1.200` → `1200`).
+      ⚠️ **Known and accepted limitation:** `68.500` reads as `68500`, not 68.5 with padding
+      zeros. In technical documentation the thousands separator is far more common than
+      three decimals, and guessing from context would be less predictable. The raw token is
+      stored so it can be audited.
+    - Any other single separator is a decimal (`68,5` → `68.5`).
+    - Trailing zeros on a decimal are trimmed (`680.0` → `680`) so that `680` and `680.0`
+      do not count as different numbers.
     """
-    token = raw.replace(" ", "").replace(" ", "")
+    token = raw.replace(" ", "").replace(" ", "")
 
     if "." in token and "," in token:
         decimal_sep = "." if token.rfind(".") > token.rfind(",") else ","
@@ -130,7 +129,7 @@ def canonicalize(raw: str) -> str:
             if sep in token:
                 head, _, tail = token.rpartition(sep)
                 if len(tail) == 3 and head.replace(sep, "").isdigit():
-                    token = token.replace(sep, "")       # separador de miles
+                    token = token.replace(sep, "")       # thousands separator
                 else:
                     token = token.replace(sep, ".")      # decimal
                 break
@@ -140,43 +139,43 @@ def canonicalize(raw: str) -> str:
     return token or "0"
 
 
-def _enumerator_spans(text: str) -> list[tuple[int, int]]:
-    """Tramos del texto que no aportan datos: marcadores de lista y de cita."""
+def _skip_spans(text: str) -> list[tuple[int, int]]:
+    """Spans that carry no data: list markers and citation markers."""
     return [m.span() for m in _ENUMERATOR.finditer(text)] + [
         m.span() for m in _CITATION_MARK.finditer(text)
     ]
 
 
-def _split_unidad(token: str) -> list[str]:
-    """Separa un valor de su unidad cuando van unidos por `/`.
+def _split_unit(token: str) -> list[str]:
+    """Separate a value from its unit when `/` joins them.
 
-    `149.99/año` es un precio con unidad, no un identificador: sin esta separacion el
-    token entero se clasifica como identificador (porque "año" son letras) y el 149.99
-    nunca se compara contra nada. Lo mismo con `USD/lb` o `5.56/mm`.
+    `149.99/year` is a price with a unit, not an identifier: without this split the whole
+    token classifies as an identifier (because "year" is letters) and the 149.99 is never
+    compared against anything. Same for `USD/lb` or `5.56/mm`.
 
-    Un `/` entre grupos que AMBOS traen digitos si une: `12/07/2024` sigue siendo una
-    fecha entera, no tres numeros sueltos.
+    A `/` between groups that BOTH carry digits does join: `12/07/2024` stays one whole
+    date, not three loose numbers.
     """
     if "/" not in token:
         return [token]
-    partes = token.split("/")
-    if all(any(ch.isdigit() for ch in p) for p in partes):
-        return [token]        # 12/07/2024 — se conserva entero
-    return [p for p in partes if any(ch.isdigit() for ch in p)]
+    parts = token.split("/")
+    if all(any(ch.isdigit() for ch in p) for p in parts):
+        return [token]        # 12/07/2024 — kept whole
+    return [p for p in parts if any(ch.isdigit() for ch in p)]
 
 
 def _tokens(text: str | None) -> list[str]:
     if not text:
         return []
-    enumeradores = _enumerator_spans(text)
+    skip = _skip_spans(text)
     out = []
     for m in _TOKEN.finditer(text):
         if not any(ch.isdigit() for ch in m.group(0)):
-            # Un token sin digitos no interesa a este modulo: es una palabra.
+            # A token with no digits is of no interest here: it is a word.
             continue
-        if any(ini <= m.start() and m.end() <= fin for ini, fin in enumeradores):
-            continue    # marcador de lista o de cita (reglas 4 y 4b)
-        out.extend(_split_unidad(m.group(0)))
+        if any(start <= m.start() and m.end() <= end for start, end in skip):
+            continue    # list or citation marker (rules 4 and 4b)
+        out.extend(_split_unit(m.group(0)))
     return out
 
 
@@ -187,19 +186,20 @@ def extract_numbers(text: str | None) -> list[NumberToken]:
 
 
 def extract_codes(text: str | None) -> list[str]:
-    """Identificadores tecnicos, enteros y en mayusculas: `E-114`, `M24`, `MIL-PRF-14107`,
+    """Technical identifiers, whole and uppercased: `E-114`, `M24`, `MIL-PRF-14107`,
     `9150-00-292-9689`, `1.9.4`."""
     return [t.upper() for t in _tokens(text) if not is_number(t)]
 
 
 def contains_number(haystack: str | None, needle: str) -> bool:
-    """`needle` aparece en `haystack`, comparando en forma canonica.
+    """Whether `needle` appears in `haystack`, compared in canonical form.
 
-    Canonico contra canonico y no substring crudo a proposito: buscar "30" como substring
-    lo encontraria dentro de "1300", dando por fundamentado un numero que nunca estuvo.
+    Canonical against canonical rather than raw substring, on purpose: searching for "30"
+    as a substring would find it inside "1300", declaring grounded a number that was never
+    there.
     """
-    objetivo = canonicalize(needle)
-    return any(tok.canonical == objetivo for tok in extract_numbers(haystack))
+    target = canonicalize(needle)
+    return any(tok.canonical == target for tok in extract_numbers(haystack))
 
 
 def contains_code(haystack: str | None, needle: str) -> bool:

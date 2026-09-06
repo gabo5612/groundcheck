@@ -1,20 +1,23 @@
-"""Tipos del harness.
+"""Harness types.
 
-Regla que gobierna este archivo: una corrida guarda **observaciones**, no juicios.
-Los checks deterministas (M2) y las metricas (M1) se derivan despues, a partir de lo
-observado. Asi una corrida vieja se puede re-evaluar con checks nuevos sin volver a
-molestar al sistema bajo prueba — y nadie puede confundir "lo que el sistema dijo" con
-"lo que decidimos sobre lo que dijo".
+The rule governing this file: a run stores **observations**, not judgements. The
+deterministic checks (M2) and the metrics (M1) are derived afterwards from what was
+observed. That way an old run can be re-evaluated with new checks without bothering the
+system under test again — and nobody can confuse "what the system said" with "what we
+decided about what it said".
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from typing import Any
 
-# Las seis categorias de §3 del contexto. La lista es cerrada a proposito: una
-# categoria mal escrita en el YAML tiene que ser un error, no una septima categoria
-# silenciosa que despues aparece con n=1 en el reporte.
+# The six categories from §3 of the spec. The list is closed on purpose: a misspelled
+# category in the YAML has to be an error, not a silent seventh category that later shows
+# up with n=1 in the report.
+#
+# The values keep their Spanish names because they are the identifiers used by the golden
+# sets and by every stored run: renaming them would invalidate every baseline on disk.
 CATEGORIES = (
     "factual_lookup",
     "alfanumerico_exacto",
@@ -45,17 +48,17 @@ class Case:
     gold_answer: str | None = None
     gold_numbers: tuple[str, ...] = ()
     forbidden_numbers: tuple[str, ...] = ()
-    # Identificadores de otra fila/entrada que, si aparecen, delatan que el sistema
-    # contesto lo de al lado. `forbidden_numbers` no puede cubrirlos: el "115" de E-115
-    # vive dentro de un identificador y nunca se extrae como numero.
+    # Identifiers from another row/entry that, if present, reveal the system answered
+    # about the neighbouring item. `forbidden_numbers` cannot cover them: the "115" in
+    # E-115 lives inside an identifier and is never extracted as a number.
     forbidden_codes: tuple[str, ...] = ()
-    # Plural: un caso `multi_documento` tiene la respuesta repartida entre varias
-    # fuentes, y con un solo `gold_source` esa categoria — 10% del set segun §3 del
-    # contexto — no se puede medir. El YAML acepta un mapa o una lista de mapas.
+    # Plural: a `multi_documento` case has its answer split across several sources, and
+    # with a single `gold_source` that category — 10% of the set per §3 — cannot be
+    # measured. The YAML accepts either a map or a list of maps.
     gold_sources: tuple[GoldSource, ...] = ()
 
     def targets(self) -> tuple[tuple[str, tuple[int, ...]], ...]:
-        """Objetivos de oro como `(doc_id, paginas)`, el formato que consume `metrics`."""
+        """Gold targets as `(doc_id, pages)`, the shape `metrics` consumes."""
         return tuple((src.doc_id, src.pages) for src in self.gold_sources)
 
 
@@ -79,20 +82,31 @@ class Suite:
 
 @dataclass(frozen=True)
 class Response:
-    """Lo que devolvio el sistema bajo prueba. El contrato completo del adaptador."""
+    """What the system under test returned. The full adapter contract."""
 
     answer: str | None
     citations: tuple[dict[str, Any], ...] = ()
-    # `retrieved` != `citations`. Lo recuperado es lo que entro al contexto; lo citado es
-    # lo que el sistema eligio mostrar. Las metricas de retrieval (recall@k, MRR,
-    # precision@k) se calculan sobre lo PRIMERO; la exactitud de cita, sobre lo segundo.
-    # Confundirlos mide otra cosa y da un numero mas alto: un sistema puede citar bien
-    # el unico chunk bueno de veinte y aparentar precision perfecta.
-    # Vacio significa "el sistema no lo expone" -> las metricas de retrieval quedan en
-    # `None`, no en cero.
+    # `retrieved` != `citations`. Retrieved is what entered the context; cited is what the
+    # system chose to show. The retrieval metrics (recall@k, MRR, precision@k) are computed
+    # over the FORMER; citation accuracy over the latter. Conflating them measures
+    # something else and yields a higher number: a system can cite the single good chunk
+    # out of twenty and appear to have perfect precision.
+    # Empty means "the system does not expose it" -> retrieval metrics report `None`, not
+    # zero.
     retrieved: tuple[dict[str, Any], ...] = ()
     abstained: bool = False
     latency_ms: int | None = None
+    # Fields the system returns that the contract does not model, kept verbatim.
+    # The case that motivated this: anvil explains WHY it abstained in a `reason` field,
+    # and the mapping was dropping it. The labelling sheet then showed an empty answer, and
+    # a human judging that marks it "wrong" — reasonably, without knowing the system had in
+    # fact explained itself. Discarding the explanation turns a correct abstention into
+    # something that looks like a failure.
+    extra: tuple[tuple[str, Any], ...] = ()
+
+    @property
+    def reason(self) -> str | None:
+        return dict(self.extra).get("reason")
 
 
 @dataclass

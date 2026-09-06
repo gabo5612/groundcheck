@@ -1,4 +1,4 @@
-"""CLI de assay. La interfaz es la de §5 del contexto."""
+"""assay CLI. The interface is the one from §5 of the spec."""
 
 from __future__ import annotations
 
@@ -17,8 +17,8 @@ from .report import ReportError, aggregate, load_run, render, resolve_suite
 from .run import run_suite, write_run
 from .suite import SuiteError, load_suite
 
-# Subcomandos especificados pero todavia no implementados. Se declaran con el hito que
-# los trae para que `assay --help` sea el estado real del proyecto y no una promesa.
+# Subcommands specified but not implemented yet. They are declared with the milestone
+# that brings them so `assay --help` reflects the real state of the project, not a promise.
 PENDING: dict[str, str] = {}
 
 
@@ -26,16 +26,16 @@ def _cmd_run(args: argparse.Namespace) -> int:
     try:
         suite = load_suite(args.suite)
     except SuiteError as exc:
-        print(f"suite invalida — {exc}", file=sys.stderr)
+        print(f"invalid suite — {exc}", file=sys.stderr)
         return 2
     except OSError as exc:
-        print(f"no se pudo leer la suite: {exc}", file=sys.stderr)
+        print(f"could not read the suite: {exc}", file=sys.stderr)
         return 2
 
     try:
         adapter = build_adapter(args.system, timeout=args.timeout, mapping=args.mapping)
     except (ValueError, OSError) as exc:
-        print(f"sistema invalido — {exc}", file=sys.stderr)
+        print(f"invalid system — {exc}", file=sys.stderr)
         return 2
 
     def progress(obs) -> None:
@@ -51,8 +51,8 @@ def _cmd_run(args: argparse.Namespace) -> int:
         if not args.quiet:
             errors = sum(1 for o in record.observations if o.error)
             print(
-                f"\n{record.suite['case_count']} casos · {errors} con error · suite sha256 "
-                f"{suite.sha256[:12]}\ncorrida → {path}",
+                f"\n{record.suite['case_count']} cases · {errors} with errors · suite sha256 "
+                f"{suite.sha256[:12]}\nrun → {path}",
                 file=sys.stderr,
             )
     else:
@@ -65,28 +65,28 @@ def _cmd_report(args: argparse.Namespace) -> int:
     try:
         run = load_run(args.run)
     except (OSError, json.JSONDecodeError) as exc:
-        print(f"no se pudo leer la corrida: {exc}", file=sys.stderr)
+        print(f"could not read the run: {exc}", file=sys.stderr)
         return 2
     try:
         suite = resolve_suite(run, suite_path=args.suite)
-        filas = aggregate(run, suite, k=args.k)
+        rows = aggregate(run, suite, k=args.k)
     except ReportError as exc:
-        print(f"no se puede reportar — {exc}", file=sys.stderr)
+        print(f"cannot report — {exc}", file=sys.stderr)
         return 2
     except SuiteError as exc:
-        print(f"suite invalida — {exc}", file=sys.stderr)
+        print(f"invalid suite — {exc}", file=sys.stderr)
         return 2
 
-    payload = _report_payload(filas, run, args.k)
+    payload = _report_payload(rows, run, args.k)
     if args.json:
         json.dump(payload, sys.stdout, indent=2, ensure_ascii=False)
         sys.stdout.write("\n")
     else:
-        print(render(run, filas, k=args.k))
+        print(render(run, rows, k=args.k))
     return 0
 
 
-def _report_payload(filas, run, k):
+def _report_payload(rows, run, k):
     return {
         "suite": run["suite"],
         "system": run["system"],
@@ -94,14 +94,14 @@ def _report_payload(filas, run, k):
         "categories": {
             cat: {
                 "n": f.n,
-                "errors": f.errores,
+                "errors": f.errors,
                 f"recall_at_{k}": None if cat == "negative_control" else _mean(f.recall),
                 "mrr": None if cat == "negative_control" else _mean(f.rr),
                 f"precision_at_{k}": None if cat == "negative_control" else _mean(f.precision),
                 "checks": {
                     n: {
-                        "passed": r.aciertos,
-                        "verifiable": r.n_verificable,
+                        "passed": r.hits,
+                        "verifiable": r.n_verifiable,
                         "total": r.n_total,
                         "rate": r.value,
                     }
@@ -109,7 +109,7 @@ def _report_payload(filas, run, k):
                     if r.n_total
                 },
             }
-            for cat, f in filas.items()
+            for cat, f in rows.items()
         },
     }
 
@@ -121,113 +121,113 @@ def _mean(values):
 
 
 def _cmd_gate(args: argparse.Namespace) -> int:
-    """Devuelve 0 si pasa, 1 si hay regresion (falla el build), 2 si no se pudo comparar."""
+    """Returns 0 on pass, 1 on regression (fails the build), 2 if it could not compare."""
     try:
         baseline = json.loads(Path(args.against).read_text("utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        print(f"no se pudo leer el baseline: {exc}", file=sys.stderr)
+        print(f"could not read the baseline: {exc}", file=sys.stderr)
         return 2
 
-    actual = _payload_de(args.run, args.suite, args.k)
-    if isinstance(actual, int):
-        return actual
+    current = _payload_from(args.run, args.suite, args.k)
+    if isinstance(current, int):
+        return current
 
     try:
-        hallazgos = compare(baseline, actual, max_regression=args.max_regression)
+        findings = compare(baseline, current, max_regression=args.max_regression)
     except GateError as exc:
-        print(f"no se puede comparar — {exc}", file=sys.stderr)
+        print(f"cannot compare — {exc}", file=sys.stderr)
         return 2
 
-    print(render_gate(hallazgos, max_regression=args.max_regression))
-    return 1 if any(f.blocks for f in hallazgos) else 0
+    print(render_gate(findings, max_regression=args.max_regression))
+    return 1 if any(f.blocks for f in findings) else 0
 
 
 def _cmd_diff(args: argparse.Namespace) -> int:
     try:
-        antes = load_run(args.antes)
-        despues = load_run(args.despues)
+        before = load_run(args.before)
+        after = load_run(args.after)
     except (OSError, json.JSONDecodeError) as exc:
-        print(f"no se pudo leer una de las corridas: {exc}", file=sys.stderr)
+        print(f"could not read one of the runs: {exc}", file=sys.stderr)
         return 2
     try:
-        suite = resolve_suite(despues, suite_path=args.suite)
-        flips, movimiento = diff_runs(antes, despues, suite, k=args.k)
+        suite = resolve_suite(after, suite_path=args.suite)
+        flips, movement = diff_runs(before, after, suite, k=args.k)
     except (DiffError, ReportError) as exc:
-        print(f"no se puede comparar — {exc}", file=sys.stderr)
+        print(f"cannot compare — {exc}", file=sys.stderr)
         return 2
     except SuiteError as exc:
-        print(f"suite invalida — {exc}", file=sys.stderr)
+        print(f"invalid suite — {exc}", file=sys.stderr)
         return 2
 
-    print(render_diff(antes, despues, flips, movimiento, suite, k=args.k))
+    print(render_diff(before, after, flips, movement, suite, k=args.k))
     return 0
 
 
-def _payload_de(run_path: str, suite_path: str | None, k: int):
-    """Carga una corrida y devuelve su reporte JSON, o un codigo de salida si falla."""
+def _payload_from(run_path: str, suite_path: str | None, k: int):
+    """Loads a run and returns its JSON report, or an exit code on failure."""
     try:
         run = load_run(run_path)
     except (OSError, json.JSONDecodeError) as exc:
-        print(f"no se pudo leer la corrida: {exc}", file=sys.stderr)
+        print(f"could not read the run: {exc}", file=sys.stderr)
         return 2
     try:
         suite = resolve_suite(run, suite_path=suite_path)
-        filas = aggregate(run, suite, k=k)
+        rows = aggregate(run, suite, k=k)
     except ReportError as exc:
-        print(f"no se puede reportar — {exc}", file=sys.stderr)
+        print(f"cannot report — {exc}", file=sys.stderr)
         return 2
     except SuiteError as exc:
-        print(f"suite invalida — {exc}", file=sys.stderr)
+        print(f"invalid suite — {exc}", file=sys.stderr)
         return 2
-    return _report_payload(filas, run, k)
+    return _report_payload(rows, run, k)
 
 
 def _cmd_pending(name: str) -> int:
-    print(f"`assay {name}` todavia no existe — llega en {PENDING[name]}", file=sys.stderr)
+    print(f"`assay {name}` does not exist yet — arrives in {PENDING[name]}", file=sys.stderr)
     return 2
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="assay",
-        description="Harness de evals para sistemas RAG. Mide retrieval, fundamento, "
-        "citas y abstencion de forma reproducible.",
+        description="Evaluation harness for RAG systems. Measures retrieval, grounding, "
+        "citations and abstention reproducibly.",
     )
     parser.add_argument("--version", action="version", version=f"assay {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    run = sub.add_parser("run", help="correr una suite contra un sistema")
-    run.add_argument("--suite", required=True, help="ruta al golden set (YAML)")
+    run = sub.add_parser("run", help="run a suite against a system")
+    run.add_argument("--suite", required=True, help="path to the golden set (YAML)")
     run.add_argument(
         "--system",
         required=True,
-        help="`mock:archivo.yaml` para un sistema guionado, o la URL del endpoint real",
+        help="`mock:file.yaml` for a scripted system, or the real endpoint URL",
     )
-    run.add_argument("--out", help="directorio donde escribir la corrida; sin esto, JSON a stdout")
-    run.add_argument("--timeout", type=float, default=60.0, help="timeout por pregunta (s)")
-    run.add_argument("--mapping", help="YAML que traduce la respuesta del sistema al contrato")
-    run.add_argument("--quiet", action="store_true", help="sin progreso en stderr")
+    run.add_argument("--out", help="directory to write the run to; without it, JSON goes to stdout")
+    run.add_argument("--timeout", type=float, default=60.0, help="timeout per question (s)")
+    run.add_argument("--mapping", help="YAML mapping the system response onto the contract")
+    run.add_argument("--quiet", action="store_true", help="no progress on stderr")
     run.set_defaults(func=_cmd_run)
 
-    report = sub.add_parser("report", help="reporte con desglose por categoria")
-    report.add_argument("run", help="archivo JSON de una corrida")
-    report.add_argument("--suite", help="ruta a la suite si se movio desde la corrida")
-    report.add_argument("--k", type=int, default=5, help="k de recall@k y precision@k")
-    report.add_argument("--json", action="store_true", help="salida JSON en vez de tabla")
+    report = sub.add_parser("report", help="report with a per-category breakdown")
+    report.add_argument("run", help="JSON file of a run")
+    report.add_argument("--suite", help="path to the suite if it moved since the run")
+    report.add_argument("--k", type=int, default=5, help="k for recall@k and precision@k")
+    report.add_argument("--json", action="store_true", help="JSON output instead of a table")
     report.set_defaults(func=_cmd_report)
 
-    gate = sub.add_parser("gate", help="falla el build si una metrica se degrado")
-    gate.add_argument("run", help="corrida a evaluar")
-    gate.add_argument("--against", required=True, help="baseline (salida de `report --json`)")
+    gate = sub.add_parser("gate", help="fails the build if a metric degraded")
+    gate.add_argument("run", help="run to evaluate")
+    gate.add_argument("--against", required=True, help="baseline (output of `report --json`)")
     gate.add_argument("--max-regression", type=float, default=DEFAULT_MAX_REGRESSION,
-                      help=f"caida tolerada por metrica (default {DEFAULT_MAX_REGRESSION})")
-    gate.add_argument("--suite", help="ruta a la suite si se movio desde la corrida")
-    gate.add_argument("--k", type=int, default=5, help="tiene que coincidir con el baseline")
+                      help=f"tolerated drop per metric (default {DEFAULT_MAX_REGRESSION})")
+    gate.add_argument("--suite", help="path to the suite if it moved since the run")
+    gate.add_argument("--k", type=int, default=5, help="must match the baseline")
     gate.set_defaults(func=_cmd_gate)
 
-    diff = sub.add_parser("diff", help="compara dos corridas y nombra que se movio")
-    diff.add_argument("antes", help="corrida de referencia")
-    diff.add_argument("despues", help="corrida nueva")
+    diff = sub.add_parser("diff", help="compares two runs and names what moved")
+    diff.add_argument("before", help="reference run")
+    diff.add_argument("after", help="new run")
     diff.add_argument("--suite", help="ruta a la suite si se movio desde las corridas")
     diff.add_argument("--k", type=int, default=5)
     diff.set_defaults(func=_cmd_diff)

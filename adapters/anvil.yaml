@@ -35,6 +35,10 @@ response:
 
   # anvil da un rango de páginas (page_from/page_to). assay compara contra una página
   # concreta, así que se toma la inicial: es la que un humano citaría.
+  # anvil explica por que se abstuvo. Sin esto, una abstencion correcta llega al
+  # etiquetado humano como una respuesta vacia y se juzga como fallo.
+  passthrough: [reason, verifier_passed, cached]
+
   item_map:
     page: page_from
     text: snippet

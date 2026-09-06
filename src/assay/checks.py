@@ -1,19 +1,21 @@
-"""Checks deterministas de generacion.
+"""Deterministic generation checks.
 
-Todos son operaciones de conjuntos y comparaciones de strings normalizados. Ningun modelo
-participa: la regla de diseno de §4 del contexto es que lo determinista bloquea el CI y lo
-difuso solo se reporta.
+All of them are set operations and normalised string comparisons. No model participates:
+the design rule from §4 of the spec is that the deterministic part blocks CI and the fuzzy
+part is only reported.
 
-Tres estados por check, y la distincion entre los dos ultimos es el corazon del modulo:
+Three states per check, and the distinction between the last two is the heart of this
+module:
 
-- `True`  — se verifico y pasa
-- `False` — se verifico y **falla**
-- `None`  — **no se pudo verificar** (falta el insumo: el sistema no expuso el texto del
-            chunk citado, o el caso no define numeros de oro)
+- `True`  — verified and passes
+- `False` — verified and **fails**
+- `None`  — **could not be verified** (the input is missing: the system did not expose the
+            cited chunk's text, or the case defines no gold numbers)
 
-`None` nunca se cuenta como fallo ni como exito. Un harness que convierte "no pude
-verificar" en "fallo" empuja a arreglar cosas que no estaban rotas; uno que lo convierte
-en "pasa" publica un numero que no midio nada. Por eso el reporte los muestra aparte.
+`None` never counts as a failure nor as a success. A harness that turns "I could not
+verify" into "it failed" pushes you to fix things that were not broken; one that turns it
+into "it passes" publishes a number that measured nothing. That is why the report shows
+them separately.
 """
 
 from __future__ import annotations
@@ -38,11 +40,14 @@ class CheckResult:
         return self.passed is not None
 
 
-# ── frases de abstencion ─────────────────────────────────────────────────────
-# Lista de frases, no un modelo. §8 del contexto lo dice explicito: empezar con lista y
-# revision manual de los desacuerdos, sin meter un modelo a decidir si otro modelo se
-# abstuvo. La lista es visible y auditable; un clasificador seria una caja negra dentro
-# del propio verificador.
+# ── abstention phrases ───────────────────────────────────────────────────────
+# A phrase list, not a model. §8 of the spec says so explicitly: start with a list plus
+# manual review of the disagreements, without putting a model in charge of deciding
+# whether another model abstained. The list is visible and auditable; a classifier would
+# be a black box inside the verifier itself.
+#
+# Phrases stay in both Spanish and English because the systems under test answer in the
+# language of their corpus.
 ABSTENTION_PHRASES = (
     "no encontre", "no encontré", "no aparece", "no figura", "no dispongo",
     "no tengo informacion", "no tengo información", "no hay informacion",
@@ -61,7 +66,7 @@ def looks_like_abstention(answer: str | None) -> bool:
 
 
 def _citation_texts(response: Response) -> list[str]:
-    """Texto de los chunks citados, si el sistema lo expone."""
+    """Text of the cited chunks, when the system exposes it."""
     out = []
     for c in response.citations:
         text = c.get("text") or c.get("snippet") or c.get("content")
@@ -70,188 +75,191 @@ def _citation_texts(response: Response) -> list[str]:
     return out
 
 
-# ── los checks ───────────────────────────────────────────────────────────────
+# ── the checks ───────────────────────────────────────────────────────────────
 def check_gold_numbers(case: Case, response: Response) -> CheckResult:
-    """Cada `gold_number` aparece literal en la respuesta."""
+    """Every `gold_number` appears literally in the answer."""
     if not case.gold_numbers:
-        return CheckResult("gold_numbers_present", None, "el caso no define numeros de oro")
+        return CheckResult("gold_numbers_present", None, "the case defines no gold numbers")
     if response.abstained:
         return CheckResult(
-            "gold_numbers_present", False, "se abstuvo en un caso que si tiene respuesta"
+            "gold_numbers_present", False, "abstained on a case that does have an answer"
         )
-    faltantes = [n for n in case.gold_numbers if not contains_number(response.answer, n)]
+    missing = [n for n in case.gold_numbers if not contains_number(response.answer, n)]
     return CheckResult(
         "gold_numbers_present",
-        not faltantes,
-        "todos presentes" if not faltantes else f"faltan {faltantes}",
-        {"esperados": list(case.gold_numbers), "faltantes": faltantes},
+        not missing,
+        "all present" if not missing else f"missing {missing}",
+        {"expected": list(case.gold_numbers), "missing": missing},
     )
 
 
 def check_forbidden_numbers(case: Case, response: Response) -> CheckResult:
-    """Ningun `forbidden_number` aparece en la respuesta.
+    """No `forbidden_number` appears in the answer.
 
-    Es el check que atrapa el bug de la tabla partida: si la respuesta trae 950 cuando
-    debia traer 680, no es "una respuesta algo distinta" — es haber cruzado filas.
+    This is the check that catches the split-table bug: if the answer carries 950 when it
+    should carry 720, that is not "a slightly different answer" — it crossed rows.
     """
     if not case.forbidden_numbers:
-        return CheckResult("forbidden_numbers_absent", None, "el caso no define prohibidos")
-    presentes = [n for n in case.forbidden_numbers if contains_number(response.answer, n)]
+        return CheckResult("forbidden_numbers_absent", None, "the case defines none")
+    present = [n for n in case.forbidden_numbers if contains_number(response.answer, n)]
     return CheckResult(
         "forbidden_numbers_absent",
-        not presentes,
-        "ninguno presente" if not presentes else f"aparecen {presentes} — cruzo filas",
-        {"prohibidos": list(case.forbidden_numbers), "presentes": presentes},
+        not present,
+        "none present" if not present else f"{present} appear — it crossed rows",
+        {"forbidden": list(case.forbidden_numbers), "present": present},
     )
 
 
 def check_forbidden_codes(case: Case, response: Response) -> CheckResult:
-    """Ningun identificador prohibido aparece en la respuesta.
+    """No forbidden identifier appears in the answer.
 
-    El hermano de `check_forbidden_numbers` para el mundo alfanumerico. La trampa tipica
-    de `alfanumerico_exacto`: preguntar por la alarma E-114 y recibir la descripcion de
-    E-115. `forbidden_numbers` no puede verlo — el "115" nunca se extrae como numero
-    porque vive dentro de un identificador.
+    The sibling of `check_forbidden_numbers` for the alphanumeric world. The typical trap
+    in `alfanumerico_exacto`: ask about alarm E-114 and get the description of E-115.
+    `forbidden_numbers` cannot see it — the "115" is never extracted as a number because
+    it lives inside an identifier.
     """
     if not case.forbidden_codes:
-        return CheckResult("forbidden_codes_absent", None, "el caso no define codigos prohibidos")
-    presentes = [c for c in case.forbidden_codes if contains_code(response.answer, c)]
+        return CheckResult("forbidden_codes_absent", None, "the case defines no forbidden codes")
+    present = [c for c in case.forbidden_codes if contains_code(response.answer, c)]
     return CheckResult(
         "forbidden_codes_absent",
-        not presentes,
-        "ninguno presente" if not presentes else f"aparecen {presentes} — contesto lo de al lado",
-        {"prohibidos": list(case.forbidden_codes), "presentes": presentes},
+        not present,
+        "none present" if not present else f"{present} appear — it answered about the neighbour",
+        {"forbidden": list(case.forbidden_codes), "present": present},
     )
 
 
 def check_grounded(case: Case, response: Response) -> CheckResult:
-    """Cada numero y codigo de la respuesta esta literal en algun chunk citado.
+    """Every number and code in the answer appears literally in some cited chunk.
 
-    Sin el texto de los chunks no se puede verificar, y en ese caso da `None`: decir
-    "no fundamentado" porque el sistema no expone sus chunks seria culparlo de algo que
-    no se midio.
+    Without the chunks' text this cannot be verified, and in that case it returns `None`:
+    saying "not grounded" because the system does not expose its chunks would blame it for
+    something that was never measured.
 
-    **Los numeros y codigos que ya estaban en la pregunta estan exentos.** Groundedness
-    pregunta si el sistema *introdujo* un dato sin respaldo; un dato que escribio el
-    usuario no lo introdujo el sistema. Sin esta exencion, contestar "el A516 de 15 mm no
-    requiere precalentamiento" falla porque el "15" no esta en la tabla — y repetir el
-    enunciado no es alucinar. (Encontrado al llenar el reporte de M4.)
+    **Numbers and codes that were already in the question are exempt.** Groundedness asks
+    whether the system *introduced* an unsupported fact; a fact the user typed was not
+    introduced by the system. Without this exemption, answering "the 15 mm A516 needs no
+    preheating" fails because the "15" is not in the table — and repeating the question is
+    not hallucinating. (Found while filling in the M4 report.)
 
-    El control negativo no se escapa por esta puerta: si preguntan por el perno M30, el
-    `M30` queda exento pero cualquier torque que invente sigue teniendo que estar en el
-    chunk, y de la abstencion se ocupa `check_abstention`, que es su check.
+    The negative control does not escape through this door: if the question asks about bolt
+    M30, the `M30` is exempt but any torque it invents still has to be in the chunk, and
+    abstention is handled by `check_abstention`, which is its own check.
     """
     if response.abstained:
-        return CheckResult("grounded", None, "se abstuvo: no hay nada que fundamentar")
+        return CheckResult("grounded", None, "abstained: there is nothing to ground")
 
-    textos = _citation_texts(response)
-    if not textos:
+    texts = _citation_texts(response)
+    if not texts:
         return CheckResult(
             "grounded",
             None,
-            "las citas no traen texto — el sistema no expone el contenido del chunk",
-            {"citas": len(response.citations)},
+            "citations carry no text — the system does not expose chunk content",
+            {"citations": len(response.citations)},
         )
 
-    corpus = "\n".join(textos)
-    numeros = extract_numbers(response.answer)
-    codigos = extract_codes(response.answer)
+    corpus = "\n".join(texts)
+    numbers = extract_numbers(response.answer)
+    codes = extract_codes(response.answer)
 
-    # Exencion por enunciado: lo que ya venia en la pregunta no lo introdujo el sistema.
-    num_pregunta = {t.canonical for t in extract_numbers(case.question)}
-    cod_pregunta = set(extract_codes(case.question))
+    # Question exemption: whatever was already in the question was not introduced by the
+    # system.
+    question_numbers = {t.canonical for t in extract_numbers(case.question)}
+    question_codes = set(extract_codes(case.question))
 
-    num_huerfanos = [
+    orphan_numbers = [
         t.raw
-        for t in numeros
-        if t.canonical not in num_pregunta and not contains_number(corpus, t.raw)
+        for t in numbers
+        if t.canonical not in question_numbers and not contains_number(corpus, t.raw)
     ]
-    cod_corpus = set(extract_codes(corpus))
-    cod_huerfanos = [c for c in codigos if c not in cod_pregunta and c not in cod_corpus]
+    corpus_codes = set(extract_codes(corpus))
+    orphan_codes = [c for c in codes if c not in question_codes and c not in corpus_codes]
 
-    huerfanos = num_huerfanos + cod_huerfanos
-    if not numeros and not codigos:
+    orphans = orphan_numbers + orphan_codes
+    if not numbers and not codes:
         return CheckResult(
-            "grounded", None, "la respuesta no trae numeros ni codigos que verificar"
+            "grounded", None, "the answer carries no numbers or codes to verify"
         )
     return CheckResult(
         "grounded",
-        not huerfanos,
-        "todo fundamentado" if not huerfanos else f"inventado(s): {huerfanos}",
+        not orphans,
+        "fully grounded" if not orphans else f"unsupported: {orphans}",
         {
-            "numeros_en_respuesta": [t.raw for t in numeros],
-            "codigos_en_respuesta": codigos,
-            "exentos_por_venir_en_la_pregunta": sorted(num_pregunta | cod_pregunta),
-            "sin_respaldo": huerfanos,
+            "numbers_in_answer": [t.raw for t in numbers],
+            "codes_in_answer": codes,
+            "exempt_because_in_question": sorted(question_numbers | question_codes),
+            "unsupported": orphans,
         },
     )
 
 
 def check_citation_hits_gold(case: Case, response: Response) -> CheckResult:
-    """Alguna cita apunta al documento/pagina de oro."""
-    objetivos = case.targets()
-    if not objetivos:
-        return CheckResult("citation_hits_gold", None, "el caso no define fuente de oro")
+    """Some citation points at the gold document/page."""
+    targets = case.targets()
+    if not targets:
+        return CheckResult("citation_hits_gold", None, "the case defines no gold source")
     if not response.citations:
-        return CheckResult("citation_hits_gold", False, "no cito nada")
+        return CheckResult("citation_hits_gold", False, "it cited nothing")
 
     items = [RetrievedItem.from_raw(c, i) for i, c in enumerate(response.citations, start=1)]
-    aciertos = [
+    hits = [
         {"doc_id": it.doc_id, "page": it.page}
         for it in items
-        if any(matches(it, doc, pages) for doc, pages in objetivos)
+        if any(matches(it, doc, pages) for doc, pages in targets)
     ]
     return CheckResult(
         "citation_hits_gold",
-        bool(aciertos),
-        "cita correcta" if aciertos else "ninguna cita apunta a la fuente de oro",
-        {"objetivos": [{"doc_id": d, "pages": list(p)} for d, p in objetivos], "aciertos": aciertos},
+        bool(hits),
+        "correct citation" if hits else "no citation points at the gold source",
+        {"targets": [{"doc_id": d, "pages": list(p)} for d, p in targets], "hits": hits},
     )
 
 
 def check_abstention(case: Case, response: Response) -> CheckResult:
-    """En los controles negativos, se abstuvo. En el resto, contesto.
+    """On negative controls it abstained. On the rest it answered.
 
-    Es la metrica mas importante del set: sin ella, un sistema que siempre responde con
-    seguridad puntua perfecto.
+    The most important metric in the set: without it, a system that always answers
+    confidently scores perfect.
     """
-    declarada = response.abstained
-    por_frase = looks_like_abstention(response.answer)
-    abstuvo = declarada or por_frase
+    declared = response.abstained
+    by_phrase = looks_like_abstention(response.answer)
+    abstained = declared or by_phrase
 
     if case.must_abstain:
         return CheckResult(
             "abstention_correct",
-            abstuvo,
-            "se abstuvo, correcto" if abstuvo else "ALUCINO: contesto una pregunta sin respuesta",
-            {"declarada": declarada, "por_frase": por_frase, "esperado": "abstenerse"},
+            abstained,
+            "abstained, correct" if abstained
+            else "HALLUCINATED: answered a question that has no answer",
+            {"declared": declared, "by_phrase": by_phrase, "expected": "abstain"},
         )
     return CheckResult(
         "abstention_correct",
-        not abstuvo,
-        "contesto, correcto" if not abstuvo else "se abstuvo en un caso que si tiene respuesta",
-        {"declarada": declarada, "por_frase": por_frase, "esperado": "responder"},
+        not abstained,
+        "answered, correct" if not abstained
+        else "abstained on a case that does have an answer",
+        {"declared": declared, "by_phrase": by_phrase, "expected": "answer"},
     )
 
 
 def check_revision_current(case: Case, response: Response) -> CheckResult:
-    """Cito la revision vigente y no una supersedida."""
-    revisiones_oro = {s.revision for s in case.gold_sources if s.revision}
-    if not revisiones_oro:
-        return CheckResult("revision_current", None, "el caso no fija revision de oro")
+    """It cited the current revision rather than a superseded one."""
+    gold_revisions = {s.revision for s in case.gold_sources if s.revision}
+    if not gold_revisions:
+        return CheckResult("revision_current", None, "the case pins no gold revision")
 
-    citadas = {str(c["revision"]) for c in response.citations if c.get("revision") is not None}
-    if not citadas:
+    cited = {str(c["revision"]) for c in response.citations if c.get("revision") is not None}
+    if not cited:
         return CheckResult(
-            "revision_current", None, "las citas no reportan revision — no se puede verificar"
+            "revision_current", None, "citations report no revision — cannot verify"
         )
 
-    obsoletas = citadas - revisiones_oro
+    stale = cited - gold_revisions
     return CheckResult(
         "revision_current",
-        not obsoletas,
-        "revision vigente" if not obsoletas else f"cito revision supersedida: {sorted(obsoletas)}",
-        {"vigentes": sorted(revisiones_oro), "citadas": sorted(citadas)},
+        not stale,
+        "current revision" if not stale else f"cited a superseded revision: {sorted(stale)}",
+        {"current": sorted(gold_revisions), "cited": sorted(cited)},
     )
 
 
@@ -267,13 +275,13 @@ CHECKS = (
 
 
 def evaluate(case: Case, response: Response | None) -> dict[str, CheckResult]:
-    """Todos los checks sobre un caso. Sin respuesta, todos quedan sin verificar."""
+    """Every check on one case. With no response, all of them stay unverified."""
     if response is None:
         return {
             fn(case, Response(answer=None)).name: CheckResult(
-                fn(case, Response(answer=None)).name, None, "el sistema no respondio (error)"
+                fn(case, Response(answer=None)).name, None, "the system did not answer (error)"
             )
             for fn in CHECKS
         }
-    resultados = [fn(case, response) for fn in CHECKS]
-    return {r.name: r for r in resultados}
+    results = [fn(case, response) for fn in CHECKS]
+    return {r.name: r for r in results}

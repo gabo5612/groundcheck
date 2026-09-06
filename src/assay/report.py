@@ -1,19 +1,19 @@
-"""Reporte con desglose por categoria — el producto del harness.
+"""Per-category report — the harness's product.
 
-Un numero global ("78% de exactitud") no sirve para decidir nada. Lo que se publica es el
-desglose: cuanto recall en preguntas de tabla, cuanta abstencion en los controles
-negativos, cuanta groundedness en las alfanumericas. Eso nombra QUE arreglar.
+A single global number ("78% accurate") supports no decision. What gets published is the
+breakdown: how much recall on table questions, how much abstention on negative controls,
+how much groundedness on alphanumeric ones. That names WHAT to fix.
 
-Dos reglas de honestidad implementadas acá:
+Two honesty rules implemented here:
 
-1. **El reporte re-carga la suite y compara su sha256 contra el que guardo la corrida.**
-   Si no coincide, se niega a reportar. Sin esto, alguien podria correr el eval, ver que
-   sale mal, ablandar el golden set y reportar el mismo JSON como si nada — que es
-   exactamente el fracaso silencioso que este proyecto existe para impedir.
+1. **The report reloads the suite and compares its sha256 against the one the run stored.**
+   If they differ, it refuses to report. Without this, someone could run the eval, see it
+   go badly, soften the golden set and report the same JSON as if nothing happened — which
+   is exactly the silent failure this project exists to prevent.
 
-2. **Cada celda lleva su denominador.** Una tasa de groundedness de 1.00 sobre 2 casos
-   verificables de 8 no es lo mismo que sobre 8 de 8, y un promedio sin n es una opinion
-   con decimales.
+2. **Every cell carries its denominator.** A groundedness rate of 1.00 over 2 verifiable
+   cases out of 8 is not the same as over 8 of 8, and an average without n is an opinion
+   with decimals.
 """
 
 from __future__ import annotations
@@ -39,20 +39,20 @@ class ReportError(RuntimeError):
 
 @dataclass
 class Rate:
-    """Una tasa con su denominador. `n_verificable` puede ser 0: entonces no hay tasa."""
+    """A rate with its denominator. `n_verifiable` can be 0: then there is no rate."""
 
-    aciertos: int = 0
-    n_verificable: int = 0
+    hits: int = 0
+    n_verifiable: int = 0
     n_total: int = 0
 
     @property
     def value(self) -> float | None:
-        return None if self.n_verificable == 0 else self.aciertos / self.n_verificable
+        return None if self.n_verifiable == 0 else self.hits / self.n_verifiable
 
     def render(self) -> str:
-        if self.n_verificable == 0:
+        if self.n_verifiable == 0:
             return "n/a"
-        return f"{self.value:.2f} ({self.aciertos}/{self.n_verificable})"
+        return f"{self.value:.2f} ({self.hits}/{self.n_verifiable})"
 
 
 @dataclass
@@ -63,7 +63,7 @@ class CategoryRow:
     precision: list[float | None] = field(default_factory=list)
     rr: list[float | None] = field(default_factory=list)
     checks: dict[str, Rate] = field(default_factory=dict)
-    errores: int = 0
+    errors: int = 0
 
     def rate(self, name: str) -> Rate:
         return self.checks.setdefault(name, Rate())
@@ -78,6 +78,7 @@ def _response_from_json(raw: dict[str, Any] | None) -> Response | None:
         retrieved=tuple(raw.get("retrieved") or ()),
         abstained=bool(raw.get("abstained")),
         latency_ms=raw.get("latency_ms"),
+        extra=tuple((k, v) for k, v in (raw.get("extra") or [])),
     )
 
 
@@ -86,120 +87,120 @@ def load_run(path: str | Path) -> dict[str, Any]:
 
 
 def resolve_suite(run: dict[str, Any], *, suite_path: str | Path | None = None) -> Suite:
-    """Carga la suite de la corrida y **verifica su sha256**."""
-    declarado = run["suite"]["sha256"]
+    """Loads the run's suite and **verifies its sha256**."""
+    declared = run["suite"]["sha256"]
     path = Path(suite_path or run["suite"]["path"])
     if not path.exists():
         raise ReportError(
-            f"no encuentro la suite {path} que uso la corrida. Pasala con --suite si se movio."
+            f"cannot find the suite {path} the run used. Pass it with --suite if it moved."
         )
     suite = load_suite(path)
-    if suite.sha256 != declarado:
+    if suite.sha256 != declared:
         raise ReportError(
-            "el golden set CAMBIO desde esta corrida y el reporte seria mentira.\n"
-            f"  corrida : {declarado[:16]}…\n"
-            f"  archivo : {suite.sha256[:16]}…\n"
-            "Volve a correr `assay run` con el set actual, o reporta contra el commit del set."
+            "the golden set CHANGED since this run and the report would be a lie.\n"
+            f"  run  : {declared[:16]}…\n"
+            f"  file : {suite.sha256[:16]}…\n"
+            "Re-run `assay run` with the current set, or report against the set's commit."
         )
     return suite
 
 
 def aggregate(run: dict[str, Any], suite: Suite, *, k: int = 5) -> dict[str, CategoryRow]:
-    casos: dict[str, Case] = {c.id: c for c in suite.cases}
-    filas: dict[str, CategoryRow] = {}
+    cases: dict[str, Case] = {c.id: c for c in suite.cases}
+    rows: dict[str, CategoryRow] = {}
 
     for obs in run["observations"]:
-        caso = casos.get(obs["case_id"])
-        if caso is None:
-            raise ReportError(f"la corrida trae un caso {obs['case_id']!r} que no esta en la suite")
-        fila = filas.setdefault(caso.category, CategoryRow(category=caso.category))
-        fila.n += 1
+        case = cases.get(obs["case_id"])
+        if case is None:
+            raise ReportError(f"the run carries a case {obs['case_id']!r} that is not in the suite")
+        row = rows.setdefault(case.category, CategoryRow(category=case.category))
+        row.n += 1
 
         if obs.get("error"):
-            fila.errores += 1
+            row.errors += 1
             continue
 
         response = _response_from_json(obs.get("response"))
-        objetivos = caso.targets()
+        targets = case.targets()
         items = [
             RetrievedItem.from_raw(r, i)
             for i, r in enumerate((response.retrieved if response else ()), start=1)
         ]
-        fila.recall.append(recall_at_k(items, objetivos, k))
-        fila.precision.append(precision_at_k(items, objetivos, k))
-        fila.rr.append(reciprocal_rank(items, objetivos))
+        row.recall.append(recall_at_k(items, targets, k))
+        row.precision.append(precision_at_k(items, targets, k))
+        row.rr.append(reciprocal_rank(items, targets))
 
-        for nombre, res in evaluate(caso, response).items():
-            r = fila.rate(nombre)
+        for name, res in evaluate(case, response).items():
+            r = row.rate(name)
             r.n_total += 1
             if res.passed is not None:
-                r.n_verificable += 1
-                r.aciertos += int(res.passed)
+                r.n_verifiable += 1
+                r.hits += int(res.passed)
 
-    return filas
+    return rows
 
 
-def _cell(value: float | None, muestras: list[float | None]) -> str:
+def _cell(value: float | None, samples: list[float | None]) -> str:
     if value is None:
         return "n/a"
-    n = sum(1 for v in muestras if v is not None)
+    n = sum(1 for v in samples if v is not None)
     return f"{value:.2f} ({n})"
 
 
-def render(run: dict[str, Any], filas: dict[str, CategoryRow], *, k: int = 5) -> str:
-    sistema = run["system"]
+def render(run: dict[str, Any], rows: dict[str, CategoryRow], *, k: int = 5) -> str:
+    system = run["system"]
     out: list[str] = []
 
     out.append("")
     out.append(f"  suite      {run['suite']['name']}  ·  sha256 {run['suite']['sha256'][:16]}…")
-    out.append(f"  sistema    {sistema['kind']}  ·  {sistema['target']}")
-    out.append(f"  corrida    {run['started_at']}  ·  assay {run['assay_version']} ({run['stage']})")
-    if sistema["kind"] == "mock":
-        # Sin esto, la tabla de una corrida contra un mock se captura y termina en un
-        # portfolio como si fuera una medicion del sistema real.
+    out.append(f"  system     {system['kind']}  ·  {system['target']}")
+    out.append(f"  run        {run['started_at']}  ·  assay {run['assay_version']} ({run['stage']})")
+    if system["kind"] == "mock":
+        # Without this, the table from a run against a mock gets screenshotted and ends up
+        # in a portfolio as if it were a measurement of the real system.
         out.append("")
-        out.append("  ⚠️  SISTEMA GUIONADO (mock): estos numeros miden al mock, NO a un RAG real.")
+        out.append("  ⚠️  SCRIPTED SYSTEM (mock): these numbers measure the mock, NOT a real RAG.")
     out.append("")
 
-    cab = f"  {'categoria':<24}{'n':>4}  {f'recall@{k}':>12}{'MRR':>12}{f'prec@{k}':>12}" \
-          f"{'grounded':>14}{'abstencion':>14}"
-    out.append(cab)
-    out.append("  " + "─" * (len(cab) - 2))
+    header = f"  {'category':<24}{'n':>4}  {f'recall@{k}':>12}{'MRR':>12}{f'prec@{k}':>12}" \
+             f"{'grounded':>14}{'abstention':>14}"
+    out.append(header)
+    out.append("  " + "─" * (len(header) - 2))
 
-    orden = [c for c in CATEGORIES if c in filas] + [c for c in filas if c not in CATEGORIES]
+    order = [c for c in CATEGORIES if c in rows] + [c for c in rows if c not in CATEGORIES]
     total = 0
-    for cat in orden:
-        f = filas[cat]
+    for cat in order:
+        f = rows[cat]
         total += f.n
-        negativo = cat == "negative_control"
-        recall = "n/a" if negativo else _cell(mean(f.recall), f.recall)
-        mrr_c = "n/a" if negativo else _cell(mean(f.rr), f.rr)
-        prec = "n/a" if negativo else _cell(mean(f.precision), f.precision)
-        marca = "   ← el que importa" if negativo else ""
+        negative = cat == "negative_control"
+        recall = "n/a" if negative else _cell(mean(f.recall), f.recall)
+        mrr_c = "n/a" if negative else _cell(mean(f.rr), f.rr)
+        prec = "n/a" if negative else _cell(mean(f.precision), f.precision)
+        marker = "   ← the one that matters" if negative else ""
         out.append(
             f"  {cat:<24}{f.n:>4}  {recall:>12}{mrr_c:>12}{prec:>12}"
-            f"{f.rate('grounded').render():>14}{f.rate('abstention_correct').render():>14}{marca}"
+            f"{f.rate('grounded').render():>14}{f.rate('abstention_correct').render():>14}{marker}"
         )
 
-    out.append("  " + "─" * (len(cab) - 2))
+    out.append("  " + "─" * (len(header) - 2))
     out.append(f"  {'TOTAL':<24}{total:>4}")
     out.append("")
 
-    out.append("  Checks deterministas, por categoria")
-    for cat in orden:
-        f = filas[cat]
-        partes = [f"{n.replace('_', ' ')}: {f.rate(n).render()}" for n in CHECK_COLUMNS
-                  if f.rate(n).n_total]
+    out.append("  Deterministic checks, by category")
+    for cat in order:
+        f = rows[cat]
+        parts = [f"{n.replace('_', ' ')}: {f.rate(n).render()}" for n in CHECK_COLUMNS
+                 if f.rate(n).n_total]
         out.append(f"    {cat}")
-        for p in partes:
+        for p in parts:
             out.append(f"      · {p}")
     out.append("")
-    out.append("  Lectura: `0.75 (4)` = valor sobre 4 casos con dato · `n/a` = no verificable")
-    out.append("  (el sistema no expuso el insumo, o la categoria no admite esa metrica).")
-    out.append("  Ninguna celda `n/a` se cuenta como acierto ni como fallo.")
+    out.append("  Reading: `0.75 (4)` = value over 4 cases with data · `n/a` = not verifiable")
+    out.append("  (the system did not expose the input, or the category admits no such metric).")
+    out.append("  No `n/a` cell counts as either a pass or a failure.")
 
-    errores = sum(f.errores for f in filas.values())
-    if errores:
-        out.append(f"  {errores} caso(s) con error del sistema: excluidos de toda metrica.")
+    errors = sum(f.errors for f in rows.values())
+    if errors:
+        out.append(f"  {errors} case(s) with a system error: excluded from every metric.")
     out.append("")
     return "\n".join(out)

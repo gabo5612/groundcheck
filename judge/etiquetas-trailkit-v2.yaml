@@ -36,9 +36,10 @@ etiquetas:
     #   | Plan | Precio | Sitios | Vencimiento | ¿En el checkout? | |---|---|---|---|---| | Lite | $0 | 1 | Nunca | — (gratuito) | | **Single** | **$79/año** | 1 | 1 año | ✅ | | **Lifetime** | **$249 único** | 1 | Nunca | ✅ | | Agency | $149.99/año | 2 | 1 año | ❌ sólo backend | | Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend | | Trial | $0 | 1 | 14 días | — (vía API) |
     #   Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (81% de coincidencia con: “cuánto cuesta el plan Lifetime de TrailKit”)."
     # checks deterministas → gold numbers present: FALLA · forbidden numbers absent: FALLA · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: true
-    tu_veredicto:  bien    # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: tk-precio-lifetime
@@ -51,9 +52,10 @@ etiquetas:
     #   | Plan | Precio | Sitios | Vencimiento | ¿En el checkout? | |---|---|---|---|---| | Lite | $0 | 1 | Nunca | — (gratuito) | | **Single** | **$79/año** | 1 | 1 año | ✅ | | **Lifetime** | **$249 único** | 1 | Nunca | ✅ | | Agency | $149.99/año | 2 | 1 año | ❌ sólo backend | | Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend | | Trial | $0 | 1 | 14 días | — (vía API) |
     #   Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (80% de coincidencia con: “cuánto cuesta el plan Lifetime de TrailKit”)."
     # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:  bien    # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: tk-precio-agency
@@ -66,9 +68,10 @@ etiquetas:
     #   | Plan | Precio | Sitios | Vencimiento | ¿En el checkout? | |---|---|---|---|---| | Lite | $0 | 1 | Nunca | — (gratuito) | | **Single** | **$79/año** | 1 | 1 año | ✅ | | **Lifetime** | **$249 único** | 1 | Nunca | ✅ | | Agency | $149.99/año | 2 | 1 año | ❌ sólo backend | | Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend | | Trial | $0 | 1 | 14 días | — (vía API) |
     #   Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Cuánto vale el plan Agency y cuántos sitios permite?”)."
     # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien     # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: tk-duracion-trial
@@ -81,9 +84,10 @@ etiquetas:
     #   | Plan | Precio | Sitios | Vencimiento | ¿En el checkout? | |---|---|---|---|---| | Lite | $0 | 1 | Nunca | — (gratuito) | | **Single** | **$79/año** | 1 | 1 año | ✅ | | **Lifetime** | **$249 único** | 1 | Nunca | ✅ | | Agency | $149.99/año | 2 | 1 año | ❌ sólo backend | | Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend | | Trial | $0 | 1 | 14 días | — (vía API) |
     #   Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Cuántos días dura el plan Trial?”)."
     # checks deterministas → gold numbers present: ok · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:  bien    # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: tk-defaults-precio
@@ -96,9 +100,10 @@ etiquetas:
     #   | Plan | Precio | Sitios | Vencimiento | ¿En el checkout? | |---|---|---|---|---| | Lite | $0 | 1 | Nunca | — (gratuito) | | **Single** | **$79/año** | 1 | 1 año | ✅ | | **Lifetime** | **$249 único** | 1 | Nunca | ✅ | | Agency | $149.99/año | 2 | 1 año | ❌ sólo backend | | Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend | | Trial | $0 | 1 | 14 días | — (vía API) |
     #   Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (100% de coincidencia con: “Si falla la consulta a pricing_config, ¿qué precios usa el código por defecto?”)."
     # checks deterministas → gold numbers present: ok · forbidden numbers absent: ok · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:  bien    # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: tk-horario-cron-expiry
@@ -109,9 +114,10 @@ etiquetas:
     # ── FUENTE (doc 3f328ec9, pagina [9]) — el documento dice literalmente:
     #   | Tarea | Horario (UTC) | Función | |---|---|---| | `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos | | `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿A qué hora corre el cron de recordatorios de vencimiento?”)."
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:  bien    # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: tk-horario-cron-carrito
@@ -122,9 +128,10 @@ etiquetas:
     # ── FUENTE (doc 3f328ec9, pagina [9]) — el documento dice literalmente:
     #   | Tarea | Horario (UTC) | Función | |---|---|---| | `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos | | `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿A qué hora se ejecuta la tarea de carritos abandonados?”)."
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: ok · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:  bien    # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: tk-estados-licencia
@@ -137,9 +144,10 @@ etiquetas:
     #   | Tabla | Para qué | |---|---| | `licenses` | Licencias emitidas. La tabla central del sistema | | `pending_payments` | Pagos iniciados y aún no confirmados | | `appsumo_licenses` | Licencias provenientes de AppSumo | | `promo_codes` | Códigos promocionales | | `license_domains` | Dominios activados por licencia (soporte multi-sitio) | | `checkout_intents` | Intenciones de compra, base de la recuperación de carrito | | `planner_usage` | Uso del planificador, para límites de cuota | | `pricing_config` | Precios editables (fila única, `id = 1`) | | `checkins` | Registro de check-ins del plugin |
     #   La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como `expired` en la base de datos** cuando detecta una licencia vencida durante la validación — el vencimiento se materializa al consultarse, no por un proceso aparte.
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Cuáles son los estados posibles de una licencia?”)."
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:  bien    # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: tk-secret-cron
@@ -150,9 +158,10 @@ etiquetas:
     # ── FUENTE (doc 3f328ec9, pagina [9]) — el documento dice literalmente:
     #   | Tarea | Horario (UTC) | Función | |---|---|---| | `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos | | `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Con qué variable se protegen las tareas programadas?”)."
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:  bien    # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: tk-tabla-central
@@ -165,9 +174,10 @@ etiquetas:
     #   | Tabla | Para qué | |---|---| | `licenses` | Licencias emitidas. La tabla central del sistema | | `pending_payments` | Pagos iniciados y aún no confirmados | | `appsumo_licenses` | Licencias provenientes de AppSumo | | `promo_codes` | Códigos promocionales | | `license_domains` | Dominios activados por licencia (soporte multi-sitio) | | `checkout_intents` | Intenciones de compra, base de la recuperación de carrito | | `planner_usage` | Uso del planificador, para límites de cuota | | `pricing_config` | Precios editables (fila única, `id = 1`) | | `checkins` | Registro de check-ins del plugin |
     #   La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como `expired` en la base de datos** cuando detecta una licencia vencida durante la validación — el vencimiento se materializa al consultarse, no por un proceso aparte.
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Cuál es la tabla central del sistema de licencias en Supabase?”)."
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: mal     # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: tk-endpoint-validacion
@@ -180,9 +190,10 @@ etiquetas:
     #   | Endpoint | Método | Entrada | Devuelve | |---|---|---|---| | `/api/licenses/validate` | POST | `{ key, domain }` | `{ valid, plan, status, expires_at }` o `{ valid: false, status, message }` | | `/api/licenses/checkin` | POST | `{ key, domain }` | `{ valid }` + datos de la licencia | | `/api/plugin/version` | GET | `?key=` | versión disponible, o `{ valid: false, expired: true }` | | `/api/download` | GET | — | Descarga del plugin |
     #   | Endpoint | Función | |---|---| | `/api/checkout/intent` | Crea la intención de compra | | `/api/checkout/paypal` | Inicia pago con PayPal | | `/api/checkout/paypal/capture` | Captura el pago | | `/api/checkout/nowpayments` | Inicia pago en cripto | | `/api/checkout/validate-promo` | Valida un código promocional | | `/api/webhooks/nowpayments` | Webhook de confirmación (idempotente) |
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Qué endpoint usa el plugin de WordPress para validar una licencia y qué recibe?”)."
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:  bien    # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: tk-cuando-expira
@@ -195,6 +206,7 @@ etiquetas:
     #   | Tabla | Para qué | |---|---| | `licenses` | Licencias emitidas. La tabla central del sistema | | `pending_payments` | Pagos iniciados y aún no confirmados | | `appsumo_licenses` | Licencias provenientes de AppSumo | | `promo_codes` | Códigos promocionales | | `license_domains` | Dominios activados por licencia (soporte multi-sitio) | | `checkout_intents` | Intenciones de compra, base de la recuperación de carrito | | `planner_usage` | Uso del planificador, para límites de cuota | | `pricing_config` | Precios editables (fila única, `id = 1`) | | `checkins` | Registro de check-ins del plugin |
     #   La validación (`lib/license.ts`) devuelve mensajes distintos según el estado, y **marca como `expired` en la base de datos** cuando detecta una licencia vencida durante la validación — el vencimiento se materializa al consultarse, no por un proceso aparte.
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Cómo se marca una licencia como vencida?”)."
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
     tu_veredicto:      # bien | mal
@@ -210,9 +222,10 @@ etiquetas:
     #   **2. Protege `/ops/*`.** Sin token de sesión válido, redirige a `/ops/login`.
     #   **3. Limita la tasa de peticiones** con una ventana deslizante en memoria:
     abstuvo: false
+    lo_que_dijo_el_sistema: "Respuesta ya verificada, reutilizada (100% de coincidencia con: “¿Qué hace el middleware con las rutas bajo /admin?”)."
     # checks deterministas → gold numbers present: ok · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: ok · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: bien     # bien | mal
+    tu_veredicto:      # bien | mal
     por_que:           # opcional, una linea
 
   - id: tk-precio-enterprise-inexistente
@@ -225,10 +238,11 @@ etiquetas:
     #   | Plan | Precio | Sitios | Vencimiento | ¿En el checkout? | |---|---|---|---|---| | Lite | $0 | 1 | Nunca | — (gratuito) | | **Single** | **$79/año** | 1 | 1 año | ✅ | | **Lifetime** | **$249 único** | 1 | Nunca | ✅ | | Agency | $149.99/año | 2 | 1 año | ❌ sólo backend | | Unlimited | $199.99/año | ∞ | 1 año | ❌ sólo backend | | Trial | $0 | 1 | 14 días | — (vía API) |
     #   Los precios de Single y Lifetime se editan en vivo desde `/ops/pricing`.
     abstuvo: true
+    lo_que_dijo_el_sistema: "La respuesta no esta en la documentacion indexada."
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:  mal    # bien | mal
-    por_que:  no tenemos plan Enterprise          # opcional, una linea
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
 
   - id: tk-idioma-frances-inexistente
     categoria: negative_control
@@ -238,10 +252,11 @@ etiquetas:
     # ── FUENTE (doc 3f328ec9, pagina [11]) — el documento dice literalmente:
     #   `lib/i18n.tsx` — dos idiomas: **inglés (`en`)** y **español (`es`)**. Las cadenas viven en `lib/messages.ts`.
     abstuvo: true
+    lo_que_dijo_el_sistema: "La respuesta no esta en la documentacion indexada."
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto: mal     # bien | mal
-    por_que:   no tenemos el idioma francés        # opcional, una linea
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea
 
   - id: tk-cron-backup-inexistente
     categoria: negative_control
@@ -251,7 +266,8 @@ etiquetas:
     # ── FUENTE (doc 3f328ec9, pagina [9]) — el documento dice literalmente:
     #   | Tarea | Horario (UTC) | Función | |---|---|---| | `/api/cron/expiry-reminders` | 09:00 diario | Avisa vencimientos próximos | | `/api/cron/abandoned-checkout` | 14:00 diario | Recupera carritos abandonados |
     abstuvo: true
+    lo_que_dijo_el_sistema: "La respuesta no esta en la documentacion indexada."
     # checks deterministas → gold numbers present: n/a · forbidden numbers absent: n/a · forbidden codes absent: n/a · grounded: n/a · citation hits gold: ok · abstention correct: ok · revision current: n/a
     los_deterministas_ya_lo_atraparon: false
-    tu_veredicto:  mal    # bien | mal
-    por_que:   corre a las 14:00        # opcional, una linea
+    tu_veredicto:      # bien | mal
+    por_que:           # opcional, una linea

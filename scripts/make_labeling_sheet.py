@@ -78,6 +78,7 @@ def main(run_path: str, out_path: str | None = None, corpus_path: str = "") -> i
             "esperado": caso.gold_answer,
             "checks": resumen,
             "los_deterministas_ya_lo_atraparon": fallo_algo,
+            "razon": (resp.reason if resp else None),
             "fuente": _pasajes_de_oro(corpus_path, caso),
             "doc": (caso.gold_sources[0].doc_id if caso.gold_sources else None),
             "pagina": (list(caso.gold_sources[0].pages) if caso.gold_sources else []),
@@ -129,6 +130,10 @@ def main(run_path: str, out_path: str | None = None, corpus_path: str = "") -> i
             for pas in f["fuente"]:
                 lineas.append(f"    #   {pas}")
         lineas.append(f"    abstuvo: {str(f['abstuvo']).lower()}")
+        if f.get("razon"):
+            # Lo que el sistema dijo cuando no dio una respuesta. Sin esto, una abstencion
+            # correcta se lee como una respuesta vacia y se etiqueta "mal" con razon.
+            lineas.append(f"    lo_que_dijo_el_sistema: {json.dumps(f['razon'], ensure_ascii=False)}")
         lineas.append(f"    # checks deterministas → {f['checks']}")
         lineas.append(
             f"    los_deterministas_ya_lo_atraparon: {str(f['los_deterministas_ya_lo_atraparon']).lower()}"

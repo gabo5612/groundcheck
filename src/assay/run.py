@@ -1,9 +1,9 @@
-"""Orquestacion de una corrida.
+"""Run orchestration.
 
-M0 registra **solo lo observado**: que se pregunto y que contesto el sistema. Ni una
-metrica, ni un check. No es una limitacion de la version — es la separacion que hace
-que una corrida de hace tres meses se pueda re-evaluar con los checks de hoy, y que
-nadie pueda confundir el dato con el juicio sobre el dato.
+A run records **only what was observed**: what was asked and what the system answered. Not
+one metric, not one check. That is not a limitation of the current version — it is the
+separation that lets a three-month-old run be re-evaluated with today's checks, and that
+stops anyone confusing the data with the judgement about the data.
 """
 
 from __future__ import annotations
@@ -19,10 +19,10 @@ from .schema import Observation, RunRecord, Suite
 STAGE = "M4"
 
 STAGE_NOTES = [
-    "Una corrida guarda observaciones crudas y NINGUNA metrica, por diseno. Las metricas "
-    "de retrieval y los checks deterministas se derivan despues con `assay report`, que "
-    "verifica el sha256 del golden set antes de reportar. Asi una corrida vieja se puede "
-    "re-evaluar con checks nuevos, y nadie confunde el dato con el juicio sobre el dato.",
+    "A run stores raw observations and NO metrics, by design. Retrieval metrics and the "
+    "deterministic checks are derived afterwards by `assay report`, which verifies the "
+    "golden set's sha256 before reporting. That way an old run can be re-evaluated with "
+    "new checks, and nobody confuses the data with the judgement about the data.",
 ]
 
 
@@ -56,9 +56,9 @@ def run_suite(suite: Suite, adapter: Adapter, *, on_case=None) -> RunRecord:
         try:
             obs.response = adapter.ask(case.question)
         except Exception as exc:
-            # Un fallo del sistema bajo prueba es un dato, no un crash del harness: la
-            # corrida sigue y el error queda registrado en el caso. Si abortaramos, un
-            # timeout en la pregunta 3 borraria la evidencia de las otras 47.
+            # A failure of the system under test is data, not a harness crash: the run
+            # continues and the error is recorded on the case. If we aborted, a timeout on
+            # question 3 would erase the evidence from the other 47.
             obs.error = f"{type(exc).__name__}: {exc}"
         record.observations.append(obs)
         if on_case is not None:
@@ -73,13 +73,13 @@ def write_run(record: RunRecord, out_dir: str | Path) -> Path:
     out.mkdir(parents=True, exist_ok=True)
     stamp = record.started_at.replace(":", "-").replace("+00:00", "Z")
     path = out / f"{stamp}.json"
-    # Dos corridas en el mismo segundo NO se pisan. El nombre tiene resolucion de
-    # segundos, y perder una corrida en silencio es peor que un nombre feo: se corre el
-    # baseline y la version nueva seguidas, y el diff compara una corrida contra si misma
-    # informando "sin cambios" — que es la mentira mas cara que puede decir este harness.
-    sufijo = 2
+    # Two runs in the same second must NOT overwrite each other. The filename has
+    # second resolution, and losing a run silently is worse than an ugly name: you run the
+    # baseline and the new version back to back, and the diff compares a run against
+    # itself reporting "no changes" — the most expensive lie this harness can tell.
+    suffix = 2
     while path.exists():
-        path = out / f"{stamp}-{sufijo}.json"
-        sufijo += 1
+        path = out / f"{stamp}-{suffix}.json"
+        suffix += 1
     path.write_text(json.dumps(record.to_json_dict(), indent=2, ensure_ascii=False) + "\n", "utf-8")
     return path

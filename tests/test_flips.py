@@ -1,7 +1,7 @@
-"""Tests de `classify_flips` — el gate del contrato despachado a crew.
+"""Tests for `classify_flips` — the gate for the contract dispatched to crew.
 
-Estos tests se escribieron ANTES de la implementacion y son la unica autoridad sobre si
-el trabajo del obrero se acepta. Ningun modelo los juzga.
+These tests were written BEFORE the implementation and are the sole authority on whether
+the worker's output is accepted. No model judges them.
 """
 
 import pytest
@@ -9,91 +9,91 @@ import pytest
 from assay.flips import Flip, classify_flips
 
 
-def test_un_check_que_rompe():
+def test_a_check_that_breaks():
     antes = {"c1": {"grounded": True}}
     despues = {"c1": {"grounded": False}}
     assert classify_flips(antes, despues) == [
-        Flip(case_id="c1", check="grounded", antes=True, despues=False, kind="rompio")
+        Flip(case_id="c1", check="grounded", before=True, after=False, kind="broke")
     ]
 
 
-def test_un_check_que_se_arregla():
+def test_a_check_that_gets_fixed():
     antes = {"c1": {"grounded": False}}
     despues = {"c1": {"grounded": True}}
     assert classify_flips(antes, despues) == [
-        Flip(case_id="c1", check="grounded", antes=False, despues=True, kind="arreglo")
+        Flip(case_id="c1", check="grounded", before=False, after=True, kind="fixed")
     ]
 
 
-def test_perder_la_verificabilidad_se_llama_se_apago():
+def test_losing_verifiability_is_called_went_dark():
     antes = {"c1": {"grounded": True}}
     despues = {"c1": {"grounded": None}}
     assert classify_flips(antes, despues) == [
-        Flip(case_id="c1", check="grounded", antes=True, despues=None, kind="se_apago")
+        Flip(case_id="c1", check="grounded", before=True, after=None, kind="went_dark")
     ]
 
 
-def test_pasar_a_ser_verificable_se_llama_se_prendio():
+def test_becoming_verifiable_is_called_lit_up():
     antes = {"c1": {"grounded": None}}
     despues = {"c1": {"grounded": False}}
     assert classify_flips(antes, despues) == [
-        Flip(case_id="c1", check="grounded", antes=None, despues=False, kind="se_prendio")
+        Flip(case_id="c1", check="grounded", before=None, after=False, kind="lit_up")
     ]
 
 
-def test_lo_que_no_cambia_no_aparece():
+def test_what_does_not_change_does_not_appear():
     antes = {"c1": {"grounded": True, "abstention_correct": None}}
     despues = {"c1": {"grounded": True, "abstention_correct": None}}
     assert classify_flips(antes, despues) == []
 
 
-def test_un_caso_nuevo():
+def test_a_new_case():
     antes = {}
     despues = {"c2": {"grounded": True}}
     assert classify_flips(antes, despues) == [
-        Flip(case_id="c2", check="(caso)", antes=None, despues=None, kind="nuevo")
+        Flip(case_id="c2", check="(case)", before=None, after=None, kind="new")
     ]
 
 
-def test_un_caso_que_desaparece():
+def test_a_disappearing_case():
     antes = {"c1": {"grounded": True}}
     despues = {}
     assert classify_flips(antes, despues) == [
-        Flip(case_id="c1", check="(caso)", antes=None, despues=None, kind="desaparecido")
+        Flip(case_id="c1", check="(case)", before=None, after=None, kind="disappeared")
     ]
 
 
-def test_un_caso_nuevo_no_reporta_sus_checks_uno_por_uno():
-    """Un caso nuevo es UN hallazgo, no seis. Si no, agregar una pregunta al golden set
-    inunda el diff con ruido y esconde las regresiones reales."""
+def test_a_new_case_does_not_report_its_checks_one_by_one():
+    """A new case is ONE finding, not six. Otherwise adding a question to the golden set
+    floods the diff with noise and hides the real regressions."""
     antes = {}
     despues = {"c2": {"grounded": True, "abstention_correct": False, "revision_current": None}}
     assert classify_flips(antes, despues) == [
-        Flip(case_id="c2", check="(caso)", antes=None, despues=None, kind="nuevo")
+        Flip(case_id="c2", check="(case)", before=None, after=None, kind="new")
     ]
 
 
-def test_un_check_nuevo_en_un_caso_existente_si_aparece():
+def test_a_new_check_on_an_existing_case_does_appear():
     antes = {"c1": {"grounded": True}}
     despues = {"c1": {"grounded": True, "revision_current": False}}
     assert classify_flips(antes, despues) == [
-        Flip(case_id="c1", check="revision_current", antes=None, despues=False,
-             kind="se_prendio")
+        Flip(case_id="c1", check="revision_current", before=None, after=False,
+             kind="lit_up")
     ]
 
 
-def test_un_check_que_desaparece_del_caso_cuenta_como_apagado():
+def test_a_check_disappearing_from_a_case_counts_as_went_dark():
     antes = {"c1": {"grounded": True, "revision_current": True}}
     despues = {"c1": {"grounded": True}}
     assert classify_flips(antes, despues) == [
-        Flip(case_id="c1", check="revision_current", antes=True, despues=None,
-             kind="se_apago")
+        Flip(case_id="c1", check="revision_current", before=True, after=None,
+             kind="went_dark")
     ]
 
 
-def test_el_orden_es_estable_y_pone_primero_lo_que_rompio():
-    """Un diff que cambia de orden entre corridas no se puede leer, y lo que rompio tiene
-    que estar arriba: es lo que se mira primero."""
+def test_the_order_is_stable_and_puts_breakage_first():
+    """A diff whose order changes between runs cannot be read, and what broke has to be at
+    the top: it is what gets looked at first."""
     antes = {
         "z1": {"grounded": False},
         "a1": {"grounded": True, "abstention_correct": True},
@@ -102,15 +102,15 @@ def test_el_orden_es_estable_y_pone_primero_lo_que_rompio():
         "z1": {"grounded": True},
         "a1": {"grounded": False, "abstention_correct": None},
     }
-    resultado = classify_flips(antes, despues)
-    assert [(f.case_id, f.check, f.kind) for f in resultado] == [
-        ("a1", "grounded", "rompio"),
-        ("a1", "abstention_correct", "se_apago"),
-        ("z1", "grounded", "arreglo"),
+    result = classify_flips(antes, despues)
+    assert [(f.case_id, f.check, f.kind) for f in result] == [
+        ("a1", "grounded", "broke"),
+        ("a1", "abstention_correct", "went_dark"),
+        ("z1", "grounded", "fixed"),
     ]
 
 
-def test_varios_casos_y_varios_checks():
+def test_several_cases_and_several_checks():
     antes = {
         "c1": {"grounded": True, "abstention_correct": True},
         "c2": {"grounded": None},
@@ -121,17 +121,17 @@ def test_varios_casos_y_varios_checks():
         "c2": {"grounded": True},
         "c3": {"grounded": True},
     }
-    resultado = classify_flips(antes, despues)
-    assert len(resultado) == 2
-    assert resultado[0] == Flip("c1", "grounded", True, False, "rompio")
-    assert resultado[1] == Flip("c2", "grounded", None, True, "se_prendio")
+    result = classify_flips(antes, despues)
+    assert len(result) == 2
+    assert result[0] == Flip("c1", "grounded", True, False, "broke")
+    assert result[1] == Flip("c2", "grounded", None, True, "lit_up")
 
 
-def test_entradas_vacias():
+def test_empty_inputs():
     assert classify_flips({}, {}) == []
 
 
-def test_no_muta_las_entradas():
+def test_it_does_not_mutate_the_inputs():
     antes = {"c1": {"grounded": True}}
     despues = {"c1": {"grounded": False}}
     copia_antes = {"c1": {"grounded": True}}
@@ -143,14 +143,14 @@ def test_no_muta_las_entradas():
 @pytest.mark.parametrize(
     "a,d,kind",
     [
-        (True, False, "rompio"),
-        (False, True, "arreglo"),
-        (True, None, "se_apago"),
-        (False, None, "se_apago"),
-        (None, True, "se_prendio"),
-        (None, False, "se_prendio"),
+        (True, False, "broke"),
+        (False, True, "fixed"),
+        (True, None, "went_dark"),
+        (False, None, "went_dark"),
+        (None, True, "lit_up"),
+        (None, False, "lit_up"),
     ],
 )
-def test_las_seis_transiciones(a, d, kind):
-    resultado = classify_flips({"c": {"x": a}}, {"c": {"x": d}})
-    assert resultado == [Flip("c", "x", a, d, kind)]
+def test_the_six_transitions(a, d, kind):
+    result = classify_flips({"c": {"x": a}}, {"c": {"x": d}})
+    assert result == [Flip("c", "x", a, d, kind)]

@@ -1,5 +1,5 @@
-"""Tests del validador. Cada uno corresponde a un typo o contradiccion que, sin el
-validador, apagaria un check en silencio en vez de dar error.
+"""Validator tests. Each one corresponds to a typo or contradiction that, without the
+validator, would silently switch a check off instead of raising an error.
 """
 
 from pathlib import Path
@@ -17,7 +17,7 @@ def write(tmp_path: Path, body: str) -> Path:
     return p
 
 
-def test_carga_la_suite_de_humo():
+def test_loads_the_smoke_suite():
     suite = load_suite(ROOT / "suites" / "mock.yaml")
     assert suite.case_count == 3
     assert suite.category_counts()["negative_control"] == 1
@@ -30,65 +30,65 @@ def test_carga_la_suite_de_humo():
     assert caso.targets() == (("LAM-2-MAINT", (147,)),)
 
 
-def test_el_sha_cambia_si_cambia_un_byte(tmp_path):
+def test_the_sha_changes_when_a_byte_changes(tmp_path):
     a = load_suite(write(tmp_path, "cases:\n  - id: x\n    question: q\n    category: factual_lookup\n"))
     b = load_suite(write(tmp_path, "cases:\n  - id: x\n    question: q!\n    category: factual_lookup\n"))
     assert a.sha256 != b.sha256
 
 
-def test_clave_mal_escrita_es_error(tmp_path):
-    # `forbiden_numbers` con una sola d: sin esta validacion, el check mas importante
-    # del harness simplemente no correria y el reporte saldria verde.
+def test_a_misspelled_key_is_an_error(tmp_path):
+    # `forbiden_numbers` with a single d: without this validation the harness's most
+    # important check simply would not run and the report would come out green.
     body = (
         "cases:\n  - id: x\n    question: q\n    category: factual_lookup\n"
         "    forbiden_numbers: ['950']\n"
     )
-    with pytest.raises(SuiteError, match="claves desconocidas"):
+    with pytest.raises(SuiteError, match="unknown keys"):
         load_suite(write(tmp_path, body))
 
 
-def test_categoria_invalida_es_error(tmp_path):
+def test_an_invalid_category_is_an_error(tmp_path):
     body = "cases:\n  - id: x\n    question: q\n    category: factual\n"
-    with pytest.raises(SuiteError, match="category` invalida"):
+    with pytest.raises(SuiteError, match="invalid `category`"):
         load_suite(write(tmp_path, body))
 
 
-def test_control_negativo_con_respuesta_de_oro_es_error(tmp_path):
+def test_a_negative_control_with_a_gold_answer_is_an_error(tmp_path):
     body = (
         "cases:\n  - id: x\n    question: q\n    category: negative_control\n"
         "    gold_answer: algo\n"
     )
-    with pytest.raises(SuiteError, match="no puede tener `gold_answer`"):
+    with pytest.raises(SuiteError, match="cannot have a `gold_answer`"):
         load_suite(write(tmp_path, body))
 
 
-def test_control_negativo_que_no_debe_abstenerse_es_error(tmp_path):
+def test_a_negative_control_that_need_not_abstain_is_an_error(tmp_path):
     body = (
         "cases:\n  - id: x\n    question: q\n    category: negative_control\n"
         "    must_abstain: false\n"
     )
-    with pytest.raises(SuiteError, match="no prueba nada"):
+    with pytest.raises(SuiteError, match="proves nothing"):
         load_suite(write(tmp_path, body))
 
 
-def test_must_abstain_fuera_de_control_negativo_es_error(tmp_path):
+def test_must_abstain_outside_a_negative_control_is_an_error(tmp_path):
     body = (
         "cases:\n  - id: x\n    question: q\n    category: factual_lookup\n"
         "    must_abstain: true\n"
     )
-    with pytest.raises(SuiteError, match="categoria equivocada"):
+    with pytest.raises(SuiteError, match="wrong category"):
         load_suite(write(tmp_path, body))
 
 
-def test_negative_control_infiere_must_abstain(tmp_path):
+def test_negative_control_infers_must_abstain(tmp_path):
     body = "cases:\n  - id: x\n    question: q\n    category: negative_control\n"
     suite = load_suite(write(tmp_path, body))
     assert suite.cases[0].must_abstain is True
 
 
-def test_numero_de_oro_se_normaliza_a_string(tmp_path):
-    # 680 sin comillas en YAML es int. Se compara como literal contra el texto de la
-    # respuesta, asi que tiene que quedar string o la comparacion falla en silencio.
+def test_a_gold_number_is_normalised_to_a_string(tmp_path):
+    # 680 without quotes in YAML is an int. It is compared literally against the answer's
+    # text, so it must end up a string or the comparison fails silently.
     body = (
         "cases:\n  - id: x\n    question: q\n    category: factual_lookup\n"
         "    gold_numbers: [680]\n"
@@ -97,25 +97,25 @@ def test_numero_de_oro_se_normaliza_a_string(tmp_path):
     assert suite.cases[0].gold_numbers == ("680",)
 
 
-def test_mismo_numero_en_oro_y_prohibido_es_error(tmp_path):
+def test_the_same_number_in_gold_and_forbidden_is_an_error(tmp_path):
     body = (
         "cases:\n  - id: x\n    question: q\n    category: factual_lookup\n"
         "    gold_numbers: ['680']\n    forbidden_numbers: ['680']\n"
     )
-    with pytest.raises(SuiteError, match="a la vez"):
+    with pytest.raises(SuiteError, match="is in both"):
         load_suite(write(tmp_path, body))
 
 
-def test_id_duplicado_es_error(tmp_path):
+def test_a_duplicate_id_is_an_error(tmp_path):
     body = (
         "cases:\n  - id: x\n    question: q\n    category: factual_lookup\n"
         "  - id: x\n    question: q2\n    category: factual_lookup\n"
     )
-    with pytest.raises(SuiteError, match="id duplicado"):
+    with pytest.raises(SuiteError, match="duplicate id"):
         load_suite(write(tmp_path, body))
 
 
-def test_gold_source_acepta_una_lista_para_multi_documento(tmp_path):
+def test_gold_source_accepts_a_list_for_multi_document(tmp_path):
     body = (
         "cases:\n  - id: x\n    question: q\n    category: multi_documento\n"
         "    gold_source:\n"
@@ -129,21 +129,21 @@ def test_gold_source_acepta_una_lista_para_multi_documento(tmp_path):
     )
 
 
-def test_multi_documento_con_una_sola_fuente_es_error(tmp_path):
-    # Con un solo doc_id no mide sintesis entre fuentes, que es lo unico que esa
-    # categoria existe para medir.
+def test_multi_document_with_a_single_source_is_an_error(tmp_path):
+    # With a single doc_id it measures no synthesis across sources, which is the only
+    # thing that category exists to measure.
     body = (
         "cases:\n  - id: x\n    question: q\n    category: multi_documento\n"
         "    gold_source: {doc_id: WPS-014, pages: [2]}\n"
     )
-    with pytest.raises(SuiteError, match="sintesis entre fuentes"):
+    with pytest.raises(SuiteError, match="synthesis"):
         load_suite(write(tmp_path, body))
 
 
-def test_lista_de_gold_source_vacia_es_error(tmp_path):
+def test_an_empty_gold_source_list_is_an_error(tmp_path):
     body = (
         "cases:\n  - id: x\n    question: q\n    category: factual_lookup\n"
         "    gold_source: []\n"
     )
-    with pytest.raises(SuiteError, match="lista vacia"):
+    with pytest.raises(SuiteError, match="empty list"):
         load_suite(write(tmp_path, body))

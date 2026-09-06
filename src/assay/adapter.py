@@ -1,8 +1,8 @@
-"""Adaptadores al sistema bajo prueba.
+"""Adapters to the system under test.
 
-El contrato es una sola cosa: `pregunta -> {answer, citations[], abstained}`. `assay` no
-sabe nada de `anvil` por dentro, y por eso sirve para medir cualquier RAG — es lo que lo
-hace publicable y no una utilidad interna.
+The contract is one thing only: `question -> {answer, citations[], abstained}`. `assay`
+knows nothing about any RAG's internals, and that is what makes it usable against all of
+them — publishable rather than an internal utility.
 """
 
 from __future__ import annotations
@@ -27,12 +27,12 @@ class Adapter(Protocol):
 
 
 class MockAdapter:
-    """Sistema falso guionado desde un archivo.
+    """A fake system scripted from a file.
 
-    A proposito **no** responde bien solo. Las respuestas salen de un archivo escrito a
-    mano, para que los tests del harness sean deterministas y para poder construir a
-    voluntad el caso "respondio con un numero inventado". Un mock que contestara
-    correctamente derivando del propio golden set no probaria nada: mediria al mock.
+    On purpose it does **not** answer well by itself. The answers come from a hand-written
+    file, so the harness's tests are deterministic and so the "answered with an invented
+    number" case can be constructed at will. A mock that answered correctly by deriving
+    from the golden set itself would prove nothing: it would measure the mock.
     """
 
     kind = "mock"
@@ -42,15 +42,15 @@ class MockAdapter:
         doc = yaml.safe_load(Path(path).read_text("utf-8")) or {}
         responses = doc.get("responses") if isinstance(doc, dict) else doc
         if not isinstance(responses, dict):
-            raise ValueError(f"{path}: se esperaba un mapa `responses: {{pregunta: ...}}`")
+            raise ValueError(f"{path}: expected a map `responses: {{question: ...}}`")
         self._by_question: dict[str, dict[str, Any]] = responses
         self._default = doc.get("default") if isinstance(doc, dict) else None
 
     def ask(self, question: str) -> Response:
         raw = self._by_question.get(question, self._default)
         if raw is None:
-            # Silencio explicito: el mock no tiene guion para esta pregunta. Se registra
-            # como abstencion en vez de reventar, para que una suite nueva corra igual.
+            # Explicit silence: the mock has no script for this question. It is recorded
+            # as an abstention rather than blowing up, so a new suite still runs.
             return Response(answer=None, abstained=True, latency_ms=0)
         return Response(
             answer=raw.get("answer"),
@@ -58,11 +58,12 @@ class MockAdapter:
             retrieved=tuple(raw.get("retrieved") or ()),
             abstained=bool(raw.get("abstained", raw.get("answer") is None)),
             latency_ms=0,
+            extra=(("reason", raw["reason"]),) if "reason" in raw else (),
         )
 
 
 def _remap(raw: Any, item_map: dict[str, str]) -> dict[str, Any]:
-    """Renombra las claves de un item segun el mapeo. Lo no mapeado se conserva."""
+    """Renames an item's keys according to the mapping. Unmapped keys are preserved."""
     if not isinstance(raw, dict):
         return {"raw": raw}
     out = dict(raw)
@@ -73,10 +74,10 @@ def _remap(raw: Any, item_map: dict[str, str]) -> dict[str, Any]:
 
 
 class HttpAdapter:
-    """Cualquier endpoint que acepte JSON `{"question": ...}` y devuelva el contrato.
+    """Any endpoint accepting JSON `{"question": ...}` and returning the contract.
 
-    Los nombres de campo son configurables porque no hay un estandar y no vale la pena
-    fingir que lo hay: el que integra su sistema mapea sus claves y sigue.
+    Field names are configurable because there is no standard and pretending otherwise
+    helps no one: whoever integrates their system maps their keys and moves on.
     """
 
     kind = "http"
@@ -93,6 +94,7 @@ class HttpAdapter:
         abstained_field: str = "abstained",
         item_map: dict[str, str] | None = None,
         extra_request: dict[str, Any] | None = None,
+        passthrough: list[str] | None = None,
     ):
         self.target = url
         self._timeout = timeout
@@ -103,6 +105,7 @@ class HttpAdapter:
         self._absf = abstained_field
         self._item_map = item_map or {}
         self._extra = extra_request or {}
+        self._passthrough = tuple(passthrough or ())
 
     def ask(self, question: str) -> Response:
         payload = json.dumps({self._qf: question, **self._extra}).encode("utf-8")
@@ -118,18 +121,18 @@ class HttpAdapter:
         latency_ms = int((time.perf_counter() - started) * 1000)
 
         if not isinstance(body, dict):
-            raise ValueError(f"el sistema devolvio {type(body).__name__}, se esperaba un objeto JSON")
+            raise ValueError(f"the system returned {type(body).__name__}, expected a JSON object")
 
         answer = body.get(self._af)
         citations = body.get(self._cf) or []
         if not isinstance(citations, list):
-            raise ValueError(f"`{self._cf}` deberia ser una lista, vino {type(citations).__name__}")
-        # Si el sistema no reporta abstencion explicita, se infiere de la ausencia de
-        # respuesta. Se deja anotado porque la tasa de abstencion es la metrica mas
-        # importante del set y conviene saber si vino declarada o inferida.
+            raise ValueError(f"`{self._cf}` should be a list, got {type(citations).__name__}")
+        # If the system does not report abstention explicitly, it is inferred from the
+        # absence of an answer. Noted here because the abstention rate is the most
+        # important metric in the set and it matters whether it came declared or inferred.
         retrieved = body.get(self._rf) or []
         if not isinstance(retrieved, list):
-            raise ValueError(f"`{self._rf}` deberia ser una lista, vino {type(retrieved).__name__}")
+            raise ValueError(f"`{self._rf}` should be a list, got {type(retrieved).__name__}")
 
         abstained = body.get(self._absf)
         if abstained is None:
@@ -141,21 +144,22 @@ class HttpAdapter:
             retrieved=tuple(_remap(r, self._item_map) for r in retrieved),
             abstained=bool(abstained),
             latency_ms=latency_ms,
+            extra=tuple((k, body[k]) for k in self._passthrough if k in body),
         )
 
 
 def build_adapter(
     spec: str, *, timeout: float = 60.0, mapping: str | Path | None = None
 ) -> Adapter:
-    """`mock:ruta.yaml` -> MockAdapter · `http(s)://...` -> HttpAdapter.
+    """`mock:path.yaml` -> MockAdapter · `http(s)://...` -> HttpAdapter.
 
-    `mapping` es un YAML que describe como traducir la respuesta del sistema al contrato.
-    Todo lo especifico de un sistema vive ahi y no en el codigo del harness.
+    `mapping` is a YAML describing how to translate the system's response onto the
+    contract. Everything system-specific lives there and not in the harness's code.
     """
     if spec.startswith("mock:"):
         return MockAdapter(spec[len("mock:") :])
     if not spec.startswith(("http://", "https://")):
-        raise ValueError(f"--system no reconocido: {spec!r} (usa `mock:archivo.yaml` o una URL http)")
+        raise ValueError(f"unrecognised --system: {spec!r} (use `mock:file.yaml` or an http URL)")
 
     kw: dict[str, Any] = {}
     if mapping is not None:
@@ -170,5 +174,6 @@ def build_adapter(
             "retrieved_field": resp.get("retrieved_field", "retrieved"),
             "abstained_field": resp.get("abstained_field", "abstained"),
             "item_map": resp.get("item_map") or {},
+            "passthrough": resp.get("passthrough") or [],
         }
     return HttpAdapter(spec, timeout=timeout, **kw)

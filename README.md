@@ -1,97 +1,99 @@
 # assay
 
-**Harness de evals para sistemas RAG.** Mide, de forma reproducible, si un sistema
-**recupera lo correcto, responde con fundamento, cita bien y se calla cuando no sabe** —
-y falla el CI cuando un cambio lo degrada.
+**An evaluation harness for RAG systems.** It measures, reproducibly, whether a system
+**retrieves the right thing, answers with grounding, cites correctly, and stays quiet when
+it doesn't know** — and it fails CI when a change degrades any of that.
 
-Hermano de [`crew`](https://github.com/gabo5612/crew): misma tesis, **verificación
-determinista, ningún modelo juzgando a otro modelo**.
+Sibling to [`crew`](https://github.com/gabo5612/crew): same thesis, **deterministic
+verification, no model ever judging another model**.
 
-> *assay* = ensayo metalúrgico, el análisis que determina qué contiene realmente una
-> muestra. Es literalmente lo que hace esta herramienta.
+> *assay* = the metallurgical test that determines what a sample actually contains. That is
+> literally what this tool does.
 
-## Estado: M7–M8 en curso
+## Status: M7–M8 in progress
 
-| Hito | Qué trae | Estado |
+| Milestone | What it adds | Status |
 |---|---|---|
-| **M0** | Esqueleto del CLI + formato de suite + adaptadores | ✅ |
+| **M0** | CLI skeleton + suite format + adapters | ✅ |
 | **M1** | recall@k, MRR, precision@k | ✅ |
-| **M2** | Checks deterministas de generación | ✅ |
-| **M3** | Golden set v1 (20 preguntas, 20% controles negativos) | ✅ |
-| **M4** | Reporte con desglose por categoría | ✅ |
-| **M5** | Gate de CI | ✅ |
+| **M2** | Deterministic generation checks | ✅ |
+| **M3** | Golden set v1 (20 questions, 20% negative controls) | ✅ |
+| **M4** | Per-category report | ✅ |
+| **M5** | CI gate | ✅ |
 | **M6** | `assay diff` | ✅ |
-| M7 | LLM-judge opcional (reporta, no bloquea) | 🟡 planilla lista, faltan las etiquetas humanas |
-| M8 | Golden set v2 | 🟡 **39/50** — dos categorías sin corpus, ver abajo |
+| M7 | Optional LLM judge (reports, never blocks) | 🟡 sheet ready, human labels pending |
+| M8 | Golden set v2 | 🟡 **39/50** — two categories lack corpus, see below |
 
-**Una corrida no emite ni una métrica, a propósito.** Una corrida guarda sólo lo observado: qué se
-preguntó y qué contestó el sistema. Hay un test (`test_M0_no_emite_ni_una_metrica`) que
-falla si alguien agrega un promedio "provisional" a la salida — un cero de relleno en un
-JSON de evals se copia a un README y deja de ser provisional.
+**A run emits no metrics at all, on purpose.** A run stores only what was observed: what was
+asked and what the system answered. A test fails if anyone adds a "provisional" average to
+the output — a filler zero in an evaluation JSON gets copied into a README and stops being
+provisional.
 
-## Uso
+## Usage
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 .venv/bin/python -m pytest
 
-# contra un sistema guionado (no necesita ningún RAG levantado)
+# against a scripted system (no RAG needs to be running)
 .venv/bin/assay run --suite suites/mock.yaml \
                     --system mock:tests/fixtures/mock_responses.yaml --out runs/
 
-# contra un sistema real
-.venv/bin/assay run --suite suites/anvil.yaml --system http://localhost:8080/api/ask --out runs/
+# against a real system
+.venv/bin/assay run --suite suites/anvil-v2.yaml \
+                    --system http://localhost:8080/api/ask \
+                    --mapping adapters/anvil.yaml --out runs/
 ```
 
 ```bash
-.venv/bin/assay report runs/2026-09-04T19-02-31Z.json --k 5     # tabla por categoría
-.venv/bin/assay report runs/….json --json                       # el mismo desglose en JSON
+.venv/bin/assay report runs/2026-09-04T19-02-31Z.json --k 5   # per-category table
+.venv/bin/assay report runs/….json --json                     # same breakdown as JSON
 ```
 
 ```bash
-.venv/bin/assay report runs/….json --json > baselines/mock.json    # fijar un baseline
-.venv/bin/assay gate runs/nueva.json --against baselines/mock.json --max-regression 0.02
+.venv/bin/assay report runs/….json --json > baselines/mock.json    # freeze a baseline
+.venv/bin/assay gate runs/new.json --against baselines/mock.json --max-regression 0.02
 ```
 
 ```bash
-.venv/bin/assay diff runs/antes.json runs/despues.json    # qué cambió y por qué
+.venv/bin/assay diff runs/before.json runs/after.json    # what changed and why
 ```
 
-## El gate de CI
+## The CI gate
 
-Códigos de salida, que son el contrato con el CI: **0** pasa · **1** hay regresión (falla
-el build) · **2** no se pudo comparar.
+Exit codes are the contract with CI: **0** pass · **1** regression (fails the build) ·
+**2** could not compare.
 
-Inyectando la regresión más banal y más común de un RAG —bajar top-k a 1, "trae menos
-chunks, va más rápido"— el gate la nombra:
+Inject the most banal and most common RAG regression — drop top-k to 1, *"fewer chunks,
+it's faster"* — and the gate names it:
 
 ```
   REGRESIONES — bloquean el build
-    alfanumerico_exacto/recall_at_5: 1.000 → 0.750  · cayo 0.250, mas que el maximo tolerado 0.020
-    alfanumerico_exacto/mrr: 0.812 → 0.750          · cayo 0.062, …
-    procedimental/precision_at_5: 0.400 → 0.200     · cayo 0.200, …
+    alfanumerico_exacto/recall_at_5: 1.000 → 0.750  · fell 0.250, over the 0.020 tolerance
+    alfanumerico_exacto/mrr: 0.812 → 0.750          · fell 0.062, …
+    procedimental/precision_at_5: 0.400 → 0.200     · fell 0.200, …
 
-  ✗ el gate FALLA: 5 hallazgo(s) bloqueante(s)
+  ✗ gate FAILS: 5 blocking finding(s)
 ```
 
-Cuatro decisiones, cada una con test:
+Four decisions, each with a test:
 
-1. **Se niega a comparar si el golden set cambió** (sha256) o si el `k` no coincide.
-   recall@1 contra recall@5 daría una "regresión" inventada por el parámetro.
-2. **Perder la capacidad de verificar es una regresión.** Si el baseline decía
-   `grounded 0.88 (7/8)` y ahora dice `n/a` porque el sistema dejó de exponer el texto de
-   sus chunks, el número no se mantuvo: desapareció. Es la degradación más silenciosa que
-   existe, y bloquea.
-3. **Una mejora nunca bloquea, pero se imprime** — un salto grande hacia arriba suele ser
-   un bug en el eval, no un milagro del sistema.
-4. **El CI prueba que el gate sirve.** Un gate que nunca falla es un adorno: el workflow le
-   pasa a propósito el sistema degradado y **exige** que salga con código 1. Si ese paso
-   algún día pasa, el gate se rompió.
+1. **It refuses to compare if the golden set changed** (sha256) or if `k` differs. recall@1
+   against recall@5 would produce a "regression" invented by the parameter.
+2. **Losing the ability to verify is a regression.** If the baseline said
+   `grounded 0.88 (7/8)` and now says `n/a` because the system stopped exposing its chunk
+   text, the number didn't hold — it vanished. That is the quietest degradation there is,
+   and it blocks.
+3. **An improvement never blocks, but it is printed** — a large jump upward is usually a bug
+   in the evaluation, not a miracle in the system.
+4. **CI proves the gate works.** A gate that never fails is decoration: the workflow feeds
+   it the degraded system on purpose and **requires** exit code 1. If that step ever passes,
+   the gate is broken.
 
-## El reporte por categoría
+## The per-category report
 
-Un número global ("78% de exactitud") no sirve para decidir nada. El desglose nombra **qué
-arreglar**:
+A single global number ("78% accurate") supports no decision. The breakdown names **what to
+fix**:
 
 ```
   categoria                  n      recall@5         MRR      prec@5      grounded    abstencion
@@ -99,205 +101,207 @@ arreglar**:
   factual_lookup             8      1.00 (8)    1.00 (8)    0.23 (8)    0.88 (7/8)    1.00 (8/8)
   alfanumerico_exacto        4      1.00 (4)    1.00 (4)    0.20 (4)    1.00 (4/4)    1.00 (4/4)
   procedimental              4      1.00 (4)    1.00 (4)    0.40 (4)    1.00 (3/3)    1.00 (4/4)
-  negative_control           4           n/a         n/a         n/a    1.00 (2/2)    0.50 (2/4)   ← el que importa
+  negative_control           4           n/a         n/a         n/a    1.00 (2/2)    0.50 (2/4)   ← the one that matters
 ```
 
-*(Corrida contra el sistema guionado de `tests/fixtures/`, no contra un RAG real — el
-reporte lo dice en su encabezado.)*
+*(Run against the scripted system in `tests/fixtures/`, not a real RAG — the report says so
+in its own header.)*
 
-Tres decisiones que sostienen la tabla:
+Three decisions hold this table up:
 
-1. **El reporte re-carga el golden set y compara su sha256 contra el de la corrida. Si no
-   coincide, se niega a reportar.** Sin eso, el fracaso silencioso está a un paso: correr el
-   eval, ver que sale mal, ablandar el set, y reportar el mismo JSON como si nada.
-2. **Cada celda lleva su denominador.** `0.88 (7/8)` no es lo mismo que `1.00 (2/2)`, y un
-   promedio sin `n` es una opinión con decimales.
-3. **El encabezado dice qué sistema se midió.** Una tabla linda de una corrida contra un
-   mock, sin esa línea, termina capturada en un portfolio como si fuera una medición real.
+1. **The report reloads the golden set and compares its sha256 against the run's. If they
+   differ, it refuses to report.** Without that, the silent failure is one step away: run the
+   eval, see it go badly, soften the set, and report the same JSON as if nothing happened.
+2. **Every cell carries its denominator.** `0.88 (7/8)` is not `1.00 (2/2)`, and an average
+   without `n` is an opinion with decimals.
+3. **The header says which system was measured.** A pretty table from a run against a mock,
+   without that line, ends up screenshotted into a portfolio as if it were a real measurement.
 
-## El contrato del adaptador
+## The adapter contract
 
-`assay` habla con cualquier sistema que exponga
-`pregunta → {answer, citations[], retrieved[], abstained}`. No sabe nada de ningún RAG por
-dentro, y por eso sirve para medir cualquiera.
+`assay` talks to any system exposing
+`question → {answer, citations[], retrieved[], abstained}`. It knows nothing about any RAG's
+internals, which is exactly what makes it usable against any of them.
 
-**`retrieved` no es lo mismo que `citations`, y la diferencia es el diagnóstico entero.**
-Lo recuperado es lo que entró al contexto; lo citado es lo que el sistema eligió mostrar.
-recall@k, MRR y precision@k se calculan sobre lo primero. En la suite de humo hay un caso
-que recupera el chunk correcto en el rank 1 y **aun así contesta mal**: sin `retrieved` en
-el contrato, ese caso se diagnosticaría como fallo de búsqueda cuando es fallo de
-generación. Si un sistema no expone lo recuperado, las métricas de retrieval quedan en
-`n/a` — no en cero.
+**`retrieved` is not `citations`, and that difference is the entire diagnosis.** Retrieved is
+what entered the context; cited is what the system chose to show. recall@k, MRR and
+precision@k are computed over the first. The smoke suite contains a case that retrieves the
+correct chunk at rank 1 and **still answers wrong**: without `retrieved` in the contract, that
+case would be diagnosed as a retrieval failure when it is a generation failure. If a system
+does not expose what it retrieved, retrieval metrics report `n/a` — never zero.
 
-- `mock:archivo.yaml` — sistema guionado a mano. **No responde bien solo:** el guion
-  incluye un fallo deliberado (contesta con un número de otra fila de la tabla), porque
-  sin un fallo real los checks de M2 se escribirían contra datos que siempre pasan.
-- `http(s)://…` — POST JSON. Los nombres de campo son configurables; no hay estándar y no
-  vale la pena fingir que lo hay.
+- `mock:file.yaml` — a hand-scripted system. **It does not answer well on its own:** the
+  script includes a deliberate failure (it answers with a number from another row of the
+  table), because without a real failure the M2 checks would be written against data that
+  always passes.
+- `http(s)://…` — JSON POST. Field names are configurable through a mapping file; there is no
+  standard here and pretending otherwise helps no one.
 
-## El formato del golden set
+## The golden set format
 
 ```yaml
 - id: torque-m24-88
   question: "¿Cuál es el torque del perno M24 grado 8.8 del cabezal del laminador 2?"
-  category: factual_lookup          # una de seis, lista cerrada
-  gold_answer: "680 ± 30 N·m"
-  gold_numbers: ["680", "30"]       # deben aparecer literales en la respuesta
-  forbidden_numbers: ["950", "190"] # otras filas de la tabla: si aparecen, cruzó filas
-  gold_source: { doc_id: LAM-2-MAINT, revision: D, pages: [147] }
+  category: factual_lookup          # one of six, closed list
+  gold_answer: "720 ± 30 N·m"
+  gold_numbers: ["720", "30"]       # must appear literally in the answer
+  forbidden_numbers: ["950", "190"] # other rows of the table: if present, it crossed rows
+  gold_source: { doc_id: c0d5f95f636967d1, revision: F, pages: [1] }
   must_abstain: false
 ```
 
-`gold_source` acepta también una **lista** de fuentes, porque un caso `multi_documento`
-tiene la respuesta repartida y con una sola fuente esa categoría —10% del set— no se puede
-medir. Un `multi_documento` con menos de dos `doc_id` distintos falla la carga.
+*(Questions stay in the language of the source document — the corpus is mixed Spanish and
+English, and translating a question would break the literal match against its chunk.)*
 
-**El validador es severo a propósito.** En un harness de evals un typo no da error: apaga
-un check en silencio. Si alguien escribe `forbiden_numbers`, se pierde justo la
-comprobación que atrapa el bug de la tabla partida, el reporte sigue verde, y la métrica
-publicada pasa a ser mentira. Por eso una clave desconocida **falla la carga**, igual que
-un `negative_control` con `gold_answer`, un `must_abstain: true` fuera de su categoría, o
-un mismo número en `gold_numbers` y `forbidden_numbers`.
+`gold_source` also accepts a **list** of sources, because a `multi_documento` case has its
+answer split across several and with a single source that category — 10% of the set — cannot
+be measured at all. A `multi_documento` with fewer than two distinct `doc_id`s fails to load.
 
-Cada corrida guarda el **sha256 del archivo de la suite**. Es lo que permite probarle a un
-tercero que el set con el que se midió es el que está commiteado, y no una versión
-ablandada después de ver los resultados.
+**The validator is severe on purpose.** In an evaluation harness a typo does not raise an
+error: it silently switches a check off. If someone writes `forbiden_numbers`, the very check
+that catches the split-table bug disappears, the report stays green, and the published metric
+becomes a lie. So an unknown key **fails the load**, as does a `negative_control` with a
+`gold_answer`, a `must_abstain: true` outside its category, or the same number in both
+`gold_numbers` and `forbidden_numbers`.
 
-## Por qué existe
+Every run stores the **sha256 of the suite file**. That is what lets you prove to a third
+party that the set you measured with is the one committed, not a version softened after
+seeing the results.
 
-Cambiás el tamaño de chunk de 512 a 1024, probás tres preguntas, te parece que responde
-mejor, lo dejás. Acabás de tomar una decisión de ingeniería con n=3 y criterio "me
-parece". Así está construido el grueso de los RAG que existen.
+## Why this exists
 
-El **20% de controles negativos** es lo que casi todos olvidan: sin ellos, un sistema que
-siempre responde con seguridad puntúa perfecto.
+You change chunk size from 512 to 1024, try three questions, feel like it answers better,
+and ship it. You just made an engineering decision with n=3 and "seems better" as the
+criterion. That is how most existing RAG systems were built.
 
-## El golden set
+The **20% negative controls** is what almost everyone forgets: without them, a system that
+always answers confidently scores perfect.
+
+## The golden set
 
 | | v1 | v2 |
 |---|---|---|
-| preguntas | 20 | **39** |
-| controles negativos | 4 (20%) | **9 (23%)** |
-| documentos | 2 | **3** |
-| idiomas | es | **es + en** |
+| questions | 20 | **39** |
+| negative controls | 4 (20%) | **9 (23%)** |
+| documents | 2 | **3** |
+| languages | es | **es + en** |
 
-**Por qué v2 existe:** v1 tenía 18 de 20 preguntas sobre un documento de **una página**. Como
-el oro se empareja a nivel de página, su recall era trivialmente `1.00` — cualquier chunk de
-esa página contaba como relevante. v2 agrega 19 preguntas sobre documentos multipágina (un
-manual de 117 páginas en inglés y uno de 15 en español), que son las que dan señal de
-retrieval real.
+**Why v2 exists:** v1 had 18 of 20 questions against a **single-page** document. Since gold
+is matched at page level, its recall was trivially `1.00` — any chunk from that page counted
+as relevant. v2 adds 19 questions over multi-page documents (a 117-page manual in English and
+a 15-page one in Spanish), and those are the ones that produce real retrieval signal.
 
-**Dos categorías siguen ausentes, y está dicho en el propio archivo:** `multi_documento`
-(el corpus no tiene una relación genuina entre dos documentos; una pregunta que cruce dos
-sería artificial, y una pregunta de oro falsa es peor que una categoría vacía) y
-`revision_supersedida` (cada documento existe en una sola revisión). Las dos necesitan corpus
-nuevo, no más trabajo.
+**Two categories remain absent, and the file itself says so:** `multi_documento` (the corpus
+holds no genuine relationship between two documents; a question spanning two would be
+artificial, and a false gold question is worse than an empty category) and
+`revision_supersedida` (each document exists in a single revision). Both need new corpus, not
+more work.
 
-## El golden set v1
-
-`suites/anvil-v1.yaml` — 20 preguntas, **4 controles negativos (20% exacto)**, sobre un
-corpus de 5 documentos y 1699 chunks. Cada número se leyó del chunk que lo respalda.
-
-`scripts/verify_against_corpus.py` lo prueba: comprueba que cada `doc_id` exista, que la
-revisión declarada coincida, que cada `gold_number` aparezca literal en la página citada
-—y que cada **`forbidden_number` también esté en el corpus**. Ese último punto es el menos
-obvio y el más importante: un número prohibido que no está en el documento no es una
-trampa, es ruido, y el check nunca se dispararía. La trampa tiene que ser un número real
-de otra fila.
+`scripts/verify_against_corpus.py` proves the set is backed by the source: it checks that
+every `doc_id` exists, that the declared revision matches, that every `gold_number` appears
+literally on the cited page — **and that every `forbidden_number` is also in the corpus**.
+That last point is the least obvious and the most important: a forbidden number that isn't in
+the document is not a trap, it's noise, and the check would never fire. The trap has to be a
+real number from another row.
 
 ```
-revisado: 9 gold_numbers · 11 forbidden_numbers · 4 controles negativos (20%)
-✓ todo el golden set esta respaldado por el corpus
+checked: 18 gold_numbers · 28 forbidden_numbers/codes · 9 negative controls (23%)
+✓ the whole golden set is backed by the corpus
 ```
 
-**Los cuatro controles negativos son plausibles a propósito.** Uno obvio —"¿cuál es la
-capital de Francia?"— no mide nada: cualquier RAG se abstiene. Estos piden un dato que no
-existe *justo al lado* de datos que sí: el perno M30 en una tabla que solo tiene M24 y
-M16; el M24 en **grado 12.9** cuando la tabla solo trae 8.8 y 10.9 (el perno existe, el
-grado no); la alarma `E-200` entre `E-114`, `E-115` y `E-141`; y el material A312, que es
-real en ASTM pero no está en esta documentación.
+**The negative controls are plausible on purpose.** An obvious one — *"what is the capital of
+France?"* — measures nothing: any RAG abstains. These ask for data that doesn't exist *right
+next to* data that does: bolt M30 in a table that only holds M24 and M16; the M24 in **grade
+12.9** when the table only lists 8.8 and 10.9 (the bolt exists, the grade doesn't); alarm
+`E-200` among `E-114`, `E-115` and `E-141`; and material A312, real in ASTM but absent from
+this documentation.
 
-## `gate` y `diff` — división de trabajo
+## `gate` and `diff` — division of labour
 
-| | pregunta que responde | responde con |
+| | question it answers | answers with |
 |---|---|---|
-| `gate` | ¿esto bloquea el build? | un código de salida |
-| `diff` | ¿qué cambió y **por qué**? | casos concretos |
+| `gate` | does this block the build? | an exit code |
+| `diff` | what changed and **why**? | concrete cases |
 
-Un gate que dice *"recall@5 cayó 0.25"* no alcanza para arreglar nada. Lo accionable es
-**qué casos se dieron vuelta**:
+A gate saying *"recall@5 fell 0.25"* is not enough to fix anything. What's actionable is
+**which cases flipped**:
 
 ```
   Retrieval que se movio, por categoria
     ↓ alfanumerico_exacto/recall@5: 1.000 → 0.750
 
-  alfanumerico_exacto  (1 rompio)
-    · alarma-e114/grounded: ok → FALLA   [rompio]
+  alfanumerico_exacto  (1 broke)
+    · alarma-e114/grounded: ok → FAIL   [broke]
 ```
 
-`diff` distingue seis transiciones, y dos de ellas son las que un promedio no ve:
-`se_apago` (el check dejó de ser verificable — el número no bajó, **desapareció**) y
-`se_prendio`. Un caso que aparece o desaparece del set es **un** hallazgo, no seis: si no,
-agregar una pregunta inunda el diff y esconde las regresiones reales.
+`diff` distinguishes six transitions, and two of them are invisible to an average:
+`se_apago` (the check stopped being verifiable — the number didn't drop, it **vanished**) and
+`se_prendio`. A case appearing or disappearing from the set is **one** finding, not six:
+otherwise adding a question floods the diff and hides the real regressions.
 
-## Los seis checks deterministas
+## The six deterministic checks
 
-Ningún modelo participa: son operaciones de conjuntos y comparaciones de strings
-normalizados.
+No model participates: these are set operations and normalised string comparisons.
 
-| Check | Qué verifica |
+| Check | What it verifies |
 |---|---|
-| `gold_numbers_present` | Cada número de oro aparece literal en la respuesta |
-| `forbidden_numbers_absent` | Ningún número de otra fila de la tabla se colό |
-| `grounded` | Cada número **y código** de la respuesta está en un chunk citado |
-| `citation_hits_gold` | Alguna cita apunta al documento/página de oro |
-| `abstention_correct` | En los controles negativos, se abstuvo |
-| `revision_current` | Citó la revisión vigente, no una supersedida |
+| `gold_numbers_present` | Every gold number appears literally in the answer |
+| `forbidden_numbers_absent` | No number from another table row slipped in |
+| `forbidden_codes_absent` | No identifier from a neighbouring entry slipped in |
+| `grounded` | Every number **and code** in the answer is in a cited chunk |
+| `citation_hits_gold` | Some citation points at the gold document/page |
+| `abstention_correct` | On negative controls, the system abstained |
+| `revision_current` | It cited the current revision, not a superseded one |
 
-### Tres estados, y la diferencia entre los dos últimos es el punto
+### Three states, and the difference between the last two is the point
 
-`True` se verificó y pasa · `False` se verificó y **falla** · `None` **no se pudo
-verificar** — falta el insumo (el sistema no expuso el texto del chunk, o el caso no
-define números de oro).
+`True` verified and passes · `False` verified and **fails** · `None` **could not be
+verified** — the input is missing (the system didn't expose the chunk text, or the case
+defines no gold numbers).
 
-`None` no cuenta ni como fallo ni como éxito. Un harness que convierte "no pude verificar"
-en "falló" te manda a arreglar cosas que no estaban rotas; uno que lo convierte en "pasa"
-publica un número que no midió nada.
+`None` counts as neither failure nor success. A harness that turns "I couldn't verify" into
+"it failed" sends you to fix things that were never broken; one that turns it into "it
+passes" publishes a number that measured nothing.
 
-### Por qué `forbidden_numbers` no es redundante con `grounded`
+### Why `forbidden_numbers` is not redundant with `grounded`
 
-Si la respuesta trae `950` cuando debía traer `680`, y la tabla completa está en el chunk
-citado, **`grounded` pasa** — el 950 está literal ahí. Es `forbidden_numbers` el que
-nombra la falla: cruzó filas. Ese es el bug de la tabla partida, y un solo check no lo ve.
+If the answer carries `950` when it should carry `720`, and the whole table is in the cited
+chunk, **`grounded` passes** — the 950 is literally there. It is `forbidden_numbers` that
+names the failure: it crossed rows. That is the split-table bug, and one check alone cannot
+see it.
 
-### La trampa de los códigos alfanuméricos
+### The alphanumeric-code trap
 
-`E-114` **no aporta el número 114**, y `M24` no aporta el 24. Si se extrajeran como
-números, la respuesta *correcta* "la alarma E-114 indica sobretemperatura" daría
-`grounded: false` porque "114" no aparece suelto en el chunk. Ese falso negativo es peor
-que no medir: te hace "arreglar" un sistema que estaba bien. Los códigos se extraen y se
-comparan como códigos.
+`E-114` **does not contribute the number 114**, and `M24` does not contribute 24. If they were
+extracted as numbers, the *correct* answer "alarm E-114 indicates overtemperature" would
+return `grounded: false` because "114" never appears loose in the chunk. That false negative
+is worse than not measuring: it sends you to "fix" a system that was fine. Codes are extracted
+and compared as codes.
 
-La comparación es canónica, no por substring: buscar `30` como substring lo encontraría
-dentro de `1300` y daría por fundamentado un número que nunca estuvo.
+Comparison is canonical, never substring: searching for `30` as a substring would find it
+inside `1300` and declare grounded a number that was never there.
 
-### El detector de abstención es una lista de frases, no un modelo
+The same rule covers **citation markers**: in `720 +/- 30 N.m [1]`, the `[1]` is a reference,
+not a magnitude. Requiring it to be grounded in the chunk would fail a system **for citing
+properly** — which is the behaviour every other check rewards.
 
-Es deliberado (§8 del spec): lista visible y auditable, más revisión manual de los
-desacuerdos. Un clasificador sería una caja negra dentro del propio verificador, y la
-regla de la casa es que ningún modelo juzga a otro modelo.
+### The abstention detector is a phrase list, not a model
 
-## Tres convenciones de las métricas, escritas para que nadie las cambie sin darse cuenta
+Deliberate (§8 of the spec): a visible, auditable list plus manual review of the
+disagreements. A classifier would be a black box inside the verifier itself, and the house
+rule is that no model judges another model.
 
-Son las decisiones que, tomadas en silencio, hacen que dos corridas dejen de ser
-comparables. Cada una tiene un test que se rompe si alguien la cambia.
+## Three metric conventions, written down so nobody changes them by accident
 
-1. **`precision@k` divide por `k`**, no por la cantidad recuperada — la definición estándar
-   de IR. Un sistema que devuelve 3 chunks con k=5 se lleva el castigo, y es correcto:
-   pidió menos contexto del disponible. La cantidad recuperada queda registrada para que
-   cualquiera recalcule con la otra convención.
-2. **`recall@k` cuenta objetivos cubiertos, no items relevantes.** Dos copias del mismo
-   chunk cubren un objetivo, no dos. Contar items daría 1.0 donde corresponde 0.5, y ese
-   es el bug clásico que infla el número.
-3. **Los controles negativos devuelven `None`, no cero**, y el promedio ignora los `None`.
-   Un cero se promedia y arrastra la media con un dato que no existe.
+These are the decisions that, taken silently, make two runs stop being comparable. Each has a
+test that breaks if someone changes it.
+
+1. **`precision@k` divides by `k`**, not by the number retrieved — the standard IR
+   definition. A system returning 3 chunks with k=5 takes the penalty, and correctly so: it
+   asked for less context than was available. The retrieved count is recorded so anyone can
+   recompute under the other convention.
+2. **`recall@k` counts targets covered, not relevant items.** Two copies of the same chunk
+   cover one target, not two. Counting items would return 1.0 where 0.5 is correct — the
+   classic bug that inflates the number.
+3. **Negative controls return `None`, not zero**, and the average ignores `None`. A zero gets
+   averaged in and drags the mean with a data point that does not exist.

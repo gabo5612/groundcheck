@@ -1,11 +1,10 @@
-"""Carga y validacion del golden set.
+"""Loading and validation of the golden set.
 
-El validador es deliberadamente severo. La razon: en un harness de evals, un typo no
-produce un error — produce un **check que deja de correr en silencio**. Si alguien
-escribe `forbiden_numbers`, se pierde exactamente la comprobacion que atrapa el bug de
-la tabla partida (§3 del contexto), el reporte sigue saliendo verde, y la metrica
-publicada pasa a ser mentira. Por eso una clave desconocida es un error duro y no una
-advertencia.
+The validator is deliberately severe. The reason: in an evaluation harness a typo does not
+produce an error — it produces a **check that silently stops running**. If someone writes
+`forbiden_numbers`, the exact check that catches the split-table bug (§3 of the spec)
+disappears, the report keeps coming out green, and the published metric becomes a lie. That
+is why an unknown key is a hard error and not a warning.
 """
 
 from __future__ import annotations
@@ -36,7 +35,7 @@ SOURCE_KEYS = {"doc_id", "revision", "pages"}
 
 
 class SuiteError(ValueError):
-    """Suite invalida. El mensaje siempre dice el id del caso y la clave culpable."""
+    """Invalid suite. The message always names the case id and the offending key."""
 
 
 def _fail(where: str, msg: str) -> None:
@@ -47,45 +46,45 @@ def _as_str_tuple(where: str, key: str, value: Any) -> tuple[str, ...]:
     if value is None:
         return ()
     if not isinstance(value, list):
-        _fail(where, f"`{key}` tiene que ser una lista, no {type(value).__name__}")
+        _fail(where, f"`{key}` must be a list, not {type(value).__name__}")
     out = []
     for item in value:
-        # Los numeros se comparan como literales contra el texto de la respuesta, asi que
-        # tienen que quedar como string. 680 y "680" se ven igual en YAML pero no
-        # comparan igual, y ese es justo el tipo de bug que no da error.
+        # Numbers are compared literally against the answer's text, so they have to end up
+        # as strings. 680 and "680" look the same in YAML but do not compare the same, and
+        # that is exactly the kind of bug that raises no error.
         if isinstance(item, bool) or not isinstance(item, (str, int, float)):
-            _fail(where, f"`{key}` solo acepta strings o numeros, vino {item!r}")
+            _fail(where, f"`{key}` only accepts strings or numbers, got {item!r}")
         out.append(str(item))
     return tuple(out)
 
 
 def _parse_sources(where: str, raw: Any) -> tuple[GoldSource, ...]:
-    """Acepta un mapa o una lista de mapas (necesario para `multi_documento`)."""
+    """Accepts a map or a list of maps (required for `multi_documento`)."""
     if raw is None:
         return ()
     if isinstance(raw, dict):
         return (_parse_one_source(where, raw),)
     if isinstance(raw, list):
         if not raw:
-            _fail(where, "`gold_source` es una lista vacia — quitala o completala")
+            _fail(where, "`gold_source` is an empty list — remove it or fill it in")
         return tuple(_parse_one_source(where, item) for item in raw)
-    _fail(where, "`gold_source` tiene que ser un mapa o una lista de mapas")
+    _fail(where, "`gold_source` must be a map or a list of maps")
 
 
 def _parse_one_source(where: str, raw: Any) -> GoldSource:
     if not isinstance(raw, dict):
-        _fail(where, "cada `gold_source` tiene que ser un mapa")
+        _fail(where, "each `gold_source` must be a map")
     unknown = set(raw) - SOURCE_KEYS
     if unknown:
-        _fail(where, f"claves desconocidas en `gold_source`: {sorted(unknown)}")
+        _fail(where, f"unknown keys in `gold_source`: {sorted(unknown)}")
     if "doc_id" not in raw:
-        _fail(where, "`gold_source` sin `doc_id`")
+        _fail(where, "`gold_source` without `doc_id`")
     pages = raw.get("pages") or []
     if not isinstance(pages, list) or any(not isinstance(p, int) or isinstance(p, bool) for p in pages):
-        _fail(where, "`gold_source.pages` tiene que ser una lista de enteros")
+        _fail(where, "`gold_source.pages` must be a list of integers")
     revision = raw.get("revision")
     if revision is not None and not isinstance(revision, (str, int)):
-        _fail(where, "`gold_source.revision` tiene que ser texto")
+        _fail(where, "`gold_source.revision` must be text")
     return GoldSource(
         doc_id=str(raw["doc_id"]),
         revision=None if revision is None else str(revision),
@@ -94,74 +93,74 @@ def _parse_one_source(where: str, raw: Any) -> GoldSource:
 
 
 def _parse_case(index: int, raw: Any) -> Case:
-    where = f"caso #{index + 1}"
+    where = f"case #{index + 1}"
     if not isinstance(raw, dict):
-        _fail(where, f"tiene que ser un mapa, no {type(raw).__name__}")
+        _fail(where, f"must be a map, not {type(raw).__name__}")
 
     case_id = raw.get("id")
     if not isinstance(case_id, str) or not case_id.strip():
-        _fail(where, "`id` faltante o vacio")
-    where = f"caso `{case_id}`"
+        _fail(where, "`id` missing or empty")
+    where = f"case `{case_id}`"
 
     unknown = set(raw) - CASE_KEYS
     if unknown:
-        _fail(where, f"claves desconocidas: {sorted(unknown)} — revisa la ortografia")
+        _fail(where, f"unknown keys: {sorted(unknown)} — check the spelling")
 
     question = raw.get("question")
     if not isinstance(question, str) or not question.strip():
-        _fail(where, "`question` faltante o vacia")
+        _fail(where, "`question` missing or empty")
 
     category = raw.get("category")
     if category not in CATEGORIES:
-        _fail(where, f"`category` invalida {category!r}; validas: {list(CATEGORIES)}")
+        _fail(where, f"invalid `category` {category!r}; valid: {list(CATEGORIES)}")
 
     difficulty = raw.get("difficulty")
     if difficulty is not None and difficulty not in DIFFICULTIES:
-        _fail(where, f"`difficulty` invalida {difficulty!r}; validas: {list(DIFFICULTIES)}")
+        _fail(where, f"invalid `difficulty` {difficulty!r}; valid: {list(DIFFICULTIES)}")
 
     must_abstain = raw.get("must_abstain", category == "negative_control")
     if not isinstance(must_abstain, bool):
-        _fail(where, "`must_abstain` tiene que ser true o false")
+        _fail(where, "`must_abstain` must be true or false")
 
     gold_answer = raw.get("gold_answer")
     if gold_answer is not None and not isinstance(gold_answer, str):
-        _fail(where, "`gold_answer` tiene que ser texto o null")
+        _fail(where, "`gold_answer` must be text or null")
 
-    # Las dos contradicciones que hacen que el 20% de controles negativos no mida nada.
+    # The two contradictions that make the 20% of negative controls measure nothing.
     if category == "negative_control":
         if not must_abstain:
-            _fail(where, "un `negative_control` con `must_abstain: false` no prueba nada")
+            _fail(where, "a `negative_control` with `must_abstain: false` proves nothing")
         if gold_answer is not None:
-            _fail(where, "un `negative_control` no puede tener `gold_answer`")
+            _fail(where, "a `negative_control` cannot have a `gold_answer`")
     elif must_abstain:
-        _fail(where, "`must_abstain: true` fuera de `negative_control` — categoria equivocada?")
+        _fail(where, "`must_abstain: true` outside `negative_control` — wrong category?")
 
     languages = _as_str_tuple(where, "languages", raw.get("languages"))
     gold_numbers = _as_str_tuple(where, "gold_numbers", raw.get("gold_numbers"))
     forbidden = _as_str_tuple(where, "forbidden_numbers", raw.get("forbidden_numbers"))
     forbidden_codes = _as_str_tuple(where, "forbidden_codes", raw.get("forbidden_codes"))
 
-    # Un codigo prohibido que aparece en la respuesta de oro seria una trampa contra la
-    # respuesta correcta: el caso fallaria siempre, hiciera lo que hiciera el sistema.
+    # A forbidden code appearing in the gold answer would be a trap against the correct
+    # answer: the case would always fail, whatever the system did.
     if case.get("gold_answer") if isinstance(case := raw, dict) else False:
         from .numbers import extract_codes
 
-        en_oro = {c.upper() for c in extract_codes(raw.get("gold_answer") or "")}
-        choque = sorted({c.upper() for c in forbidden_codes} & en_oro)
-        if choque:
-            _fail(where, f"{choque} esta en `forbidden_codes` y en `gold_answer` a la vez")
+        in_gold = {c.upper() for c in extract_codes(raw.get("gold_answer") or "")}
+        clash = sorted({c.upper() for c in forbidden_codes} & in_gold)
+        if clash:
+            _fail(where, f"{clash} is in both `forbidden_codes` and `gold_answer`")
 
     sources = _parse_sources(where, raw.get("gold_source"))
     if category == "multi_documento" and len({s.doc_id for s in sources}) < 2:
         _fail(
             where,
-            "`multi_documento` con menos de dos `doc_id` distintos no prueba sintesis "
-            "entre fuentes — o agrega la otra fuente, o cambia la categoria",
+            "`multi_documento` with fewer than two distinct `doc_id`s proves no synthesis "
+            "across sources — either add the other source or change the category",
         )
 
     overlap = set(gold_numbers) & set(forbidden)
     if overlap:
-        _fail(where, f"{sorted(overlap)} esta en `gold_numbers` y en `forbidden_numbers` a la vez")
+        _fail(where, f"{sorted(overlap)} is in both `gold_numbers` and `forbidden_numbers`")
 
     return Case(
         id=case_id,
@@ -181,8 +180,8 @@ def _parse_case(index: int, raw: Any) -> Case:
 def load_suite(path: str | Path) -> Suite:
     p = Path(path)
     raw_bytes = p.read_bytes()
-    # El sha va en cada corrida. Es lo que permite probarle a un tercero que el set con
-    # el que se midio es el mismo que esta commiteado, y no una version ablandada.
+    # The sha goes into every run. It is what lets you prove to a third party that the set
+    # measured with is the one committed, and not a softened version.
     sha = hashlib.sha256(raw_bytes).hexdigest()
 
     doc = yaml.safe_load(raw_bytes.decode("utf-8"))
@@ -192,10 +191,10 @@ def load_suite(path: str | Path) -> Suite:
     elif isinstance(doc, list):
         name, raw_cases = p.stem, doc
     else:
-        raise SuiteError(f"{p}: la suite tiene que ser una lista de casos o un mapa con `cases`")
+        raise SuiteError(f"{p}: the suite must be a list of cases or a map with `cases`")
 
     if not isinstance(raw_cases, list) or not raw_cases:
-        raise SuiteError(f"{p}: `cases` vacio o ausente")
+        raise SuiteError(f"{p}: `cases` empty or missing")
 
     cases = tuple(_parse_case(i, raw) for i, raw in enumerate(raw_cases))
 
@@ -203,7 +202,7 @@ def load_suite(path: str | Path) -> Suite:
     for i, case in enumerate(cases):
         if case.id in seen:
             raise SuiteError(
-                f"{p}: id duplicado `{case.id}` (casos #{seen[case.id] + 1} y #{i + 1})"
+                f"{p}: duplicate id `{case.id}` (cases #{seen[case.id] + 1} and #{i + 1})"
             )
         seen[case.id] = i
 

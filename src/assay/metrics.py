@@ -1,19 +1,19 @@
-"""Metricas de retrieval. Operaciones de conjuntos, sin un modelo de por medio.
+"""Retrieval metrics. Set operations, with no model in the loop.
 
-Tres decisiones estan escritas explicitas acá porque son exactamente las que, tomadas en
-silencio, hacen que dos corridas dejen de ser comparables y nadie se entere:
+Three decisions are written out explicitly here because they are exactly the ones that,
+taken silently, make two runs stop being comparable without anyone noticing:
 
-1. **`precision_at_k` divide por `k`, no por la cantidad recuperada.** Es la definicion
-   estandar de IR. Un sistema que devuelve 3 chunks con k=5 se lleva un castigo real, y
-   eso es correcto: pidio menos contexto del disponible. La cantidad recuperada queda
-   registrada aparte para que cualquiera pueda recalcular con la otra convencion.
-2. **`recall_at_k` cuenta objetivos cubiertos, no items relevantes.** Con dos paginas de
-   oro y las dos en el top-k, es 1.0; con una sola, 0.5. Contar items relevantes daria
-   1.0 tambien en el segundo caso si el mismo chunk apareciera dos veces — y ese es el
-   bug clasico que infla el numero.
-3. **Los controles negativos no tienen metricas de retrieval: devuelven `None`.** No un
-   cero. Un cero se promedia y arrastra la media hacia abajo con un dato que no existe;
-   `None` obliga a que el reporte diga `n/a`, que es la verdad.
+1. **`precision_at_k` divides by `k`, not by the number retrieved.** That is the standard
+   IR definition. A system returning 3 chunks with k=5 takes a real penalty, and rightly
+   so: it asked for less context than was available. The retrieved count is recorded
+   separately so anyone can recompute under the other convention.
+2. **`recall_at_k` counts targets covered, not relevant items.** With two gold pages and
+   both in the top-k it is 1.0; with only one, 0.5. Counting relevant items would give 1.0
+   in the second case too if the same chunk appeared twice — and that is the classic bug
+   that inflates the number.
+3. **Negative controls have no retrieval metrics: they return `None`.** Not zero. A zero
+   gets averaged in and drags the mean down with a data point that does not exist; `None`
+   forces the report to say `n/a`, which is the truth.
 """
 
 from __future__ import annotations
@@ -24,7 +24,7 @@ from typing import Any, Iterable, Sequence
 
 @dataclass(frozen=True)
 class RetrievedItem:
-    """Un chunk recuperado. `rank` es 1-based: `rank=1` es el primero."""
+    """A retrieved chunk. `rank` is 1-based: `rank=1` is the first."""
 
     rank: int
     doc_id: str | None = None
@@ -49,11 +49,11 @@ class RetrievedItem:
 
 
 def matches(item: RetrievedItem, doc_id: str, pages: Sequence[int]) -> bool:
-    """Un item recuperado cubre un objetivo de oro?
+    """Does a retrieved item cover a gold target?
 
-    Si el objetivo especifica paginas y el item no reporta la suya, **no cuenta**. Un
-    sistema que no dice en que pagina encontro algo no puede acreditarse recall a nivel
-    de pagina: seria darle credito por informacion que no entrego.
+    If the target specifies pages and the item reports none, it **does not count**. A
+    system that will not say which page it found something on cannot claim page-level
+    recall: that would credit it for information it never handed over.
     """
     if item.doc_id is None or item.doc_id != doc_id:
         return False
@@ -65,7 +65,7 @@ def matches(item: RetrievedItem, doc_id: str, pages: Sequence[int]) -> bool:
 def relevance_vector(
     retrieved: Sequence[RetrievedItem], targets: Sequence[tuple[str, Sequence[int]]]
 ) -> list[bool]:
-    """Para cada item en orden de rank: cubre algun objetivo?"""
+    """For each item in rank order: does it cover any target?"""
     return [any(matches(item, doc, pages) for doc, pages in targets) for item in retrieved]
 
 
@@ -74,14 +74,14 @@ def recall_at_k(
     targets: Sequence[tuple[str, Sequence[int]]],
     k: int,
 ) -> float | None:
-    """Fraccion de objetivos de oro cubiertos por el top-k. `None` si no hay objetivos."""
+    """Fraction of gold targets covered by the top-k. `None` when there are no targets."""
     if k <= 0:
-        raise ValueError("k tiene que ser >= 1")
+        raise ValueError("k must be >= 1")
     if not targets:
         return None
     top = retrieved[:k]
-    cubiertos = sum(1 for doc, pages in targets if any(matches(i, doc, pages) for i in top))
-    return cubiertos / len(targets)
+    covered = sum(1 for doc, pages in targets if any(matches(i, doc, pages) for i in top))
+    return covered / len(targets)
 
 
 def precision_at_k(
@@ -89,41 +89,41 @@ def precision_at_k(
     targets: Sequence[tuple[str, Sequence[int]]],
     k: int,
 ) -> float | None:
-    """Fraccion del top-k que es relevante. Divide por `k` (ver decision 1 del modulo)."""
+    """Fraction of the top-k that is relevant. Divides by `k` (see decision 1 above)."""
     if k <= 0:
-        raise ValueError("k tiene que ser >= 1")
+        raise ValueError("k must be >= 1")
     if not targets:
         return None
-    relevantes = sum(relevance_vector(retrieved[:k], targets))
-    return relevantes / k
+    relevant = sum(relevance_vector(retrieved[:k], targets))
+    return relevant / k
 
 
 def reciprocal_rank(
     retrieved: Sequence[RetrievedItem], targets: Sequence[tuple[str, Sequence[int]]]
 ) -> float | None:
-    """1 / posicion del primer item relevante. `0.0` si ninguno lo es."""
+    """1 / position of the first relevant item. `0.0` when none is relevant."""
     if not targets:
         return None
-    for pos, relevante in enumerate(relevance_vector(retrieved, targets), start=1):
-        if relevante:
+    for pos, relevant in enumerate(relevance_vector(retrieved, targets), start=1):
+        if relevant:
             return 1.0 / pos
     return 0.0
 
 
 def mean(values: Iterable[float | None]) -> float | None:
-    """Promedio que **ignora** los `None` en vez de tratarlos como cero.
+    """Average that **ignores** `None` rather than treating it as zero.
 
-    Es el corolario de la decision 3: si de 20 casos 4 son controles negativos, el
-    recall promedio se calcula sobre 16, no sobre 20.
+    The corollary of decision 3: if 4 of 20 cases are negative controls, mean recall is
+    computed over 16, not over 20.
     """
-    presentes = [v for v in values if v is not None]
-    if not presentes:
+    present = [v for v in values if v is not None]
+    if not present:
         return None
-    return sum(presentes) / len(presentes)
+    return sum(present) / len(present)
 
 
 def mrr(retrieved_per_case, targets_per_case) -> float | None:
-    """Mean Reciprocal Rank sobre varios casos."""
+    """Mean Reciprocal Rank across several cases."""
     return mean(
         reciprocal_rank(r, t) for r, t in zip(retrieved_per_case, targets_per_case, strict=True)
     )

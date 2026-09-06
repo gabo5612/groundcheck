@@ -1,13 +1,13 @@
-"""Validacion de la composicion de un golden set.
+"""Validation of a golden set's composition.
 
-La composicion importa mas que la cantidad (§3 del spec). Un set de 50 preguntas con 2
-controles negativos mide otra cosa que la que dice medir, y eso **no se ve leyendo el
-archivo**: hay que contar. Por eso es un check y no una convencion.
+Composition matters more than count (§3 of the spec). A 50-question set with 2 negative
+controls measures something other than what it claims to, and that **is not visible by
+reading the file**: you have to count. Hence a check rather than a convention.
 
-Nota de procedencia: el contrato se despacho a `crew`, pero el guard de archivos aborto
-la corrida porque Claude edito `tests/test_checks.py` en paralelo — el whitelist no
-distingue las ediciones del obrero de las del arquitecto. Leccion: no tocar el repo
-mientras crew despacha. Esta version la escribio Claude contra los mismos tests.
+Provenance note: the contract was dispatched to `crew`, but the file guard aborted the run
+because Claude edited `tests/test_checks.py` in parallel — the whitelist cannot tell the
+worker's edits from the architect's. Lesson: do not touch the repo while crew is
+dispatching. This version was written by Claude against the same tests.
 """
 
 from __future__ import annotations
@@ -19,54 +19,55 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class CompositionIssue:
     category: str
-    kind: str          # 'ausente' · 'bajo' · 'alto' · 'desconocida'
+    kind: str          # 'missing' · 'low' · 'high' · 'unknown'
     n: int
     total: int
     actual: float
     objetivo: float
-    faltan: int
+    missing: int
     blocks: bool
 
 
 def composition_report(
-    conteo: dict[str, int],
-    objetivo: dict[str, float],
-    tolerancia: float,
+    counts: dict[str, int],
+    target: dict[str, float],
+    tolerance: float,
 ) -> list[CompositionIssue]:
-    """Compara la composicion real contra la objetivo.
+    """Compare the actual composition against the target.
 
-    Quedarse CORTO en una categoria bloquea; pasarse no. La asimetria es deliberada: si
-    `negative_control` baja del 20%, el set deja de medir alucinacion y todos los numeros
-    que publique valen menos. Tener preguntas de mas en otra categoria solo desbalancea.
+    Falling SHORT in a category blocks; overshooting does not. The asymmetry is deliberate:
+    if `negative_control` drops below 20%, the set stops measuring hallucination and every
+    number it publishes is worth less. Having extra questions in another category merely
+    unbalances it.
     """
-    total = sum(conteo.values())
+    total = sum(counts.values())
     if total == 0:
         return []
 
     issues: list[CompositionIssue] = []
 
-    for categoria, n in conteo.items():
-        if categoria not in objetivo:
+    for category, n in counts.items():
+        if category not in target:
             issues.append(
-                CompositionIssue(categoria, "desconocida", n, total, n / total, 0.0, 0, True)
+                CompositionIssue(category, "unknown", n, total, n / total, 0.0, 0, True)
             )
 
-    for categoria, esperado in objetivo.items():
-        n = conteo.get(categoria, 0)
+    for category, expected in target.items():
+        n = counts.get(category, 0)
         actual = n / total
-        faltan = max(0, math.ceil(esperado * total) - n)
+        missing = max(0, math.ceil(expected * total) - n)
 
         if n == 0:
             issues.append(
-                CompositionIssue(categoria, "ausente", 0, total, 0.0, esperado, faltan, True)
+                CompositionIssue(category, "missing", 0, total, 0.0, expected, missing, True)
             )
-        elif actual < esperado - tolerancia:
+        elif actual < expected - tolerance:
             issues.append(
-                CompositionIssue(categoria, "bajo", n, total, actual, esperado, faltan, True)
+                CompositionIssue(category, "low", n, total, actual, expected, missing, True)
             )
-        elif actual > esperado + tolerancia:
+        elif actual > expected + tolerance:
             issues.append(
-                CompositionIssue(categoria, "alto", n, total, actual, esperado, 0, False)
+                CompositionIssue(category, "high", n, total, actual, expected, 0, False)
             )
 
     return sorted(issues, key=lambda i: (not i.blocks, i.category))
