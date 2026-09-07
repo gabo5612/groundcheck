@@ -4,3 +4,7 @@ __pycache__/
 # Las corridas ad-hoc no se versionan. Lo que si se versiona son los baselines
 # (baselines/), porque el gate de CI compara contra ellos.
 runs/
+
+# Vercel CLI link and the OIDC token it writes
+.vercel
+.env.local
