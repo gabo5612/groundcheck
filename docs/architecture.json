@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "groundcheck — Evaluation Harness for RAG Systems",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "views": [
+      { "id": "observe", "label": "Observe a run", "focus": ["cli", "run", "adapter", "sut", "observations"], "note": "A run asks the questions and records only what came back — not one metric." },
+      { "id": "judge", "label": "Judge it later", "focus": ["observations", "checks", "metrics", "report"], "note": "Checks and metrics are set operations over stored observations, so an old run can be re-judged." },
+      { "id": "block", "label": "Block the build", "focus": ["suite", "report", "gate"], "note": "The report refuses if the golden set moved, and the gate answers with an exit code." }
+    ]
+  },
+  "components": [
+    { "id": "suite",        "type": "database", "label": "Golden Set v3",     "sublabel": "39 questions · sha256",  "pos": [302, 100],  "size": [142, 52] },
+    { "id": "composition",  "type": "security", "label": "Composition Check", "sublabel": "negative-control ratio", "pos": [564, 100],  "size": [142, 52] },
+    { "id": "cli",          "type": "frontend", "label": "groundcheck CLI",   "sublabel": "one dependency",         "pos": [40, 226],   "size": [142, 52] },
+    { "id": "run",          "type": "backend",  "label": "Run Orchestrator",  "sublabel": "observes, never scores", "pos": [302, 226],  "size": [142, 52] },
+    { "id": "adapter",      "type": "backend",  "label": "Adapter",           "sublabel": "one contract, any RAG",  "pos": [564, 226],  "size": [142, 52] },
+    { "id": "sut",          "type": "external", "label": "System Under Test", "sublabel": "shopfloor, or scripted", "pos": [826, 226],  "size": [142, 52] },
+    { "id": "observations", "type": "database", "label": "Run Record",        "sublabel": "what was observed",      "pos": [1088, 226], "size": [142, 52] },
+    { "id": "checks",       "type": "security", "label": "Deterministic Checks", "sublabel": "true / false / unknown", "pos": [826, 352],  "size": [142, 52] },
+    { "id": "metrics",      "type": "backend",  "label": "Retrieval Metrics", "sublabel": "set operations",         "pos": [1088, 352], "size": [142, 52] },
+    { "id": "gate",         "type": "security", "label": "CI Gate",           "sublabel": "fails the build",        "pos": [564, 478],  "size": [142, 52] },
+    { "id": "report",       "type": "backend",  "label": "Per-Category Report", "sublabel": "no single global number", "pos": [826, 478],  "size": [142, 52] }
+  ],
+  "boundaries": [
+    { "kind": "security-group", "label": "no model participates — set operations and normalised comparison", "wraps": ["checks", "metrics", "gate", "report"], "pad": 14 }
+  ],
+  "connections": [
+    { "from": "cli",          "to": "run",         "label": "eval",                  "variant": "emphasis" },
+    { "from": "run",          "to": "suite",       "label": "load + verify sha256",  "variant": "security", "labelAt": [373, 189] },
+    { "from": "suite",        "to": "composition", "label": "counts the mix" },
+    { "from": "run",          "to": "adapter",     "label": "each question",         "variant": "emphasis" },
+    { "from": "adapter",      "to": "sut",         "label": "question",              "variant": "emphasis" },
+    { "from": "sut",          "to": "observations","label": "answer + citations",    "variant": "emphasis" },
+    { "from": "observations", "to": "checks",      "label": "re-evaluated later" },
+    { "from": "observations", "to": "metrics",     "label": "retrieved sets",        "labelAt": [1159, 315] },
+    { "from": "checks",       "to": "report",      "label": "per category",          "labelAt": [897, 441] },
+    { "from": "metrics",      "to": "report",      "label": "recall@k · MRR · P@k",  "toSide": "right" },
+    { "from": "report",       "to": "gate",        "label": "exit code",             "variant": "emphasis" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "A typo must not pass", "items": ["An unknown key in the golden set is a hard error, never a warning", "Write 'forbiden_numbers' and the check that catches the split-table bug just stops running", "The report stays green and the published metric quietly becomes a lie"] },
+    { "dot": "rose", "title": "A digit glued to a letter is not a number", "items": ["E-114 does not contribute 114, nor M24 the 24", "Extract them and the correct answer 'alarm E-114 indicates overtemperature' scores ungrounded", "These rules came from labelling the golden set and watching it fail, not from imagining cases"] },
+    { "dot": "emerald", "title": "What it refuses to do", "items": ["A run stores observations only — a filler zero in an eval JSON gets copied into a README", "The report reloads the suite and refuses to report if its sha256 moved", "23% of the golden set is negative controls: a system that always answers would score perfectly"] }
+  ]
+}
